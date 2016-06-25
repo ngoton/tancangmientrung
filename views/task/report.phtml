@@ -1,0 +1,217 @@
+<div class="progressDiv">
+    <div class="statChartHolder">
+        <div class="progress-pie-chart" data-percent="<?php echo $finish_per ?>"><!--Pie Chart -->
+            <div class="ppc-progress">
+                <div class="ppc-progress-fill"></div>
+            </div>
+            <div class="ppc-percents">
+            <div class="pcc-percents-wrapper">
+                <span>%</span>
+            </div>
+            </div>
+        </div><!--End Chart -->
+    </div>
+    <div class="statRightHolder">
+        
+        <ul>
+        <li> <h3 class="blue"><?php echo $total; ?></h3> <span>Công việc</span></li>
+        <li> <h3 class="purple"><?php echo $total_sub; ?></h3> <span >Công việc từ <?php echo $start.' đến '.$end; ?></span></li>
+        </ul>
+        
+            <ul class="statsLeft">
+                <li><h3>Tổng cộng</h3></li>
+                <li><h3 class="yellow"><?php echo $tasks_finish ?></h3> <span>Hoàn thành</span></li>
+                <li><h3 class="red"><?php echo $tasks_still ?></h3> <span>Chưa hoàn thành</span></li>
+            </ul>
+            <ul class="statsRight">
+                <li><h3><?php echo $start.' - '.$end; ?></h3></li>
+                <li><h3><?php echo $tasks_sub_finish ?></h3> <span>Hoàn thành</span></li>
+                <li><h3><?php echo $tasks_sub_still ?></h3> <span>Chưa hoàn thành</span></li>
+            </ul>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    $(function(){
+      var $ppc = $('.progress-pie-chart'),
+        percent = parseInt($ppc.data('percent')),
+        deg = 360*percent/100;
+      if (percent > 50) {
+        $ppc.addClass('gt-50');
+      }
+      $('.ppc-progress-fill').css('transform','rotate('+ deg +'deg)');
+      $('.ppc-percents span').html(percent+'%');
+    });
+   
+</script>
+
+<style type="text/css">
+    @import url(http://fonts.googleapis.com/css?family=Lato:300,400,700);
+
+
+.progressDiv {
+width: 100%;
+background: #161616;
+height: 325px;
+border: 1px solid #ccc;
+position: relative;
+display: inline-block;
+border-radius: 2px;
+box-shadow: 0px 1px 1px 1px #ccc;
+}
+
+.statChartHolder {
+width: 35%;
+height: 90%;
+position: relative;
+border-right: 1px solid #ccc;
+top: 15px;
+    display: inline-block;
+}
+
+.statRightHolder {
+display: inline-block;
+height: 90%;
+width: 64%;
+position: relative;
+
+margin: 0;
+}
+.statRightHolder ul {
+list-style: none;
+    margin: 0;
+}
+.statRightHolder li {
+border-bottom: 1px solid #ccc;
+height: 85px;
+width: 95%;
+position: relative;
+
+}
+.statRightHolder h3 {
+display: inline-block;
+margin-right: 15px;
+margin-top: 25px;
+color: #FFFFFF;
+font-weight: 300;
+font-size: 38px;
+}
+.statRightHolder span {
+display: inline-block;
+color: #B6B5B5;
+font-size: 21px;
+font-weight: 300;
+}
+
+.statsLeft {
+    list-style:none;
+    display:inline-block;
+    width:45%;
+}
+.statsLeft li {
+width: 100%;
+height: 14px;
+border: none;
+
+margin-bottom: 25px;
+}
+.statsLeft h3{
+    font-size:17px;
+    display: inline-block;
+}
+.statsLeft span{
+    font-size: 14px;
+    display:inline-block;
+}
+.statsRight {
+width: 45%;
+display: inline-block;
+position: absolute;
+}
+.statsRight li {
+width: 100%;
+height: 14px;
+border: none;
+
+margin-bottom: 25px;
+}
+.statsRight h3{
+    font-size:17px;
+    display: inline-block;
+}
+.statsRight span{
+    font-size: 14px;
+    display:inline-block;
+}
+/* Pie Chart */
+.progress-pie-chart {
+  width:200px;
+  height: 200px;
+  border-radius: 50%;
+  background-color: #E5E5E5;
+  position: relative;
+}
+.progress-pie-chart.gt-50 {
+  background-color: #39BD5F;
+}
+
+.ppc-progress {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  left: calc(50% - 100px);
+  top: calc(50% - 100px);
+  width: 200px;
+  height: 200px;
+  clip: rect(0, 200px, 200px, 100px);
+}
+.ppc-progress .ppc-progress-fill {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  left: calc(50% - 100px);
+  top: calc(50% - 100px);
+  width: 200px;
+  height: 200px;
+  clip: rect(0, 100px, 200px, 0);
+  background: #39BD5F;
+  transform: rotate(60deg);
+}
+.gt-50 .ppc-progress {
+  clip: rect(0, 100px, 200px, 0);
+}
+.gt-50 .ppc-progress .ppc-progress-fill {
+  clip: rect(0, 200px, 200px, 100px);
+  background: #E5E5E5;
+}
+
+.ppc-percents {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  left: calc(50% - 173.91304px/2);
+  top: calc(50% - 173.91304px/2);
+  width: 173.91304px;
+  height: 173.91304px;
+  background: #161616;
+  text-align: center;
+  display: table;
+}
+.ppc-percents span {
+  display: block;
+  font-size: 2.6em;
+  font-weight: bold;
+  color: #81CE97;
+}
+
+.pcc-percents-wrapper {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.progress-pie-chart {
+  margin: 50px auto 0;
+}
+
+</style>

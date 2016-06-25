@@ -1,0 +1,487 @@
+
+<?php
+$url_order = 'ASC';
+if ($order_by == 'customer_id')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'customer_name')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'customer_contact')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'customer_phone')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'customer_type')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+
+
+    $i = $sonews*$page-($sonews-1);
+
+?>
+
+<div id="loading"></div>
+<div id="winpopup"></div>
+
+<div id="content" style="padding:5px;">
+    <center style="clear:both;margin-bottom: -30px;"><h1> DANH SÁCH KHÁCH HÀNG </h1></center>
+<?php if ($_SESSION['role_logined'] != 7 ) { ?>
+<div class="add-box">
+    <a class="add_button" onClick="add_click();">Thêm khách hàng mới</a>
+    <a class="add_button" id="import_excel" href="<?= $this->url('customer/import')?>">Import Excel</a>
+</div>
+<?php } ?>
+	<div class="search-box">
+        
+        <input type="search" id="search-input" name="s" value="<?php echo isset($keyword)?$keyword:null; ?>" placeholder="Tìm kiếm">
+        <input type="button" name="" id="search-submit" class="button-search" value="Tìm kiếm" onclick="searchall('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');">
+    </div>
+    <div class="tablenav top">
+        <div class="add-box">
+            <a class="add_button" id="export_excel" href="<?= $this->url('customer/export')?>">Export Excel</a>
+        </div>
+        <?php if ($_SESSION['role_logined'] != 7 ) { ?>
+    	<div class="alignleft actions">
+			<select name="action" id="action">
+            	<option value="-1" selected="selected">Chọn</option>
+                
+                <option value="delete">Xóa</option>
+            </select>
+            <input type="button" name="" id="doaction" class="button action" value="Áp dụng" onclick="action();">
+		</div>
+        <?php } ?>
+		<div class="alignleft actions">
+		<select name="m" id="chonloc">
+			<option  value="18446744073709">Hiển thị tất cả</option>
+			<option value="5">Hiển thị 5 giá trị</option>
+            <option value="10">Hiển thị 10 giá trị</option>
+            <option value="15">Hiển thị 15 giá trị</option>
+            <option selected="selected" value="20">Hiển thị 20 giá trị</option>
+		</select>
+		<input type="button" name="" id="post-query-submit" class="button" value="Chọn lọc" onclick="searchall('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');">						 		
+        </div>
+
+      </div>
+
+</div>
+
+<table class="table_data">
+<thead>
+    <tr>
+    	<th class="fix"><input type="checkbox" onclick="checkall('checkbox', this)" name="checkall"/></th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','customer_id','<?php echo $url_order ?>')">STT <?php if ($order_by == 'customer_id'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','customer_name','<?php echo $url_order ?>')">Tên khách hàng <?php if ($order_by == 'customer_name'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','customer_contact','<?php echo $url_order ?>')">Người liên hệ <?php if ($order_by == 'customer_contact'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','customer_phone','<?php echo $url_order ?>')">Số điện thoại <?php if ($order_by == 'customer_phone'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>   
+        <th class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','customer_type','<?php echo $url_order ?>')">Loại hàng <?php if ($order_by == 'customer_type'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','company_name','<?php echo $url_order ?>')">Công ty <?php if ($order_by == 'company_name'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','mst','<?php echo $url_order ?>')">MST <?php if ($order_by == 'mst'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <?php if ($_SESSION['role_logined'] != 7 ) { ?>
+        <th  class="fix">&nbsp;</th>
+        <?php } ?>
+    </tr>
+    
+   </thead>
+   <tbody>
+    <?php foreach ($customers as $customer) : ?>
+        <tr onClick="HighLightTR(this,'#4d90fe','cc3333');" id="<?php echo $customer->customer_id ?>" class="edit_tr">
+        	<td><input name="check[]" type="checkbox" class="checkbox" value="<?php echo $customer->customer_id ?>"></td>
+            <td class="fix"><?php echo $i++; ?></td>
+            <td class="fix"  id="customer_name_<?php echo $customer->customer_id; ?>"><?php echo $customer->customer_name ?></td>
+            <td class="fix" id="customer_contact_<?php echo $customer->customer_id; ?>"><?php echo $customer->customer_contact; ?></td>
+            <td class="fix" id="customer_phone_<?php echo $customer->customer_id; ?>"><?php echo $customer->customer_phone; ?></td>
+            <td class="fix" id="customer_type_<?php echo $customer->customer_id; ?>"><?php echo $customer->customer_type; ?></td>
+            <td class="fix" id="company_name_<?php echo $customer->customer_id; ?>"><?php echo $customer->company_name; ?></td>
+            <td class="fix" id="mst_<?php echo $customer->customer_id; ?>"><?php echo $customer->mst; ?></td>
+            <td style="display:none" class="fix" id="company_address_<?php echo $customer->customer_id; ?>"><?php echo $customer->company_address; ?></td>
+            <td style="display:none" class="fix" id="company_phone_<?php echo $customer->customer_id; ?>"><?php echo $customer->company_phone; ?></td>
+            <td style="display:none" class="fix" id="company_fax_<?php echo $customer->customer_id; ?>"><?php echo $customer->company_fax; ?></td>
+            <td style="display:none" class="fix" id="company_bank_<?php echo $customer->customer_id; ?>"><?php echo $customer->company_bank; ?></td>
+            <td style="display:none" class="fix" id="company_bank_number_<?php echo $customer->customer_id; ?>"><?php echo $customer->company_bank_number; ?></td>
+            <td style="display:none" class="fix" id="company_bank_branch_<?php echo $customer->customer_id; ?>"><?php echo $customer->company_bank_branch; ?></td>
+            <td style="display:none" class="fix" id="company_present_<?php echo $customer->customer_id; ?>"><?php echo $customer->company_present; ?></td>
+            <td style="display:none" class="fix" id="company_position_<?php echo $customer->customer_id; ?>"><?php echo $customer->company_position; ?></td>
+            <?php if ($_SESSION['role_logined'] != 7 ) { ?>
+            <td>
+                <a class="error" href="#">Sửa</a>
+                | 
+                <a class="error" onclick="del(<?php echo $customer->customer_id ?>)" >Xóa</a>
+            </td>
+            <?php } ?>
+        </tr>
+    <?php endforeach; ?>
+   </tbody>
+</table>
+<?php
+$this->helper('slidePaginator');
+?>
+
+<div id="error" class="error"><?php echo isset($error) ? $error : null; ?></div>
+
+<div class="add-field">
+        <fieldset class="groupbox">
+            <legend>
+                <span><h3>Thông tin khách hàng </h3></span>
+            </legend>
+            <div class="login_body">
+                  <form id="add_customer" method="post" action="">
+                      <table style="margin:0 auto;width:100%">
+                        <tr>
+                            
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td><div class="add-box"><a class="add_button" onClick="add_click();">Thêm khách hàng mới</a></div></td>
+                            
+                        </tr>
+                        <tr>
+                            
+                            
+                            <td>Khách hàng </td>
+                            <td>
+                                <input type="text" id="customer_name"  name="customer_name" tabindex="1" required="required" >
+                            </td>
+                            
+                            <td>Người liên hệ </td>
+                            <td><input type="text" id="customer_contact"  name="customer_contact" tabindex="2" ></td>
+                            <td>Số diện thoại </td>
+                            <td>
+                                <input type="text" class="numbers" id="customer_phone" name="customer_phone" tabindex="3" >
+                            </td>
+                            <td>Loại hàng</td>
+                            <td><input type="text" id="customer_type"  name="customer_type" tabindex="4" ></td>
+
+                        </tr>
+                        <tr>
+                            
+                            
+                            <td>Tên công ty </td>
+                            <td>
+                                <input type="text" id="company_name"  name="company_name" tabindex="5"  >
+                            </td>
+                            
+                            <td>Địa chỉ </td>
+                            <td><input type="text" id="company_address"  name="company_address" tabindex="6" ></td>
+                            <td>Số diện thoại </td>
+                            <td>
+                                <input type="text" class="numbers" id="company_phone" name="company_phone" tabindex="7" >
+                            </td>
+                            <td>Số fax </td>
+                            <td>
+                                <input type="text" class="numbers" id="company_fax" name="company_fax" tabindex="8" >
+                            </td>
+
+                        </tr>
+                        <tr>
+                            
+                            
+                            <td>Mã số thuế </td>
+                            <td>
+                                <input type="text" id="mst"  name="mst" tabindex="9"  >
+                            </td>
+                            
+                            <td>Số tài khoản </td>
+                            <td><input type="text" id="company_bank_number"  name="company_bank_number" tabindex="10" ></td>
+                            <td>Ngân hàng </td>
+                            <td>
+                                <select style="width:200px" name="company_bank" id="company_bank" tabindex="11">
+                                    <?php foreach ($banks as $bank) { ?>
+                                        <option value="<?php echo $bank->bank_id ?>"><?php echo $bank->bank_name ?></option>
+                                    <?php } ?>
+                                </select>
+                            </td>
+                            <td>Chi nhánh </td>
+                            <td>
+                                <input type="text"  id="company_bank_branch" name="company_bank_branch" tabindex="12" >
+                            </td>
+
+                        </tr>
+                        <tr>
+                            
+                            
+                            <td>Người đại diện </td>
+                            <td>
+                                <input type="text" id="company_present"  name="company_present" tabindex="13"  >
+                            </td>
+                            
+                            <td>Chức vụ </td>
+                            <td><input type="text" id="company_position"  name="company_position" tabindex="14" ></td>
+                            
+
+                        </tr>
+                        
+                        
+                        
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td><input type="hidden" readonly id="yes" name="yes" required="required" ></td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        
+                        
+                         <tr>
+                            
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><input type="submit" name="submit" value="Hoàn tất" tabindex="15"></td>
+                            <td ><input type="reset" name="reset" value="Nhập lại" tabindex="16"></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                             
+                        </tr>
+                    </table> 
+                </form>
+            </div>
+        </fieldset>
+    </div>
+
+<?php if ($_SESSION['role_logined'] != 7 ) { ?>
+<script type="text/javascript">
+
+$('html').click(function(e) {
+    if(e.target == '[object HTMLDivElement]' || e.target == '[object HTMLBodyElement]') {
+        $('.add-field').slideUp(500);    
+    }
+   
+});
+    $('.edit_tr').click(function(){
+        if(!$('.checkbox').is(':checked')){
+            $("html, body").animate({ scrollTop: $('.add-field').offset().top }, 300);
+        }
+        var customer_name = $(this).find("#customer_name_"+$(this).attr('id')).text();
+        var customer_type = $(this).find("#customer_type_"+$(this).attr('id')).text();
+        var customer_contact = $(this).find("#customer_contact_"+$(this).attr('id')).text();
+        var customer_phone = $(this).find("#customer_phone_"+$(this).attr('id')).text();
+        var company_name = $(this).find("#company_name_"+$(this).attr('id')).text();
+        var mst = $(this).find("#mst_"+$(this).attr('id')).text();
+        var company_address = $(this).find("#company_address_"+$(this).attr('id')).text();
+        var company_phone = $(this).find("#company_phone_"+$(this).attr('id')).text();
+        var company_fax = $(this).find("#company_fax_"+$(this).attr('id')).text();
+        var company_bank = $(this).find("#company_bank_"+$(this).attr('id')).text();
+        var company_bank_number = $(this).find("#company_bank_number_"+$(this).attr('id')).text();
+        var company_bank_branch = $(this).find("#company_bank_branch_"+$(this).attr('id')).text();
+        var company_present = $(this).find("#company_present_"+$(this).attr('id')).text();
+        var company_position = $(this).find("#company_position_"+$(this).attr('id')).text();
+        
+        //alert(customer_code);
+        $('#yes').val($(this).attr('id'));
+        
+        
+        
+        $('#customer_name').val(customer_name);
+        $('#customer_contact').val(customer_contact);
+        $('#customer_phone').val(customer_phone);
+        $('#customer_type').val(customer_type);
+        $('#company_name').val(company_name);
+        $('#mst').val(mst);
+        $('#company_address').val(company_address);
+        $('#company_phone').val(company_phone);
+        $('#company_fax').val(company_fax);
+        $('#company_bank_number').val(company_bank_number);
+        $('#company_bank_branch').val(company_bank_branch);
+        $('#company_present').val(company_present);
+        $('#company_position').val(company_position);
+        $("#company_bank option[value=" + company_bank + "]").attr('selected', 'selected');
+
+        $('#customer_name').focus();
+        $('#customer_name').attr('data',"true");
+    });
+</script>
+
+<script type="text/javascript">
+
+function add_click(){
+    $('#yes').val("");
+    $('.add-field').slideDown(500);
+    $("html, body").animate({ scrollTop: $('.add-field').offset().top }, 300);
+    
+        
+        $('#customer_name').val("");
+        $('#customer_contact').val("");
+        $('#customer_phone').val("");
+        $('#customer_type').val("");
+        $('#company_name').val("");
+        $('#mst').val("");
+        $('#company_address').val("");
+        $('#company_phone').val("");
+        $('#company_fax').val("");
+        $('#company_bank').val("");
+        $('#company_bank_number').val("");
+        $('#company_bank_branch').val("");
+        $('#company_present').val("");
+        $('#company_position').val("");
+        
+
+   $('#customer_name').focus();
+   $('#customer_name').attr('data',"false");
+
+}
+
+
+$(document).ready(function(){
+            // Validate form
+            $("#add_customer").validate({
+                errorElement: "span", // Định dạng cho thẻ HTML hiện thông báo lỗi
+                rules: {
+                    
+                },
+                submitHandler: function(form) {
+                
+                    var customer_name = $('#customer_name').attr('value');
+                    var customer_contact = $('#customer_contact').attr('value');
+                    var customer_phone = $('#customer_phone').attr('value');
+                    var customer_type = $('#customer_type').attr('value');
+                    var company_name = $('#company_name').attr('value');
+                    var mst = $('#mst').attr('value');
+                    var company_address = $('#company_address').attr('value');
+                    var company_phone = $('#company_phone').attr('value');
+                    var company_fax = $('#company_fax').attr('value');
+                    var company_bank = $('#company_bank').attr('value');
+                    var company_bank_number = $('#company_bank_number').attr('value');
+                    var company_bank_branch = $('#company_bank_branch').attr('value');
+                    var company_present = $('#company_present').attr('value');
+                    var company_position = $('#company_position').attr('value');
+
+                    var yes = $('#yes').attr('value');
+                    var check = $('#customer_name').attr('data');
+                    
+                    var action      = "them";
+                 
+                    $.ajax({
+                        type: "POST", // phương thức gởi đi
+                        url: "<?php echo BASE_URL ?>/customer/add", // nơi mà dữ liệu sẽ chuyển đến khi submit
+                        data: {
+                            customer_name: customer_name,
+                            customer_contact: customer_contact,
+                            customer_phone: customer_phone,
+                            customer_type: customer_type,
+                            company_name: company_name,
+                            mst: mst,
+                            company_address: company_address,
+                            company_phone: company_phone,
+                            company_fax: company_fax,
+                            company_bank: company_bank,
+                            company_bank_number: company_bank_number,
+                            company_bank_branch: company_bank_branch,
+                            company_present: company_present,
+                            company_position: company_position,
+                            yes: yes,
+                            check: check,
+                            }, // giá trị post
+                        success: function(answer){ // if everything goes well
+                            $('#error').hide();
+                            $('#error').slideToggle(100); // hiển thị thẻ div success
+                            $('#error').html('<div class="successbox">'+answer+'</div>'); // đặt kết quả trả về từ test.php vào thẻ div success
+                            $('#error').fadeOut(10000);
+
+                            if (check == "true") {
+                                if (answer.trim() != "Thông tin khách hàng đã tồn tại") {
+                                    $('#customer_name_'+yes).text(customer_name);
+                                    $('#customer_contact_'+yes).text(customer_contact);
+                                    $('#customer_phone_'+yes).text(customer_phone);
+                                    $('#customer_type_'+yes).text(customer_type);
+                                }
+                            }
+                            else{
+                                if (answer.trim() != "Thông tin khách hàng đã tồn tại") {
+                                    var lastID = parseInt($('#lasted').html());
+                                    var rowCount = parseInt($('.table_data > tbody > tr').length);
+                                    $('.table_data > tbody:last')
+                                    .append(
+                                        '<tr onclick="HighLightTR(this,"#4d90fe","cc3333");" id="'+parseInt(lastID+1)+'" class="edit_tr"><td><input name="check[]" type="checkbox" class="checkbox" value="'+parseInt(lastID+1)+'"></td><td class="fix">'+parseInt(rowCount+1)+'</td><td class="fix" id="customer_name_'+parseInt(lastID+1)+'">'+customer_name+'</td><td class="fix" id="customer_contact_'+parseInt(lastID+1)+'">'+customer_contact+'</td><td class="fix" id="customer_phone_'+parseInt(lastID+1)+'">'+customer_phone+'</td><td class="fix" id="customer_type_'+parseInt(lastID+1)+'">'+customer_type+'</td><td><a class="error" href="#">Sửa</a> | <a class="error" onclick="del('+parseInt(lastID+1)+')">Xóa</a></td></tr>'
+                                    );
+
+                                    $('#lasted').html(parseInt(lastID+2));
+                                }
+                            }
+                        }
+                    });
+                    return false;
+                     
+                 }
+            });
+   
+   
+   
+
+   $('.number').keyup(function(event) {
+
+          // skip for arrow keys
+      if(event.which >= 37 && event.which <= 40) return;
+
+      // format number
+      $(this).val(function(index, value) {
+        return value
+          .replace(/[^0-9]/g, "")
+        ;
+      });
+    });
+
+   $('.numbers').keyup(function(event) {
+
+          // skip for arrow keys
+      if(event.which >= 37 && event.which <= 40) return;
+
+      // format number
+      $(this).val(function(index, value) {
+        return value
+          .replace(/[^0-9]/g, "")
+          .replace(/(\d{3})(\d{3})(\d{4})/, "$1 $2 $3")
+        ;
+      });
+    });
+    
+
+});
+function get_number(id){
+    return $(id).val().replace(/\,/g,'');
+}
+
+</script>
+
+<?php } ?>
+
+<div style="display:none" id="lasted"></div>
+<script type="text/javascript">
+    var count = parseInt(<?php echo $lastID ?>);
+    $('#lasted').html(count);
+
+$("#import_excel").click(function(){
+        $("#winpopup").dialog({
+            draggable:true,
+            modal: true,
+            autoOpen: false,
+            height:300,
+            width:400,
+            resizable: false,
+            title:'Import Excel',
+            
+        });
+        $("#winpopup").load($(this).attr('href'));
+        $("#winpopup").dialog("open");
+         
+        return false;
+    });
+
+var ch = "<?php echo $limit ?>";
+$('#chonloc option[value='+ch+']').attr('selected','selected');
+</script>
+
+</div>

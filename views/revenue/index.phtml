@@ -1,0 +1,836 @@
+
+<?php
+$url_order = 'ASC';
+if ($order_by == 'revenue_id')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+
+elseif ($order_by == 'shipment_from')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'shipment_to')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'vehicle')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'customer')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'shipment_charge')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'shipment_ton')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'oil_add')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'cost_add')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'shipment_revenue')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'shipment_cost')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'shipment_profit')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'shipment_date')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'shipment_round')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+
+    $i = $sonews*$page-($sonews-1);
+
+?>
+
+<div id="loading"></div>
+<div id="winpopup"></div>
+<center style="clear:both;margin-bottom: -30px;"><h1> DOANH THU </h1></center>
+<div id="content" style="padding:5px;">
+  
+
+
+	<div class="search-box">
+        
+        <input type="search" id="search-input" name="s" value="<?php echo isset($keyword)?$keyword:null; ?>" placeholder="Tìm kiếm">
+        <input type="button" name="" id="search-submit" class="button-search" value="Tìm kiếm" onclick="searchall('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');">
+    
+        <div class="add-box">
+                  
+            Từ  <input style="width:100px" type="search" name="batdau" id="batdau" placeholder="Chọn ngày" <?php if(isset($batdau)) echo "value='$batdau'"; ?> >  
+            Đến  <input style="width:100px" type="search" name="ketthuc" id="ketthuc" placeholder="Chọn ngày" <?php if(isset($ketthuc)) echo "value='$ketthuc'"; ?> >  
+             <input type="button" name="xem" id="xem" value="Xem" onclick="searchall('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');">  
+            
+        </div>
+    </div>
+    <div class="tablenav top">
+        <div style="clear:both"></div>
+        
+        <div class="add-box">
+            <input type="button" name="chon" id="chon" value="Chọn" onclick="searchall('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');">  
+        </div>
+        
+        <div class="add-box" style="margin-right: 5px">
+            <select name="sl_vehicle" id="sl_vehicle">
+                <option selected="selected" value="">Xe</option>
+                <?php foreach ($vehicles as $sm) { ?>
+                <option value="<?php echo $sm->vehicle_id ?>"><?php echo $sm->vehicle_number ?></option>
+                <?php } ?>
+            </select>
+
+            
+            
+        </div>
+
+        <div class="alignleft actions">
+        <select name="m" id="chonloc" style="width:200px">
+            <option value="18446744073709">Hiển thị tất cả</option>
+            <option value="10">Hiển thị 10 giá trị</option>
+            <option value="20">Hiển thị 20 giá trị</option>
+            <option value="30">Hiển thị 30 giá trị</option>
+            <option value="40">Hiển thị 40 giá trị</option>
+            <option selected="selected" value="50">Hiển thị 50 giá trị</option>
+        </select>
+        <input type="button" name="" id="post-query-submit" class="button" value="Chọn lọc" onclick="searchall('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');">                               
+        </div>
+
+      </div>
+<div class="tablenav top">
+<div style="clear:both"></div>
+      <div class="add-box">
+        <a class="add_button" onClick="add_click();">Thêm bảng doanh thu</a>
+        <a class="add_button" id="export_excel" href="<?= $this->url('revenue/export/'.strtotime($batdau).'/'.strtotime($ketthuc).'/'.$xe)?>">Export Excel</a>
+    </div>
+</div>
+</div>
+
+<table class="table_data">
+<thead>
+    <tr>
+    	<th class="fix"><input type="checkbox" onclick="checkall('checkbox', this)" name="checkall"/></th>
+        <th  class="fix" >
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','revenue_id','<?php echo $url_order ?>')">STT <?php if ($order_by == 'revenue_id'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','customer','<?php echo $url_order ?>')">Khách hàng <?php if ($order_by == 'customer'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','customer_type','<?php echo $url_order ?>')">Loại hàng <?php if ($order_by == 'customer_type'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','vehicle','<?php echo $url_order ?>')">Xe <?php if ($order_by == 'vehicle'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','shipment_date','<?php echo $url_order ?>')">Ngày <?php if ($order_by == 'shipment_date'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','shipment_from','<?php echo $url_order ?>')">Kho đi <?php if ($order_by == 'shipment_from'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','shipment_to','<?php echo $url_order ?>')">Kho đến <?php if ($order_by == 'shipment_to'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','shipment_ton','<?php echo $url_order ?>')">Trọng tải <?php if ($order_by == 'shipment_ton'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','shipment_charge','<?php echo $url_order ?>')">Đơn giá <?php if ($order_by == 'shipment_charge'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','shipment_revenue','<?php echo $url_order ?>')">Thành tiền <?php if ($order_by == 'shipment_revenue'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>  
+        <th class="fix"></th>
+    </tr>
+    
+   </thead>
+   <tbody>
+    <?php $v = array(); $doanhthu = array(); $chiphi = array(); $loinhuan = array(); $tong=0; ?>
+    <?php foreach ($shipments as $shipment) : ?>
+    
+        
+        <tr onClick="HighLightTR(this,'#4d90fe','cc3333');" data="<?php echo $shipment->vehicle_id.$shipment->shipment_round ?>" id="<?php echo $shipment->revenue_id ?>" class="edit_tr">
+        	<td><input name="check[]" type="checkbox" class="checkbox" value="<?php echo $shipment->revenue_id ?>"></td>
+            <td  class="fix"><?php echo $i++; ?></td>
+            <td nowrap class="fix" data="<?php echo $shipment->customer; ?>" id="customer_<?php echo $shipment->revenue_id; ?>"><?php echo $shipment->customer_name; ?></td>
+            <td  class="fix"  id="customer_type_<?php echo $shipment->revenue_id; ?>"><?php echo $shipment->customer_type; ?></td>
+            <td nowrap class="fix" data="<?php echo $shipment->vehicle; ?>" id="vehicle_<?php echo $shipment->revenue_id; ?>"><?php echo $shipment->vehicle_number; ?></td>
+            
+            <td class="fix" id="shipment_date_<?php echo $shipment->revenue_id; ?>"><?php echo $lib->hien_thi_ngay_thang($shipment->shipment_date); ?></td>
+            
+            <td nowrap class="fix" data="<?php echo $shipment->shipment_from; ?>" id="shipment_from_<?php echo $shipment->revenue_id; ?>"><?php echo $shipment->shipment_from==$warehouse['warehouse_id'][$shipment->shipment_from]?$warehouse['warehouse_name'][$shipment->shipment_from]:null ?></td>
+            <td nowrap class="fix" data="<?php echo $shipment->shipment_to; ?>" id="shipment_to_<?php echo $shipment->revenue_id; ?>"><?php echo $shipment->shipment_to==$warehouse['warehouse_id'][$shipment->shipment_to]?$warehouse['warehouse_name'][$shipment->shipment_to]:null ?></td>
+            <td class="fix" id="shipment_ton_<?php echo $shipment->revenue_id; ?>"><?php echo $shipment->shipment_ton; ?></td>
+            <td class="fix" id="shipment_charge_<?php echo $shipment->revenue_id; ?>"><?php echo $lib->formatMoney($shipment->shipment_charge); ?></td>
+            <td class="fix" id="shipment_revenue_<?php echo $shipment->revenue_id; ?>"><?php echo $lib->formatMoney($shipment->shipment_revenue); ?></td>
+            <td>
+                <a class="error" onclick="del(<?php echo $shipment->revenue_id ?>)" >Xóa</a>
+               
+            </td>
+        </tr>
+
+        <?php $tong += $shipment->shipment_revenue; ?>
+
+         
+
+    <?php endforeach; ?>
+        <tr  style="font-weight: bold; color: rgb(23, 119, 226);" >
+            <td class="fix" colspan="8" ></td>
+            <th style="border-right: 1px solid rgb(236, 235, 235);border-top: 1px solid #80C8E5;padding: 7px; text-align: right;" colspan="2">
+                Tổng cộng chưa V.A.T
+            </th>
+            <td class="fix " colspan="2"><?php echo $lib->formatMoney($tong) ?></td>
+           
+        </tr>
+        <tr  style="font-weight: bold; color: rgb(23, 119, 226);" >
+            <td class="fix" colspan="8" ></td>
+            <th style="border-right: 1px solid rgb(236, 235, 235);border-top: 1px solid #80C8E5;padding: 7px; text-align: right;" colspan="2">
+                V.A.T
+            </th>
+            <td class="fix " colspan="2">10%</td>
+           
+        </tr>
+        <tr  style="font-weight: bold; color: rgb(23, 119, 226);" >
+            <td class="fix" colspan="8" ></td>
+            <th style="border-right: 1px solid rgb(236, 235, 235);border-top: 1px solid #80C8E5;padding: 7px; text-align: right;" colspan="2">
+                Tổng cộng bao gồm V.A.T
+            </th>
+            <td class="fix " colspan="2" ><?php echo $lib->formatMoney($tong += $tong*0.1) ?></td>
+           
+        </tr>
+   </tbody>
+</table>
+<?php
+$this->helper('slidePaginator');
+?>
+<div style="display:none" id="lasted"></div>
+<div id="error" class="error"><?php echo isset($error) ? $error : null; ?></div>
+
+<div class="add-field">
+        <fieldset class="groupbox">
+            <legend>
+                <span><h3>Bảng doanh thu</h3></span>
+            </legend>
+            <div class="login_body">
+                  <form id="add_shipment" method="post" action="">
+                      <table style="margin-top:0px;width:100%">
+                        <tr>
+                            
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td></td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td><div class="add-box"><a class="add_button" onClick="add_click();">Thêm bảng doanh thu</a></div></td>
+                            
+                        </tr>
+                        <tr>
+                            <td>Ngày</td>
+                            <td><input type="text"  id="shipment_date" name="shipment_date" tabindex="4" required="required" ></td>
+                            <td>Xe</td>
+                            <td>
+                                <input type="text" autofocus autocomplete="off"   id="vehicle" name="vehicle" tabindex="1" required="required" placeholder="Nhập tên hoặc * để chọn" >
+                                <ul id="vehicle_list_id"></ul>
+                            </td>
+                            <td>Kho đi </td>
+                            <td>
+                                <input type="text"  autocomplete="off"  id="shipment_from" name="shipment_from" tabindex="5" required="required" placeholder="Nhập tên hoặc * để chọn" >
+                                <ul id="shipment_from_list_id"></ul>
+                            </td>
+                            
+                            
+                            <td>Cước </td>
+                            <td><input type="text" class="number" id="shipment_charge" name="shipment_charge" tabindex="9" ></td>
+
+
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>Khách hàng </td>
+                            <td>
+                                <input type="text" autocomplete="off" id="customer"  name="customer" tabindex="2" required="required" placeholder="Nhập tên hoặc * để chọn"  >
+                                <ul id="customer_list_id"></ul>
+                            </td>
+                            
+                            <td>Kho đến </td>
+                            <td>
+                                <input type="text"  autocomplete="off"  id="shipment_to" name="shipment_to" tabindex="6" required="required" placeholder="Nhập tên hoặc * để chọn" >
+                                <ul id="shipment_to_list_id"></ul>
+                            </td>
+                            
+                            <td>Trọng tải </td>
+                            <td>
+                                <input style="width:30px" type="text" class="number" id="shipment_ton" name="shipment_ton" tabindex="10" >
+                                
+                            </td>
+
+                           
+                            
+                        </tr>
+
+                        
+                        
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td><input type="hidden" readonly id="yes" name="yes" required="required" ></td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        
+                        
+                         <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><input type="submit" name="submit" value="Hoàn tất" tabindex="17"></td>
+                            <td ><input type="reset" name="reset" value="Nhập lại" tabindex="18"></td>
+                            <td></td>
+                            <td></td>
+                             
+                        </tr>
+                    </table> 
+                </form>
+            </div>
+        </fieldset>
+    </div>
+<script type="text/javascript">
+
+
+$('html').click(function(e) {
+    if(e.target == '[object HTMLDivElement]' || e.target == '[object HTMLBodyElement]') {
+        $('.add-field').slideUp(500);    
+    }
+   $('#shipment_from_list_id').slideUp(200);
+    $('#shipment_to_list_id').slideUp(200);
+    $('#vehicle_list_id').slideUp(200);
+    $('#customer_list_id').slideUp(200);
+});
+    $('.edit_tr').click(function(){
+        if(!$('.checkbox').is(':checked')){
+            $("html, body").animate({ scrollTop: $('.add-field').offset().top }, 300);
+        }
+        
+        var shipment_from = $(this).find("#shipment_from_"+$(this).attr('id')).text();
+        var shipment_to = $(this).find("#shipment_to_"+$(this).attr('id')).text();
+        var customer = $(this).find("#customer_"+$(this).attr('id')).text();
+        var vehicle = $(this).find("#vehicle_"+$(this).attr('id')).text();
+        var shipment_charge = $(this).find("#shipment_charge_"+$(this).attr('id')).text();
+        var shipment_ton = $(this).find("#shipment_ton_"+$(this).attr('id')).text();
+        var shipment_date = $(this).find("#shipment_date_"+$(this).attr('id')).text();
+        
+        //alert(shipment_from);
+        $('#yes').val($(this).attr('id'));
+        
+        $('#shipment_from').val(shipment_from);
+        $('#shipment_to').val(shipment_to);
+        $('#customer').val(customer);
+        $('#vehicle').val(vehicle);
+        $('#shipment_charge').val(shipment_charge);
+        $('#shipment_ton').val(shipment_ton);
+        
+        $('#shipment_date').val(shipment_date.replace(/\//g,"-"));
+
+        
+
+        $('#shipment_from').attr('data',$(this).find("#shipment_from_"+$(this).attr('id')).attr('data'));
+        
+        $("#shipment_from").attr("code",'true');
+        $('#shipment_to').attr('data',$(this).find("#shipment_to_"+$(this).attr('id')).attr('data'));
+        
+        $("#shipment_to").attr("code",'true');
+
+        $('#vehicle').attr('data',$(this).find("#vehicle_"+$(this).attr('id')).attr('data'));
+        $("#vehicle").attr("code",'true');
+        $('#customer').attr('data',$(this).find("#customer_"+$(this).attr('id')).attr('data'));
+        $("#customer").attr("code",'true');
+        
+        /*$('#oil_add').prop('disabled',false);
+        if (oil_add_dc == 5) {
+            $('#oil_add').prop('disabled',true);
+        };*/
+
+    });
+
+
+</script>
+<script type="text/javascript">
+
+function add_click(){
+    $('#yes').val("");
+    $('.add-field').slideDown(500);
+    $("html, body").animate({ scrollTop: $('.add-field').offset().top }, 300);
+
+        $('#vehicle').focus();
+        
+        $('#shipment_charge').val(0);
+        $('#shipment_ton').val(0);
+       
+        $('#shipment_date').val("");
+        
+        $('.number').focus(function(){
+            if ( $(this).val() == '0') {
+               $(this).val(""); 
+            };
+            
+        });
+        $('.number').blur(function(){
+            if ( $(this).val() == "") {
+                $(this).val(0);
+            };
+            
+        });
+
+        $("#shipment_from").attr("code",'false');
+        $('#shipment_from').val("");
+        $("#shipment_to").attr("code",'false');
+        $('#shipment_to').val("");
+
+        $('#customer').val("");
+        $('#vehicle').val("");
+        $("#customer").attr("code",'false');
+        $("#vehicle").attr("code",'false');
+
+
+
+}
+
+
+$(document).ready(function(){
+            // Validate form
+            $("#add_shipment").validate({
+                errorElement: "span", // Định dạng cho thẻ HTML hiện thông báo lỗi
+                rules: {
+                    
+                },
+                submitHandler: function(form) {
+                
+                    if ($('#shipment_from').attr('code') == 'false') {
+                        $('#shipment_from').val("");
+                        $('#shipment_from').focus();
+                        return false;
+                    };
+                    if ($('#shipment_to').attr('code') == 'false') {
+                        $('#shipment_to').val("");
+                        $('#shipment_to').focus();
+                        return false;
+                    };
+                    if ($('#vehicle').attr('code') == 'false') {
+                        $('#vehicle').val("");
+                        $('#vehicle').focus();
+                        return false;
+                    };
+                    if ($('#customer').attr('code') == 'false') {
+                        $('#customer').val("");
+                        $('#customer').focus();
+                        return false;
+                    };
+
+                
+                    var shipment_from = $('#shipment_from').attr('data');
+                    var shipment_to = $('#shipment_to').attr('data');
+                    var vehicle = $('#vehicle').attr('data');
+                    var customer = $('#customer').attr('data');
+                    var shipment_charge = $('#shipment_charge').attr('value');
+                    var shipment_ton = $('#shipment_ton').attr('value');
+                    
+                    var shipment_date = $('#shipment_date').attr('value');
+
+
+                    var yes = $('#yes').attr('value');
+                    
+                    var action      = "them";
+                 
+                    $.ajax({
+                        type: "POST", // phương thức gởi đi
+                        url: "<?php echo BASE_URL ?>/revenue/add", // nơi mà dữ liệu sẽ chuyển đến khi submit
+                        data: {
+                            shipment_from: shipment_from,
+                            shipment_to: shipment_to,
+                            customer: customer,
+                            vehicle: vehicle,
+                            shipment_charge: shipment_charge,
+                            shipment_ton: shipment_ton,
+                            
+                            shipment_date: shipment_date,
+                            
+                            yes: yes,
+                            }, // giá trị post
+                        success: function(answer){ // if everything goes well
+                            //alert(answer);
+                            var data = jQuery.parseJSON(answer);
+                            
+                            $('#error').hide();
+                            $('#error').slideToggle(100); // hiển thị thẻ div success
+                            $('#error').html('<div class="successbox">'+data.err+'</div>'); // đặt kết quả trả về từ test.php vào thẻ div success
+                            $('#error').fadeOut(10000);
+
+                            if (yes != "") {
+                                if (data.err.trim() != "Bảng này đã tồn tại") {
+                                    $('#shipment_charge_'+yes).text(shipment_charge);
+                                    $('#shipment_ton_'+yes).text(shipment_ton);
+                                    $('#shipment_from_'+yes).text($('#shipment_from').val());
+                                    $('#shipment_to_'+yes).text($('#shipment_to').val());
+                                    $('#customer_'+yes).text($('#customer').val());
+                                    $('#vehicle_'+yes).text($('#vehicle').val());
+                                    
+                                    $('#shipment_date_'+yes).text(shipment_date);
+                                    
+
+                                    setTimeout(function() {
+                                        sapxep('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');
+                                      }, 500);
+                                }
+                            }
+                            else{
+                                if (data.err.trim() != "Bảng này đã tồn tại") {
+                                    var lastID = parseInt($('#lasted').html());
+                                    var rowCount = parseInt($('.table_data > tbody > tr').length);
+                                    $('.table_data > tbody:last')
+                                    .append(
+                                        '<tr onclick="HighLightTR(this,"#4d90fe","cc3333");" id="'+parseInt(lastID+1)+'" class="edit_tr"><td><input name="check[]" type="checkbox" class="checkbox" value="'+parseInt(lastID+1)+'"></td><td class="fix">'+parseInt(rowCount+1)+'</td><td class="fix" id="customer_'+parseInt(lastID+1)+'">'+$( "#customer" ).val()+'</td><td class="fix" id="customer_type_'+parseInt(lastID+1)+'">'+$( "#customer_type" ).val()+'</td><td class="fix" id="vehicle_'+parseInt(lastID+1)+'">'+$( "#vehicle" ).val()+'</td><td class="fix" id="shipment_date_'+parseInt(lastID+1)+'">'+shipment_date+'</td><td class="fix" id="shipment_from_'+parseInt(lastID+1)+'">'+$( "#shipment_from" ).val()+'</td><td class="fix" id="shipment_to_'+parseInt(lastID+1)+'">'+$( "#shipment_to" ).val()+'</td><td class="fix" id="shipment_ton_'+parseInt(lastID+1)+'">'+shipment_ton+'</td><td class="fix" id="shipment_charge_'+parseInt(lastID+1)+'">'+shipment_charge+'</td><td class="fix" id="shipment_revenue_'+parseInt(lastID+1)+'">'+data.revenue+'</td><td><a class="error" onclick="del('+parseInt(lastID+1)+')">Xóa</a></td></tr>'
+                                    );
+
+                                    $('#lasted').html(parseInt(lastID+2));
+
+                                   setTimeout(function() {
+                                        sapxep('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');
+                                      }, 500);
+                                }
+                            }
+
+                            
+                            
+                        }
+                    });
+                    return false;
+                     
+                 }
+            });
+   
+
+
+
+   $('#shipment_from').keyup(function(){
+      
+        var keyword = $(this).val();
+        $.ajax({
+            url: '<?php echo BASE_URL ?>/shipment/getshipmentfrom',
+            type: 'POST',
+            data: {keyword:keyword},
+            success:function(data){
+                $('#shipment_from_list_id').slideDown(200);
+                $('#shipment_from_list_id').html(data);
+            }
+        });
+        if ($('#shipment_from').val() == "" || $('#shipment_from').attr('data') == "") {
+            //$('#loc_from').val("");
+            $('#shipment_from').attr('data',"");
+            $('#shipment_from').attr('code',false);
+        }
+      
+   });
+   $('#shipment_to').keyup(function(){
+      
+        var keyword = $(this).val();
+        $.ajax({
+            url: '<?php echo BASE_URL ?>/shipment/getshipmentto',
+            type: 'POST',
+            data: {keyword:keyword},
+            success:function(data){
+                $('#shipment_to_list_id').slideDown(200);
+                $('#shipment_to_list_id').html(data);
+            }
+        });
+        if ($('#shipment_to').val() == "" || $('#shipment_to').attr('data') == "") {
+            //$('#loc_from').val("");
+            $('#shipment_to').attr('data',"");
+            $('#shipment_to').attr('code',false);
+        }
+      
+   });
+   $('#customer').keyup(function(){
+      
+        var keyword = $(this).val();
+        $.ajax({
+            url: '<?php echo BASE_URL ?>/shipment/getcustomer',
+            type: 'POST',
+            data: {keyword:keyword},
+            success:function(data){
+                $('#customer_list_id').slideDown(200);
+                $('#customer_list_id').html(data);
+            }
+        });
+        if ($('#customer').val() == "" || $('#customer').attr('data') == "") {
+            //$('#loc_from').val("");
+            $('#customer').attr('data',"");
+            $('#customer').attr('code',false);
+        }
+      
+   });
+   $('#vehicle').keyup(function(){
+      
+        var keyword = $(this).val();
+        $.ajax({
+            url: '<?php echo BASE_URL ?>/shipment/getvehicle',
+            type: 'POST',
+            data: {keyword:keyword},
+            success:function(data){
+                $('#vehicle_list_id').slideDown(200);
+                $('#vehicle_list_id').html(data);
+            }
+        });
+        if ($('#vehicle').val() == "" || $('#vehicle').attr('data') == "") {
+            //$('#loc_from').val("");
+            $('#vehicle').attr('data',"");
+            $('#vehicle').attr('code',false);
+        }
+      
+   });
+
+
+
+   
+   $('.number').keyup(function(event) {
+
+          // skip for arrow keys
+      if(event.which >= 37 && event.which <= 40) return;
+
+      // format number
+      $(this).val(function(index, value) {
+        return value
+          .replace(/[^0-9-.]/g, "")
+          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        ;
+      });
+    });
+    
+
+});
+function get_number(id){
+    return $(id).val().replace(/\,/g,'');
+}
+function set_item_shipment_from(value,name) {
+    // change input value
+    $('#shipment_from').val(name);
+    $("#shipment_from").attr("data",value);
+    $("#shipment_from").attr("code",'true');
+    
+    // hide proposition list
+    $('#shipment_from_list_id').hide();
+    $('#shipment_from').focus();
+
+    
+}
+function set_item_shipment_to(value,name) {
+    // change input value
+    $('#shipment_to').val(name);
+    $("#shipment_to").attr("data",value);
+    $("#shipment_to").attr("code",'true');
+    
+    // hide proposition list
+    $('#shipment_to_list_id').hide();
+    $('#shipment_to').focus();
+     
+}
+function set_item_vehicle(value,name) {
+    // change input value
+    $('#vehicle').val(name);
+    $("#vehicle").attr("data",value);
+    $("#vehicle").attr("code",'true');
+    
+    // hide proposition list
+    $('#vehicle_list_id').hide();
+    $('#vehicle').focus();
+     
+     
+}
+function set_item_customer(value,name) {
+    // change input value
+    $('#customer').val(name);
+    $("#customer").attr("data",value);
+    $("#customer").attr("code",'true');
+    
+    // hide proposition list
+    $('#customer_list_id').hide();
+    $('#customer').focus();
+     
+     
+}
+</script>
+
+
+</div>
+
+
+<style type="text/css">
+    .ui-dialog .ui-dialog-content{
+        padding: 3px;
+    }
+
+    .showtooltip {
+        display:none;
+        position:absolute;
+        border:1px solid #333;
+        background-color:#161616;
+        border-radius:5px;
+        padding:10px;
+        color:#fff;
+        font-size:12px Arial;
+    }
+    
+    .ok{
+        color: green;
+        float: right;
+    }
+    .no{
+        color: red;
+    }
+
+
+</style>
+
+
+<script type="text/javascript">
+$(document).ready(function() {
+// Tooltip only Text
+$('.masterTooltip').hover(function(){
+        // Hover over code
+        var title = $(this).attr('title');
+        $(this).data('tipText', title).removeAttr('title');
+        $('<p class="showtooltip"></p>')
+        .text(title)
+        .appendTo('body')
+        .fadeIn('slow');
+}, function() {
+        // Hover out code
+        $(this).attr('title', $(this).data('tipText'));
+        $('.showtooltip').remove();
+}).mousemove(function(e) {
+        var mousex = e.pageX + 20; //Get X coordinates
+        var mousey = e.pageY + 10; //Get Y coordinates
+        $('.showtooltip')
+        .css({ top: mousey, left: mousex })
+});
+
+
+});
+
+
+
+</script>
+
+<script type="text/javascript">
+    $(function() {
+    var pickerOpts = {
+        closeText: "Đóng",
+        currentText: "Hiện tại",
+        nextText: "Tiếp",
+        prevText: "Quay lại",
+        monthNames: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        monthNamesShort: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        dayNames: ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm",
+        "Thứ sáu", "Thứ bảy"],
+        dayNamesShort: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        dayNamesMin: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        //defaultDate: "+1w",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy',
+        firstDay: 1,
+        isRTL: false,
+        showButtonPanel: true,
+         
+    };  
+    $("#shipment_date").datepicker(pickerOpts);
+
+    
+              
+            
+    
+});
+
+
+
+</script>
+
+
+
+<style type="text/css">
+    #ui-datepicker-div{
+        font-size: 13px;
+    }
+</style>
+<script type="text/javascript">
+    $(function() {
+    var pickerOpts = {
+        closeText: "Đóng",
+        currentText: "Hiện tại",
+        nextText: "Tiếp",
+        prevText: "Quay lại",
+        monthNames: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        monthNamesShort: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        dayNames: ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm",
+        "Thứ sáu", "Thứ bảy"],
+        dayNamesShort: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        dayNamesMin: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        //defaultDate: "+1w",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy',
+        firstDay: 1,
+        isRTL: false,
+        showButtonPanel: true,
+        onClose: function(selectedDate) {
+                
+                $( "#ketthuc" ).datepicker( "option", "minDate", selectedDate );
+
+         },
+         
+    };  
+    $("#batdau").datepicker(pickerOpts);
+
+    var pickerOpts4 = {
+        closeText: "Đóng",
+        currentText: "Hiện tại",
+        nextText: "Tiếp",
+        prevText: "Quay lại",
+        monthNames: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        monthNamesShort: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        dayNames: ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm",
+        "Thứ sáu", "Thứ bảy"],
+        dayNamesShort: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        dayNamesMin: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        //defaultDate: "+1w",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy',
+        firstDay: 1,
+        isRTL: false,
+        showButtonPanel: true,
+        onClose: function(selectedDate) {
+                
+                $( "#batdau" ).datepicker( "option", "maxDate", selectedDate );
+                
+         },
+         
+    };  
+    $("#ketthuc").datepicker(pickerOpts4);
+              
+            
+    
+});
+
+var x = "<?php echo $xe ?>";
+$('#sl_vehicle option[value='+x+']').attr('selected','selected');
+
+var ch = "<?php echo $limit ?>";
+$('#chonloc option[value='+ch+']').attr('selected','selected');
+
+</script>

@@ -1,0 +1,156 @@
+<center style="clear:both;margin-top: 10px;"><h1> PHIẾU CẦU ĐƯỜNG </h1></center>
+<table class="table_data" style="font-size: 12px;">
+<thead>
+    <tr>
+        
+        
+        <th  class="fix">
+            <a >STT </a>
+        </th>
+        <th  class="fix">
+            <a >Mẫu số </a>
+        </th>
+        <th  class="fix">
+            <a >Ký hiệu </a>
+        </th>
+        <th  class="fix">
+            <a >Số hóa đơn </a>
+        </th>
+        <th  class="fix">
+            <a >Tên người bán </a>
+        </th>
+        <th  class="fix">
+            <a >MST </a>
+        </th>
+        <th  class="fix">
+            <a >Mặt hàng </a>
+        </th>
+        <th  class="fix">
+            <a >Giá trị chưa VAT </a>
+        </th>
+        <th  class="fix">
+            <a >Thuế GTGT </a>
+        </th>
+        <th  class="fix">
+            <a >Tổng cộng </a>
+        </th>
+        
+        <th  class="fix"></th>
+    </tr>
+    
+   </thead>
+   <tbody>
+    <?php $tonggt=0; $tongthue=0; $stt=1; ?>
+    <?php foreach ($toll_costs as $cost) : ?>
+    
+    
+        <tr onClick="HighLightTR(this,'#4d90fe','cc3333');"  id="toll_<?php echo $cost->toll_cost_id ?>" class="edit_tr">
+            
+            <td class="fix" id="toll_cost_id_<?php echo $cost->toll_cost_id; ?>"><?php echo $stt++; ?></td>
+            <td class="fix" id="toll_symbol_<?php echo $cost->toll_cost_id; ?>"><?php echo $cost->toll_symbol; ?></td>
+            <td class="fix" id="toll_number_<?php echo $cost->toll_cost_id; ?>"><?php echo $cost->toll_number; ?></td>
+            <td class="fix" id="invoice_number_<?php echo $cost->toll_cost_id; ?>"><?php echo $cost->invoice_number; ?></td>
+            <td class="fix" id="toll_name_<?php echo $cost->toll_cost_id; ?>"><?php echo $cost->toll_name; ?></td>
+            <td class="fix" id="toll_mst_<?php echo $cost->toll_cost_id; ?>"><?php echo $cost->toll_mst; ?></td>
+            <td class="fix" id="toll_type_<?php echo $cost->toll_cost_id; ?>"><?php echo $cost->toll_type==1?'Vé thu phí':($cost->toll_type==1?'Thu tiền bến bãi':'Cước đường bộ') ; ?></td>
+            <td class="fix" id="toll_cost_<?php echo $cost->toll_cost_id; ?>"><?php echo $lib->formatMoney(round($cost->toll_cost/1.1)); ?></td>
+            <td class="fix" id="toll_cost_vat_<?php echo $cost->toll_cost_id; ?>"><?php echo $lib->formatMoney(round(round($cost->toll_cost/1.1)*0.1)); ?></td>
+            <td class="fix" id="toll_cost_all_<?php echo $cost->toll_cost_id; ?>"><?php echo $lib->formatMoney($cost->toll_cost); ?></td>
+            <td class="fix">
+                <?php if ($_SESSION['role_logined'] != 7 ) { ?>
+                <button data="<?php echo $cost->toll_cost_id ?>" class="delButton">Xóa</button>
+                <?php } ?>
+            </td>
+        </tr>
+
+    
+            <?php
+                $tonggt += round($cost->toll_cost/1.1);
+                $tongthue += round(round($cost->toll_cost/1.1)*0.1);
+
+            ?>
+
+    <?php endforeach; ?>
+
+    <?php
+    $tongkthue = 0;
+        foreach ($toll_cost_others as $cost) {
+            $tongkthue += $cost->toll_cost_other;
+        }
+    ?>
+
+        <tr>
+            <td class="fix" colspan="5"></td>
+            <th style="border-right: 1px solid rgb(236, 235, 235);border-top: 1px solid #80C8E5;padding: 7px;" colspan="2">
+                Hóa đơn VAT
+            </th>
+            
+            <td class="fix" ><?php echo $lib->formatMoney($tonggt) ?></td>
+            <td class="fix" ><?php echo $lib->formatMoney($tongthue) ?></td>
+            <td class="fix" ><?php echo $lib->formatMoney($tonggt+$tongthue) ?></td>
+            
+        </tr>
+        <tr id="other_<?php echo $shipment_toll ?>">
+            <td class="fix" colspan="5"></td>
+            <th style="border-right: 1px solid rgb(236, 235, 235);border-top: 1px solid #80C8E5;padding: 7px;" colspan="2">
+                Vé không thuế
+            </th>
+            
+            <td class="fix" ><?php echo $lib->formatMoney($tongkthue) ?></td>
+            <td class="fix" ></td>
+            <td class="fix" ><?php echo $lib->formatMoney($tongkthue) ?></td>
+            <td class="fix">
+                <?php if ($_SESSION['role_logined'] != 7 ) { ?>
+                <button data="<?php echo $shipment_toll ?>" class="del_other">Xóa</button>
+                <?php } ?>
+            </td>
+        </tr>
+        <tr>
+            <td class="fix" colspan="5"></td>
+            <th style="border-right: 1px solid rgb(236, 235, 235);border-top: 1px solid #80C8E5;padding: 7px;" colspan="2">
+                Tổng cộng
+            </th>
+            
+            <td class="fix" ><?php echo $lib->formatMoney($tonggt+$tongkthue) ?></td>
+            <td class="fix" ><?php echo $lib->formatMoney($tongthue) ?></td>
+            <td class="fix" ><?php echo $lib->formatMoney($tonggt+$tongthue+$tongkthue) ?></td>
+            
+        </tr>
+   </tbody>
+</table>
+
+<script type="text/javascript">
+
+$('.delButton').click(function()
+{
+  var id = $(this).attr('data');
+  var r = confirm("Bạn có chắc chắn muốn xóa không?");
+  if (r == true){
+    $('#loading').html("<img src='public/images/loading.gif'/>").fadeIn(500);
+    $.post("<?php echo BASE_URL ?>/tollcost/delete", {data: id},
+       function(data){
+        $('tr#toll_'+id).remove(); 
+        $('#loading').fadeOut(500);
+        
+       
+       }); 
+  }
+});
+
+$('.del_other').click(function()
+{
+  var id = $(this).attr('data');
+  var r = confirm("Bạn có chắc chắn muốn xóa không?");
+  if (r == true){
+    $('#loading').html("<img src='public/images/loading.gif'/>").fadeIn(500);
+    $.post("<?php echo BASE_URL ?>/tollcost/deleteother", {data: id},
+       function(data){
+        $('tr#other_'+id).remove(); 
+        $('#loading').fadeOut(500);
+        
+       
+       }); 
+  }
+});
+
+</script>

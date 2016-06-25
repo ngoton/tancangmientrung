@@ -1,0 +1,539 @@
+
+<?php
+$url_order = 'ASC';
+if ($order_by == 'shipment_id')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+
+elseif ($order_by == 'shipment_from')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'shipment_to')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'vehicle')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'customer')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'shipment_charge')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'shipment_ton')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'oil_add')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'cost_add')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'shipment_revenue')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'shipment_cost')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'shipment_profit')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'shipment_date')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'shipment_round')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+
+    $i = $sonews*$page-($sonews-1);
+
+?>
+
+<div id="loading"></div>
+<div id="winpopup"></div>
+<center style="clear:both;margin-bottom: -30px;"><h1> BẢNG KÊ </h1></center>
+<div id="content" style="padding:5px;">
+
+
+	<div class="search-box">
+        
+        <input type="search" id="search-input" name="s" value="<?php echo isset($keyword)?$keyword:null; ?>" placeholder="Tìm kiếm">
+        <input type="button" name="" id="search-submit" class="button-search" value="Tìm kiếm" onclick="searchall('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');">
+        
+        <div class="add-box">
+            <select id="sl_trangthai" name="sl_trangthai" style="width:90px">
+             <?php 
+                for ($i=1; $i < 13; $i++) { 
+                    echo '<option value="'.$i.'">Tháng '.$i.'</option>';
+                }
+             ?>
+            </select>
+            <select id="sl_staff" name="sl_staff" style="width:100px">
+             <?php 
+                $nam = date('Y');
+                for ($i=($nam-5); $i < ($nam+5); $i++) { 
+                    echo '<option value="'.$i.'">Năm '.$i.'</option>';
+                }
+             ?>
+            </select>
+
+            <input type="button" name="xem" id="xem" value="Xem" onclick="searchall('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');">  
+            
+        </div>
+
+        
+    </div>
+    <div class="tablenav top">
+        <div style="clear:both"></div>
+        <div class="add-box">
+                  
+            Từ  <input style="width:100px" type="search" name="batdau" id="batdau" placeholder="Chọn ngày" <?php if(isset($batdau)) echo "value='$batdau'"; ?> >  
+            Đến  <input style="width:100px" type="search" name="ketthuc" id="ketthuc" placeholder="Chọn ngày" <?php if(isset($ketthuc)) echo "value='$ketthuc'"; ?> >  
+             <input type="button" name="xem" id="xem" value="Xem" onclick="searchall('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');">  
+            
+        </div>
+    </div>
+    <div class="tablenav top">
+        <div style="clear:both"></div>
+        
+        <div class="add-box">
+            <input type="button" name="chon" id="chon" value="Chọn" onclick="searchall('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');">  
+        </div>
+        
+        <div class="add-box" style="margin-right: 5px">
+            <select name="sl_vehicle" id="sl_vehicle" style="width: 80px">
+                <option selected="selected" value="0">Xe</option>
+                <?php foreach ($vehicles as $sm) { ?>
+                <option value="<?php echo $sm->vehicle_id ?>"><?php echo $sm->vehicle_number ?></option>
+                <?php } ?>
+            </select>
+
+            <select id="sl_round" name="sl_round" style="width: 140px">
+                <option value="0">Địa điểm đổ dầu</option>
+                <option value="1"> Bãi </option>
+                <option value="2"> Long Bình </option>
+                <option value="3"> Đăk Lăk </option>
+                <option value="4"> Quy Nhơn </option>
+                <option value="6"> Quỳnh Trung </option>
+                <option value="7"> GL-78-Chuprong </option>
+                <option value="5"> Dọc đường </option>
+            </select>
+
+            
+            
+        </div>
+        <div class="alignleft actions">
+        <select name="m" id="chonloc" style="width:200px">
+            <option value="18446744073709">Hiển thị tất cả</option>
+            <option value="10">Hiển thị 10 giá trị</option>
+            <option value="20">Hiển thị 20 giá trị</option>
+            <option value="30">Hiển thị 30 giá trị</option>
+            <option value="40">Hiển thị 40 giá trị</option>
+            <option selected="selected" value="50">Hiển thị 50 giá trị</option>
+        </select>
+        <input type="button" name="" id="post-query-submit" class="button" value="Chọn lọc" onclick="searchall('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');">                               
+        </div>
+
+      </div>
+
+    <div style="clear:both"></div>   
+    <div class="add-box">
+        <a class="add_button" id="export_excel" href="<?= $this->url('statistics/export/'.strtotime($batdau).'/'.strtotime($ketthuc).'/'.$xe.'/'.$loc)?>">Export Excel</a>
+    </div>
+    <div style="clear:both"></div>
+
+</div>
+
+
+<table class="table_data">
+<thead>
+    <tr>
+        
+        
+        <th rowspan="2" class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','shipment_date','<?php echo $url_order ?>')">Ngày <?php if ($order_by == 'shipment_date'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th rowspan="2" class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','vehicle','<?php echo $url_order ?>')">Xe <?php if ($order_by == 'vehicle'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        
+        <th rowspan="2" class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','shipment_from','<?php echo $url_order ?>')">Kho đi <?php if ($order_by == 'shipment_from'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th rowspan="2" class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','shipment_to','<?php echo $url_order ?>')">Kho đến <?php if ($order_by == 'shipment_to'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th rowspan="2" class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','shipment_revenue','<?php echo $url_order ?>')">Doanh thu <?php if ($order_by == 'shipment_revenue'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th colspan="4" class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','shipment_cost','<?php echo $url_order ?>')">Chi phí <?php if ($order_by == 'shipment_cost'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        
+         
+    </tr>
+    <tr>
+        
+        
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','police_cost','<?php echo $url_order ?>')">Công an <?php if ($order_by == 'police_cost'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','bridge_cost','<?php echo $url_order ?>')">Cầu đường <?php if ($order_by == 'bridge_cost'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','oil_add','<?php echo $url_order ?>')">Dầu <?php if ($order_by == 'oil_add'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','oil_add_dc','<?php echo $url_order ?>')">Địa điểm <?php if ($order_by == 'oil_add_dc'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+         
+    </tr>
+    
+   </thead>
+   <tbody>
+
+    <?php $tongchuyen=0; $tongdau=0; $tongca=0; $tongcauduong=0; $tongdoanhthu=0; ?>
+    
+    <?php foreach ($shipments as $shipment) : ?>
+        <?php
+        $tongchuyen++ ;
+        $tongdau += (($shipment->oil_add*round($shipment->oil_cost*1.1))+($shipment->oil_add2*round($shipment->oil_cost*1.1)));
+        $tongca += $road['police_cost'][$shipment->shipment_id];
+        $tongcauduong += round($road['bridge_cost'][$shipment->shipment_id]*1.1)+$shipment->bridge_cost_add;
+        $tongdoanhthu += $shipment->shipment_revenue;
+
+        $dc = '';
+
+        if ($shipment->oil_add_dc==1 && $shipment->oil_add>0) {
+            $dc = "Bãi";
+        }
+        else if ($shipment->oil_add_dc==2 && $shipment->oil_add>0) {
+            $dc = "Long Bình";
+        }
+        else if ($shipment->oil_add_dc==3 && $shipment->oil_add>0) {
+            $dc = "Đak Lak";
+        }
+        else if ($shipment->oil_add_dc==4 && $shipment->oil_add>0) {
+            $dc = "Quy Nhơn";
+        }
+        else if ($shipment->oil_add_dc==6 && $shipment->oil_add>0) {
+            $dc = "Quỳnh Trung";
+        }
+        else if ($shipment->oil_add_dc==7 && $shipment->oil_add>0) {
+            $dc = "GL-78-Chuprong";
+        }
+        else if ($shipment->oil_add_dc==8 && $shipment->oil_add>0) {
+            $dc = "ĐL-Đức Thành";
+        }
+        else if ($shipment->oil_add_dc==5 && $shipment->oil_add>0) {
+            $dc = "Dọc đường";
+        }
+
+        $dc2 = '';
+
+        if ($shipment->oil_add_dc2==1 && $shipment->oil_add2>0) {
+            $dc2 = "Bãi";
+        }
+        else if ($shipment->oil_add_dc2==2 && $shipment->oil_add2>0) {
+            $dc2 = "Long Bình";
+        }
+        else if ($shipment->oil_add_dc2==3 && $shipment->oil_add2>0) {
+            $dc2 = "Đak Lak";
+        }
+        else if ($shipment->oil_add_dc2==4 && $shipment->oil_add2>0) {
+            $dc2 = "Quy Nhơn";
+        }
+        else if ($shipment->oil_add_dc2==6 && $shipment->oil_add2>0) {
+            $dc2 = "Quỳnh Trung";
+        }
+        else if ($shipment->oil_add_dc2==7 && $shipment->oil_add2>0) {
+            $dc2 = "GL-78-Chuprong";
+        }
+        else if ($shipment->oil_add_dc2==8 && $shipment->oil_add2>0) {
+            $dc2 = "ĐL-Đức Thành";
+        }
+        else if ($shipment->oil_add_dc2==5 && $shipment->oil_add2>0) {
+            $dc2 = "Dọc đường";
+        }
+
+        ?>
+        
+        <tr onClick="HighLightTR(this,'#4d90fe','cc3333');" data="<?php echo $shipment->vehicle_id.$shipment->shipment_round ?>" id="<?php echo $shipment->shipment_id ?>" class="edit_tr">
+            
+            
+            <td class="fix" id="shipment_date_<?php echo $shipment->shipment_id; ?>"><?php echo $lib->hien_thi_ngay_thang($shipment->shipment_date); ?></td>
+            <td nowrap class="fix" data="<?php echo $shipment->vehicle; ?>" id="vehicle_<?php echo $shipment->shipment_id; ?>"><?php echo $shipment->vehicle_number; ?></td>
+            
+            <td nowrap class="fix" data="<?php echo $shipment->shipment_from; ?>" id="shipment_from_<?php echo $shipment->shipment_id; ?>"><?php echo $shipment->shipment_from==$warehouse['warehouse_id'][$shipment->shipment_from]?$warehouse['warehouse_name'][$shipment->shipment_from]:null ?></td>
+            <td nowrap class="fix" data="<?php echo $shipment->shipment_to; ?>" id="shipment_to_<?php echo $shipment->shipment_id; ?>"><?php echo $shipment->shipment_to==$warehouse['warehouse_id'][$shipment->shipment_to]?$warehouse['warehouse_name'][$shipment->shipment_to]:null ?></td>
+            <td class="fix"  ><?php echo $lib->formatMoney($shipment->shipment_revenue); ?></td>
+            
+            <td class="fix" ><?php echo $lib->formatMoney($road['police_cost'][$shipment->shipment_id]); ?></td>
+            <td class="fix" ><?php echo $lib->formatMoney(round($road['bridge_cost'][$shipment->shipment_id]*1.1)+$shipment->bridge_cost_add); ?></td>
+            <td class="fix" ><?php echo $lib->formatMoney(($shipment->oil_add*round($shipment->oil_cost*1.1))+($shipment->oil_add2*round($shipment->oil_cost*1.1))); ?></td>
+            <td class="fix"  ><?php echo $dc.' '.$dc2; ?></td>
+            
+        </tr>
+                 
+
+    <?php endforeach; ?>
+        <tr  style="font-weight: bold; color: rgb(23, 119, 226);" >
+            <th colspan="3" style="border-right: 1px solid rgb(236, 235, 235);border-top: 1px solid #80C8E5;padding: 7px; text-align: right;">Tổng cộng</th>
+            <th style="border-right: 1px solid rgb(236, 235, 235);border-top: 1px solid #80C8E5;padding: 7px; text-align: right;" >
+                Số chuyến: <?php echo $lib->formatMoney($tongchuyen) ?>
+            </th>
+            <th style="border-right: 1px solid rgb(236, 235, 235);border-top: 1px solid #80C8E5;padding: 7px; text-align: right;" >
+                Doanh thu: <?php echo $lib->formatMoney($tongdoanhthu) ?>
+            </th>
+            <th style="border-right: 1px solid rgb(236, 235, 235);border-top: 1px solid #80C8E5;padding: 7px; text-align: right;" >
+                Công an: <?php echo $lib->formatMoney($tongca) ?>
+            </th>
+            <th style="border-right: 1px solid rgb(236, 235, 235);border-top: 1px solid #80C8E5;padding: 7px; text-align: right;" >
+                Cầu đường: <?php echo $lib->formatMoney($tongcauduong) ?>
+            </th>
+            <th style="border-right: 1px solid rgb(236, 235, 235);border-top: 1px solid #80C8E5;padding: 7px; text-align: right;" >
+                Dầu: <?php echo $lib->formatMoney($tongdau) ?>
+            </th>
+           
+        </tr>
+        
+   </tbody>
+</table>
+<?php
+$this->helper('slidePaginator');
+?>
+
+<div id="error" class="error"><?php echo isset($error) ? $error : null; ?></div>
+
+
+</div>
+
+
+<style type="text/css">
+    .ui-dialog .ui-dialog-content{
+        padding: 3px;
+    }
+
+    .showtooltip {
+        display:none;
+        position:absolute;
+        border:1px solid #333;
+        background-color:#161616;
+        border-radius:5px;
+        padding:10px;
+        color:#fff;
+        font-size:12px Arial;
+    }
+    
+    .ok{
+        color: green;
+        float: right;
+    }
+    .no{
+        color: red;
+    }
+
+
+</style>
+
+
+<script type="text/javascript">
+$(document).ready(function() {
+// Tooltip only Text
+$('.masterTooltip').hover(function(){
+        // Hover over code
+        var title = $(this).attr('title');
+        $(this).data('tipText', title).removeAttr('title');
+        $('<p class="showtooltip"></p>')
+        .text(title)
+        .appendTo('body')
+        .fadeIn('slow');
+}, function() {
+        // Hover out code
+        $(this).attr('title', $(this).data('tipText'));
+        $('.showtooltip').remove();
+}).mousemove(function(e) {
+        var mousex = e.pageX + 20; //Get X coordinates
+        var mousey = e.pageY + 10; //Get Y coordinates
+        $('.showtooltip')
+        .css({ top: mousey, left: mousex })
+});
+
+
+});
+
+
+$('#thanhtoan').click(function(){
+    var id = $(this).attr("data")
+    var r = confirm("Bạn có chắc chắn không?");
+      if (r == true){
+        $('#loading').html("<img src='<?php echo BASE_URL ?>/public/images/loading.gif'/>").fadeIn(500);
+        $.post("<?php echo BASE_URL ?>/accounting/pay", {data: id},
+           function(data){
+            $('tr#'+id).remove();
+
+            $('#loading').fadeOut(500);
+            
+           
+           }); 
+      }
+
+});
+
+</script>
+
+<script type="text/javascript">
+    $(function() {
+    var pickerOpts = {
+        closeText: "Đóng",
+        currentText: "Hiện tại",
+        nextText: "Tiếp",
+        prevText: "Quay lại",
+        monthNames: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        monthNamesShort: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        dayNames: ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm",
+        "Thứ sáu", "Thứ bảy"],
+        dayNamesShort: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        dayNamesMin: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        //defaultDate: "+1w",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy',
+        firstDay: 1,
+        isRTL: false,
+        showButtonPanel: true,
+         
+    };  
+    $("#shipment_date").datepicker(pickerOpts);
+
+    
+              
+            
+    
+});
+
+
+
+</script>
+
+
+
+<style type="text/css">
+    #ui-datepicker-div{
+        font-size: 13px;
+    }
+</style>
+<script type="text/javascript">
+    $(function() {
+    var pickerOpts = {
+        closeText: "Đóng",
+        currentText: "Hiện tại",
+        nextText: "Tiếp",
+        prevText: "Quay lại",
+        monthNames: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        monthNamesShort: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        dayNames: ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm",
+        "Thứ sáu", "Thứ bảy"],
+        dayNamesShort: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        dayNamesMin: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        //defaultDate: "+1w",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy',
+        firstDay: 1,
+        isRTL: false,
+        showButtonPanel: true,
+        onClose: function(selectedDate) {
+                
+                $( "#ketthuc" ).datepicker( "option", "minDate", selectedDate );
+
+         },
+         
+    };  
+    $("#batdau").datepicker(pickerOpts);
+
+    var pickerOpts4 = {
+        closeText: "Đóng",
+        currentText: "Hiện tại",
+        nextText: "Tiếp",
+        prevText: "Quay lại",
+        monthNames: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        monthNamesShort: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        dayNames: ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm",
+        "Thứ sáu", "Thứ bảy"],
+        dayNamesShort: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        dayNamesMin: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        //defaultDate: "+1w",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy',
+        firstDay: 1,
+        isRTL: false,
+        showButtonPanel: true,
+        onClose: function(selectedDate) {
+                
+                $( "#batdau" ).datepicker( "option", "maxDate", selectedDate );
+                
+         },
+         
+    };  
+    $("#ketthuc").datepicker(pickerOpts4);
+              
+            
+    
+});
+
+var x = "<?php echo $xe ?>";
+$('#sl_vehicle option[value='+x+']').attr('selected','selected');
+
+var ch = "<?php echo $limit ?>";
+$('#chonloc option[value='+ch+']').attr('selected','selected');
+
+var tt = "<?php echo $loc ?>";
+$('#sl_round option[value='+tt+']').attr('selected','selected');
+
+var v = "<?php echo $vong ?>";
+$('#sl_trangthai option[value='+v+']').attr('selected','selected');
+
+var tt = "<?php echo $trangthai ?>";
+$('#sl_staff option[value='+tt+']').attr('selected','selected');
+
+var w = $(".table_data").width();
+
+      $(".container").width(w);
+      $(".navbar-inner").width(w);
+      $(".navbar").width(w);
+      //$("#container").width(w);
+</script>
+<style type="text/css">
+ 
+.table_data td {
+font-size: 13px;
+}
+</style>
+
+<script type="text/javascript">
+    
+    $('#sl_trangthai').change(function(){
+        var m = $(this).val();
+        var y = $('#sl_staff').val();
+        var firstDay = new Date(y, m-1, 1);
+        var lastDay = new Date(y, m, 0);
+
+        $('#batdau').datepicker("setDate", firstDay );
+        $('#ketthuc').datepicker("setDate", lastDay );
+
+    });
+
+    $('#sl_staff').change(function(){
+        var y = $(this).val();
+        var m = $('#sl_trangthai').val();
+        var firstDay = new Date(y, m-1, 1);
+        var lastDay = new Date(y, m, 0);
+
+        $('#batdau').datepicker("setDate", firstDay );
+        $('#ketthuc').datepicker("setDate", lastDay );
+
+    });
+
+</script>

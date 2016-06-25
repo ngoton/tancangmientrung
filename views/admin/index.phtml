@@ -1,0 +1,160 @@
+<style type="text/css">
+    div.div__index_2
+    {
+        text-align:left;
+        width:100%;
+        background:#f9f9f9;
+        border:1px solid #cccccc;
+        margin:6px auto;
+    }
+    div.div__index_2 img
+    {
+        width:65px;
+        height:65px;
+        margin-top:6px
+    }
+    div.div__index_2 span
+    {
+        font-size:12px;
+        color:#666666;
+        cursor:default;
+    }
+    table.div__index_2___table_trai td
+    {
+        width:236px;
+        padding: 10px 0 10px 0;
+
+    }
+    table.div__index_2___table_trai td div
+    {
+        border:1px solid #f0f0f0;
+        height:110px;
+        width:105px;
+        background: white;
+        padding: 5px;
+    }
+    table.div__index_2___table_phai
+    {
+        width:470px;
+        border-collapse: collapse;
+        border:1px solid #cccccc
+    }
+    table.div__index_2___table_phai td
+    {
+        border:1px solid #cccccc;
+        
+    }
+    div.div__index_2 span.span__abc_1
+    {
+        color:#666666;
+        font-size:16px;
+        font-weight:bold
+    }
+    div.div__index_2 span.span__abc_2
+    {
+        color:#666666;
+        font-size:14px;
+        font-weight:bold
+    }
+    div.div__index_2 span.span__abc_3
+    {
+        color:#666666;
+        font-size:12px;
+    }
+    table.div__index_2___table_phai a
+    {
+        color:#666666;
+        font-size:12px
+    }
+    table.div__index_2___table_phai a:hover
+    {
+        color:black;
+        font-size:12px
+    }
+    table.div__index_2___table_trai a:hover div{
+    	box-shadow: 0 1px 10px #000000; 
+    }
+
+    .logo {
+    position: absolute;
+    left: 50%;
+    top: 10px;
+    margin-left: -263px;
+    width: 526px;
+    height: 99px;
+    float: none !important;
+    text-align: center;
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    background-image: url(../public/images/logo-bg.png);
+    z-index: 1;
+    }
+</style>
+
+<div class="div__index_2">
+            <table style="margin-left:10px;">
+            <tbody><tr>
+                <td width="100%">
+                    <table class="div__index_2___table_trai" id="div__index_2___table_trai">
+                        
+                        <tbody>
+                            
+                            <tr>
+                            <?php if ($_SESSION && $_SESSION['role_logined'] == 1) { ?>
+                            <td>
+                                <center>
+                                	<a href="<?php echo $this->url('menu') ?>">
+	                                    <div>
+	                                        
+	                                            <img src="public/images/icon-48-menumgr.png">
+	                                        
+	                                        <br>
+	                                        <span style="color: rgb(102, 102, 102);">Danh mục</span>
+	                                        
+	                                    </div>
+                                    </a>
+                                </center>
+                            </td>
+                            <?php } ?>
+                            <?php if ($_SESSION && ($_SESSION['role_logined'] == 1 || $_SESSION['role_logined'] == 2)) { ?>
+                            <td>
+                                <center>
+                                	<a href="<?php echo $this->url('post') ?>">
+	                                    <div>
+	                                        
+
+	                                            <img src="public/images/icon-48-article-add.png">
+	                                        
+	                                        <br>
+	                                        <span style="color: rgb(102, 102, 102);">Bài viết</span>
+	                                        
+	                                    </div>
+                                    </a>
+                                </center>
+                            </td>
+                            <?php } ?>
+                            <?php if ($_SESSION && ($_SESSION['role_logined'] == 1 )) { ?>
+                            <td>
+                                <center>
+                                	<a href="<?php echo $this->url('user') ?>">
+	                                    <div>
+	                                        
+	                                            <img src="public/images/icon-48-user.png">
+	                                        
+	                                        <br>
+	                                        <span>Người dùng</span>
+	                                        
+	                                    </div>
+                                    </a>
+                                </center>
+                            </td>
+                            <?php } ?>
+                            
+                        </tr>
+                        
+                    </tbody></table>
+                </td>
+                
+            </tr>
+        </tbody></table>
+    </div>

@@ -1,0 +1,448 @@
+
+<?php
+$url_order = 'ASC';
+if ($order_by == 'supplies_id')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+
+elseif ($order_by == 'supplies_serie')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'supplies_position')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'supplies_cost')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'supplies_status')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'supplies_name')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+
+
+    $i = $sonews*$page-($sonews-1);
+
+?>
+
+<div id="loading"></div>
+<div id="winpopup"></div>
+<center style="clear:both;margin-bottom: -30px;"><h1> MUA SẮM ĐỘI XE </h1></center>
+<div id="content" style="padding:5px;">
+<?php if ($_SESSION['role_logined'] != 7 ) { ?>     
+<div class="add-box">
+    <a class="add_button" onClick="add_click();">Thêm mới</a>
+</div>
+<?php } ?>
+	<div class="search-box">
+        
+        <input type="search" id="search-input" name="s" value="<?php echo isset($keyword)?$keyword:null; ?>" placeholder="Tìm kiếm">
+        <input type="button" name="" id="search-submit" class="button-search" value="Tìm kiếm" onclick="searchall('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');">
+    </div>
+    <div class="tablenav top">
+        <?php if ($_SESSION['role_logined'] != 7 ) { ?>
+    	<div class="alignleft actions">
+			<select name="action" id="action">
+            	<option value="-1" selected="selected">Chọn</option>
+                
+                <option value="delete">Xóa</option>
+            </select>
+            <input type="button" name="" id="doaction" class="button action" value="Áp dụng" onclick="action();">
+		</div>
+        <?php } ?>
+		<div class="alignleft actions">
+		<select name="m" id="chonloc">
+			<option  value="18446744073709">Hiển thị tất cả</option>
+			<option value="5">Hiển thị 5 giá trị</option>
+            <option value="10">Hiển thị 10 giá trị</option>
+            <option value="15">Hiển thị 15 giá trị</option>
+            <option selected="selected" value="20">Hiển thị 20 giá trị</option>
+		</select>
+		<input type="button" name="" id="post-query-submit" class="button" value="Chọn lọc" onclick="searchall('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');">						 		
+        </div>
+
+      </div>
+
+   
+</div>
+
+<table class="table_data">
+<thead>
+    <tr>
+    	<th  class="fix"><input type="checkbox" onclick="checkall('checkbox', this)" name="checkall"/></th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','supplies_id','<?php echo $url_order ?>')">STT <?php if ($order_by == 'supplies_id'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','supplies_date','<?php echo $url_order ?>')">Ngày <?php if ($order_by == 'supplies_date'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','supplies_name','<?php echo $url_order ?>')">Sản phẩm <?php if ($order_by == 'supplies_name'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','supplies_number','<?php echo $url_order ?>')">Số lượng <?php if ($order_by == 'supplies_number'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','supplies_charge','<?php echo $url_order ?>')">Đơn giá  <?php if ($order_by == 'supplies_charge'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','supplies_total','<?php echo $url_order ?>')">Thành tiền  <?php if ($order_by == 'supplies_total'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','supplies_buy','<?php echo $url_order ?>')">Người mua  <?php if ($order_by == 'supplies_buy'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','supplies_advance','<?php echo $url_order ?>')">Người ứng  <?php if ($order_by == 'supplies_advance'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','supplies_approve','<?php echo $url_order ?>')">Trạng thái  <?php if ($order_by == 'supplies_approve'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        
+        <?php if ($_SESSION['role_logined'] != 7 ) { ?>   
+        <th  class="fix">&nbsp;</th>
+        <?php } ?>
+    </tr>
+    
+   </thead>
+   <tbody>
+    <?php foreach ($supplies as $supply) : ?>
+        <tr onClick="HighLightTR(this,'#4d90fe','cc3333');" id="<?php echo $supply->supplies_id ?>" class="edit_tr">
+        	<td><input name="check[]" type="checkbox" class="checkbox" value="<?php echo $supply->supplies_id ?>"></td>
+            <td class="fix"><?php echo $i++; ?></td>
+            <td class="fix" id="supplies_date_<?php echo $supply->supplies_id; ?>"><?php echo $lib->hien_thi_ngay_thang($supply->supplies_date); ?></td>
+            <td class="fix" id="supplies_name_<?php echo $supply->supplies_id; ?>"><?php echo $supply->supplies_name; ?></td>
+            <td class="fix" id="supplies_number_<?php echo $supply->supplies_id; ?>"><?php echo $supply->supplies_number; ?></td>
+            <td class="fix" id="supplies_charge_<?php echo $supply->supplies_id; ?>"><?php echo $lib->formatMoney($supply->supplies_charge); ?></td>
+            <td class="fix" id="supplies_total_<?php echo $supply->supplies_id; ?>"><?php echo $lib->formatMoney($supply->supplies_total); ?></td>
+            <td class="fix" id="supplies_buy_<?php echo $supply->supplies_id; ?>"><?php echo $supply->supplies_buy; ?></td>
+            <td class="fix" id="supplies_advance_<?php echo $supply->supplies_id; ?>"><?php echo $supply->supplies_advance; ?></td>
+            <td class="fix" id="supplies_approve_<?php echo $supply->supplies_id; ?>"><?php echo $supply->approve > 0 ? 'Đã duyệt':'Chờ duyệt'; ?></td>
+            <td style="display:none" class="fix" id="check_vat_<?php echo $supply->supplies_id; ?>"><?php echo $supply->check_vat; ?></td>
+
+            <?php if ($_SESSION['role_logined'] != 7 ) { ?>
+            <td>
+                <a class="error" href="#">Sửa</a>
+                | 
+                <a class="error" onclick="del(<?php echo $supply->supplies_id ?>)" >Xóa</a>
+            </td>
+            <?php } ?>
+        </tr>
+    <?php endforeach; ?>
+   </tbody>
+</table>
+<?php
+$this->helper('slidePaginator');
+?>
+
+<div id="error" class="error"><?php echo isset($error) ? $error : null; ?></div>
+
+<div class="add-field">
+        <fieldset class="groupbox">
+            <legend>
+                <span><h3>Thông tin</h3></span>
+            </legend>
+            <div class="login_body">
+                  <form id="add_supplies" method="post" action="">
+                      <table style="margin-top:0px;width:100%">
+                        <tr>
+                            
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td></td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td><div class="add-box"><a class="add_button" onClick="add_click();">Thêm mới</a></div></td>
+                            
+                        </tr>
+                        <tr>
+                            <td>Ngày</td>
+                            <td>
+                                <input type="text" autofocus id="supplies_date" name="supplies_date" tabindex="1" required="required">
+                            </td>
+                            <td>Sản phẩm </td>
+                            <td>
+                                <input type="text" id="supplies_name" name="supplies_name" tabindex="2" required="required">
+                            </td>
+                            <td>Số lượng </td>
+                            <td><input type="text" id="supplies_number"  name="supplies_number" tabindex="3" required="required"></td>
+                            
+                            <td>Đơn giá </td>
+                            <td><input type="text" id="supplies_charge" class="number" name="supplies_charge" tabindex="4" required="required"></td>
+
+                        </tr>
+                        <tr>
+                            <td>Người mua</td>
+                            <td>
+                                <input type="text" id="supplies_buy"  name="supplies_buy" tabindex="5" required="required">
+                            </td>
+                            <td>Người ứng</td>
+                            <td>
+                                <input type="text" id="supplies_advance"  name="supplies_advance" tabindex="6" >
+                            </td>
+                            <td>Loại phí</td>
+                            <td>
+                                <input type="radio" checked  name="check_vat" tabindex="7" value="1"> Có hóa đơn
+                                <input type="radio"  name="check_vat"  value="0"> Không hóa đơn
+                            </td>
+                            
+                            
+                        </tr>
+                        
+                        
+                        
+                        
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td><input type="hidden" readonly id="yes" name="yes" required="required" ></td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        
+                        
+                         <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><input type="submit" name="submit" value="Hoàn tất" tabindex="8"></td>
+                            <td ><input type="reset" name="reset" value="Nhập lại" tabindex="9"></td>
+                            <td></td>
+                            <td></td>
+                             
+                        </tr>
+                    </table> 
+                </form>
+            </div>
+        </fieldset>
+    </div>
+
+<?php if ($_SESSION['role_logined'] != 7 ) { ?>
+<script type="text/javascript">
+$('html').click(function(e) {
+    if(e.target == '[object HTMLDivElement]' || e.target == '[object HTMLBodyElement]') {
+        $('.add-field').slideUp(500);    
+    }
+   
+});
+    $('.edit_tr').click(function(){
+        if(!$('.checkbox').is(':checked')){
+            $("html, body").animate({ scrollTop: $('.add-field').offset().top }, 300);
+        }
+        
+        var supplies_date = $(this).find("#supplies_date_"+$(this).attr('id')).text();
+        var supplies_name = $(this).find("#supplies_name_"+$(this).attr('id')).text();
+        var supplies_number = $(this).find("#supplies_number_"+$(this).attr('id')).text();
+        var supplies_charge = $(this).find("#supplies_charge_"+$(this).attr('id')).text();
+        var supplies_buy = $(this).find("#supplies_buy_"+$(this).attr('id')).text();
+        var supplies_advance = $(this).find("#supplies_advance_"+$(this).attr('id')).text();
+        var check_vat = $(this).find("#check_vat_"+$(this).attr('id')).text();
+        //alert(supplies_from);
+        $('#yes').val($(this).attr('id'));
+        
+        $('#supplies_date').val(supplies_date.replace(/\//g,"-"));
+        $('#supplies_name').val(supplies_name);
+        $('#supplies_number').val(supplies_number);
+        $('#supplies_charge').val(supplies_charge);
+        $('#supplies_buy').val(supplies_buy);
+        $('#supplies_advance').val(supplies_advance);
+
+        var radioLength = $("input[name='check_vat']").length;
+        for(var i = 0; i < radioLength; i++) {
+            $("input[name='check_vat']")[i].checked = false;
+            if($("input[name='check_vat']")[i].value == check_vat) {
+                $("input[name='check_vat']")[i].checked = true;
+            }
+        }
+
+        
+        
+    });
+
+
+</script>
+<script type="text/javascript">
+
+function add_click(){
+    $('#yes').val("");
+    $('.add-field').slideDown(500);
+    $("html, body").animate({ scrollTop: $('.add-field').offset().top }, 300);
+
+        
+        $('#supplies_name').val("");
+        $('#supplies_number').val(0);
+        $('#supplies_charge').val(0);
+        $('#supplies_buy').val("");
+        $('#supplies_advance').val("");
+
+        $("input[name='check_vat'][value='1']").attr('checked',true);
+        
+        $('.number').focus(function(){
+            if ( $(this).val() == '0') {
+               $(this).val(""); 
+            };
+            
+        });
+        $('.number').blur(function(){
+            if ( $(this).val() == "") {
+                $(this).val(0);
+            };
+            
+        });
+
+
+}
+
+
+$(document).ready(function(){
+            // Validate form
+            $("#add_supplies").validate({
+                errorElement: "span", // Định dạng cho thẻ HTML hiện thông báo lỗi
+                rules: {
+                    
+                },
+                submitHandler: function(form) {
+                
+                    
+                
+                    var supplies_date = $('#supplies_date').attr('value');
+                    var supplies_name = $('#supplies_name').attr('value');
+                    var check_vat = $('input[name=check_vat]:checked').val();
+                    var supplies_number = $('#supplies_number').attr('value');
+                    var supplies_charge = $('#supplies_charge').attr('value');
+                    var supplies_buy = $('#supplies_buy').attr('value');
+                    var supplies_advance = $('#supplies_advance').attr('value');
+                    
+                    var yes = $('#yes').attr('value');
+                    
+                    var action      = "them";
+                 
+                    $.ajax({
+                        type: "POST", // phương thức gởi đi
+                        url: "<?php echo BASE_URL ?>/supplies/add", // nơi mà dữ liệu sẽ chuyển đến khi submit
+                        data: {
+                            supplies_date: supplies_date,
+                            supplies_name: supplies_name,
+                            supplies_number: supplies_number,
+                            supplies_charge: supplies_charge,
+                            supplies_buy: supplies_buy,
+                            supplies_advance: supplies_advance,
+                            check_vat: check_vat,
+                            yes: yes,
+                            }, // giá trị post
+                        success: function(answer){ // if everything goes well
+                            $('#error').hide();
+                            $('#error').slideToggle(100); // hiển thị thẻ div success
+                            $('#error').html('<div class="successbox">'+answer+'</div>'); // đặt kết quả trả về từ test.php vào thẻ div success
+                            $('#error').fadeOut(10000);
+
+                            if (yes != "") {
+                                if (answer.trim() != "Vỏ này đã tồn tại") {
+                                    setTimeout(function() {
+                                        sapxep('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');
+                                      }, 200);
+                                }
+                            }
+                            else{
+                                if (answer.trim() != "Vỏ này đã tồn tại") {
+                                    var lastID = parseInt($('#lasted').html());
+                                    var rowCount = parseInt($('.table_data > tbody > tr').length);
+                                    $('.table_data > tbody:last')
+                                    .append(
+                                        '<tr onclick="HighLightTR(this,"#4d90fe","cc3333");" id="'+parseInt(lastID+1)+'" class="edit_tr"><td><input name="check[]" type="checkbox" class="checkbox" value="'+parseInt(lastID+1)+'"></td><td class="fix">'+parseInt(rowCount+1)+'</td><td class="fix" id="supplies_name_'+parseInt(lastID+1)+'">'+supplies_name+'</td><td class="fix" id="supplies_serie_'+parseInt(lastID+1)+'">'+supplies_serie+'</td><td class="fix" id="supplies_position_'+parseInt(lastID+1)+'">'+(supplies_position==1?"Đầu":"Mooc")+'</td><td class="fix" id="supplies_cost_'+parseInt(lastID+1)+'">'+supplies_cost+'</td><td class="fix" id="supplies_status_'+parseInt(lastID+1)+'">'+(supplies_status==0?"Hư":(supplies_status==1?"Đang sử dụng":(supplies_status==2?"Dự phòng":"Đã bán")))+'</td><td><a class="error" href="#">Sửa</a> | <a class="error" onclick="del('+parseInt(lastID+1)+')">Xóa</a></td></tr>'
+                                    );
+
+                                    $('#lasted').html(parseInt(lastID+2));
+
+                                    setTimeout(function() {
+                                        sapxep('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');
+                                      }, 200);
+                                }
+                            }
+                        }
+                    });
+                    return false;
+                     
+                 }
+            });
+   
+   
+   
+
+   
+   $('.number').keyup(function(event) {
+
+          // skip for arrow keys
+      if(event.which >= 37 && event.which <= 40) return;
+
+      // format number
+      $(this).val(function(index, value) {
+        return value
+          .replace(/[^0-9-.]/g, "")
+          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        ;
+      });
+    });
+    
+
+});
+function get_number(id){
+    return $(id).val().replace(/\,/g,'');
+}
+
+</script>
+<?php } ?>
+
+<div style="display:none" id="lasted"></div>
+<script type="text/javascript">
+    var count = parseInt(<?php echo $lastID ?>);
+    $('#lasted').html(count);
+
+    $("#import_excel").click(function(){
+        $("#winpopup").dialog({
+            draggable:true,
+            modal: true,
+            autoOpen: false,
+            height:200,
+            width:500,
+            resizable: false,
+            title:'Import Excel',
+            
+        });
+        $("#winpopup").load($(this).attr('href'));
+        $("#winpopup").dialog("open");
+         
+        return false;
+    });
+
+var ch = "<?php echo $limit ?>";
+$('#chonloc option[value='+ch+']').attr('selected','selected');
+
+$(function() {
+    var pickerOpts = {
+        closeText: "Đóng",
+        currentText: "Hiện tại",
+        nextText: "Tiếp",
+        prevText: "Quay lại",
+        monthNames: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        monthNamesShort: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        dayNames: ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm",
+        "Thứ sáu", "Thứ bảy"],
+        dayNamesShort: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        dayNamesMin: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        //defaultDate: "+1w",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy',
+        firstDay: 1,
+        isRTL: false,
+        showButtonPanel: true,
+         
+    };  
+    $("#supplies_date").datepicker(pickerOpts);
+
+    
+              
+            
+    
+});
+</script>
+</div>

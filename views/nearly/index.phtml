@@ -1,0 +1,313 @@
+
+<?php
+    $i = $sonews*$page-($sonews-1);
+
+?>
+
+<div id="loading"></div>
+<div id="winpopup"></div>
+<center style="clear:both;margin-bottom: -30px;"><h1> BÁO CÁO NGÀY </h1></center>
+<div id="content" style="padding:5px;">
+  
+
+
+	<div class="search-box">
+        
+        <input type="search" id="search-input" name="s" value="<?php echo isset($keyword)?$keyword:null; ?>" placeholder="Tìm kiếm">
+        <input type="button" name="" id="search-submit" class="button-search" value="Tìm kiếm" onclick="searchall('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');">
+    
+        <div class="add-box">
+                  
+            Ngày  <input style="width:100px" type="search" name="batdau" id="batdau" placeholder="Chọn ngày" <?php if(isset($batdau)) echo "value='$batdau'"; ?> >   
+            <input type="button" name="xem" id="xem" value="Xem" onclick="searchall('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');">
+        </div>
+    </div>
+    <div class="tablenav top">
+        <div style="clear:both"></div>
+        
+        <div class="add-box">
+            <input type="button" name="chon" id="chon" value="Chọn" onclick="searchall('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');">  
+        </div>
+        
+        <div class="add-box" style="margin-right: 5px">
+            <select style="width:120px" name="sl_vehicle" id="sl_vehicle">
+                <option selected="selected" value="">Xe</option>
+                <?php foreach ($vehicle_list as $sm) { ?>
+                <option value="<?php echo $sm->vehicle_id ?>"><?php echo $sm->vehicle_number ?></option>
+                <?php } ?>
+            </select>
+            
+            
+        </div>
+
+      </div>
+
+</div>
+
+<table class="table_data">
+<thead>
+    <tr>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','shipment_id','<?php echo $url_order ?>')">STT <?php if ($order_by == 'shipment_id'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','shipment_date','<?php echo $url_order ?>')">Ngày <?php if ($order_by == 'shipment_date'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','vehicle_id','<?php echo $url_order ?>')">Xe <?php if ($order_by == 'vehicle_id'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','shipment_from','<?php echo $url_order ?>')">Kho đi <?php if ($order_by == 'shipment_from'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','shipment_to','<?php echo $url_order ?>')">Kho đến <?php if ($order_by == 'shipment_to'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','customer_id','<?php echo $url_order ?>')">Khách hàng <?php if ($order_by == 'customer_id'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','shipment_revenue','<?php echo $url_order ?>')">Doanh thu <?php if ($order_by == 'shipment_revenue'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','shipment_expect','<?php echo $url_order ?>')">Dự kiến tới - về <?php if ($order_by == 'shipment_expect'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','shipment_plan','<?php echo $url_order ?>')">Kế hoạch <?php if ($order_by == 'shipment_plan'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        
+    </tr>
+    
+   </thead>
+   <tbody>
+    <?php foreach ($vehicles as $vehicle) : ?>
+    
+        
+        <tr onClick="HighLightTR(this,'#4d90fe','cc3333');"  id="<?php echo $vehicle_data[$vehicle->vehicle_id]['shipment'] ?>" class="edit_tr">
+            <td class="fix"><?php echo $i++; ?></td>
+            <td class="fix" ><?php echo $lib->hien_thi_ngay_thang($vehicle_data[$vehicle->vehicle_id]['date']); ?></td>
+            <td nowrap class="fix"><?php echo $vehicle->vehicle_number; ?></td>
+            <td nowrap class="fix"><?php echo $warehouse['warehouse_name'][$vehicle_data[$vehicle->vehicle_id]['from']]; ?></td>
+            <td nowrap class="fix"><?php echo $warehouse['warehouse_name'][$vehicle_data[$vehicle->vehicle_id]['to']]; ?></td>
+            <td nowrap class="fix"><?php echo $vehicle_data[$vehicle->vehicle_id]['customer']; ?></td>
+            <td nowrap class="fix"><?php echo $lib->formatMoney($vehicle_data[$vehicle->vehicle_id]['revenue']); ?></td>
+            <td nowrap class="fix editable2" data="<?php echo $vehicle_data[$vehicle->vehicle_id]['shipment'] ?>" id="shipment_expect_<?php echo $vehicle_data[$vehicle->vehicle_id]['shipment'] ?>"><?php echo $vehicle_data[$vehicle->vehicle_id]['shipment_expect']; ?></td>
+            <td nowrap class="fix editable" data="<?php echo $vehicle_data[$vehicle->vehicle_id]['shipment'] ?>" id="shipment_plan_<?php echo $vehicle_data[$vehicle->vehicle_id]['shipment'] ?>"><?php echo $vehicle_data[$vehicle->vehicle_id]['shipment_plan']; ?></td>
+            
+        </tr>
+        
+
+         
+
+    <?php endforeach; ?>
+
+        
+   </tbody>
+</table>
+
+
+</div>
+
+
+<style type="text/css">
+    .ui-dialog .ui-dialog-content{
+        padding: 3px;
+    }
+
+    .showtooltip {
+        display:none;
+        position:absolute;
+        border:1px solid #333;
+        background-color:#161616;
+        border-radius:5px;
+        padding:10px;
+        color:#fff;
+        font-size:12px Arial;
+    }
+    
+    .ok{
+        color: green;
+        float: right;
+    }
+    .no{
+        color: red;
+    }
+
+
+</style>
+
+
+<script type="text/javascript">
+$(document).ready(function() {
+// Tooltip only Text
+$('.masterTooltip').hover(function(){
+        // Hover over code
+        var title = $(this).attr('title');
+        $(this).data('tipText', title).removeAttr('title');
+        $('<p class="showtooltip"></p>')
+        .text(title)
+        .appendTo('body')
+        .fadeIn('slow');
+}, function() {
+        // Hover out code
+        $(this).attr('title', $(this).data('tipText'));
+        $('.showtooltip').remove();
+}).mousemove(function(e) {
+        var mousex = e.pageX + 20; //Get X coordinates
+        var mousey = e.pageY + 10; //Get Y coordinates
+        $('.showtooltip')
+        .css({ top: mousey, left: mousex })
+});
+
+
+});
+
+
+
+</script>
+
+<script type="text/javascript">
+    $(function() {
+    var pickerOpts = {
+        closeText: "Đóng",
+        currentText: "Hiện tại",
+        nextText: "Tiếp",
+        prevText: "Quay lại",
+        monthNames: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        monthNamesShort: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        dayNames: ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm",
+        "Thứ sáu", "Thứ bảy"],
+        dayNamesShort: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        dayNamesMin: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        //defaultDate: "+1w",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy',
+        firstDay: 1,
+        isRTL: false,
+        showButtonPanel: true,
+         
+    };  
+    $("#batdau").datepicker(pickerOpts);
+
+    
+              
+            
+    
+});
+
+
+
+</script>
+
+
+
+<style type="text/css">
+    #ui-datepicker-div{
+        font-size: 13px;
+    }
+</style>
+<script type="text/javascript">
+
+var x = "<?php echo $xe ?>";
+$('#sl_vehicle option[value='+x+']').attr('selected','selected');
+
+
+var w = $(".table_data").width();
+
+      $(".container").width(w);
+      $(".navbar-inner").width(w);
+      $(".navbar").width(w);
+      //$("#container").width(w);
+
+$(document).ready(function(){
+    $('.editable').dblclick(function(e){  
+        var i=0;
+        var id=$(this).attr('id');
+        e.stopPropagation();      //<-------stop the bubbling of the event here
+        var value = $('#'+id).html();
+        var data=$(this).attr('data');
+
+        updateVal('#'+id, value, data);
+        
+    });
+    function updateVal(currentEle, value, id) {
+        var id = id;
+        $(currentEle).html('<input class="thVal"  type="text" value="'+value+'" />');
+        $(".thVal").focus();
+        $(".thVal").keyup(function (event) {
+            if (event.keyCode == 13) {
+                var keyword = $(".thVal").val().trim();
+                $.ajax({
+                    url: '<?php echo BASE_URL ?>/nearly/shipmentplan',
+                    type: 'POST',
+                    data: {data:id,keyword:keyword},
+                    success:function(data){
+                        $(currentEle).html(keyword);
+                    }
+                });
+
+            }
+        });
+        
+        $(".thVal").focusout(function () { // you can use $('html')
+            var keyword = $(".thVal").val().trim();
+                $.ajax({
+                    url: '<?php echo BASE_URL ?>/nearly/shipmentplan',
+                    type: 'POST',
+                    data: {data:id,keyword:keyword},
+                    success:function(data){
+                        $(currentEle).html(keyword);
+                    }
+                });
+        });
+    }
+
+    $('.editable2').dblclick(function(e){  
+        var i=0;
+        var id=$(this).attr('id');
+        e.stopPropagation();      //<-------stop the bubbling of the event here
+        var value = $('#'+id).html();
+        var data=$(this).attr('data');
+
+        updateVal2('#'+id, value, data);
+        
+    });
+    function updateVal2(currentEle, value, id) {
+        var id = id;
+        $(currentEle).html('<input class="thVal2"  type="text" value="'+value+'" />');
+        $(".thVal2").focus();
+        $(".thVal2").keyup(function (event) {
+            if (event.keyCode == 13) {
+                var keyword = $(".thVal2").val().trim();
+                $.ajax({
+                    url: '<?php echo BASE_URL ?>/nearly/shipmentexpect',
+                    type: 'POST',
+                    data: {data:id,keyword:keyword},
+                    success:function(data){
+                        $(currentEle).html(keyword);
+                    }
+                });
+
+            }
+        });
+        
+        $(".thVal2").focusout(function () { // you can use $('html')
+            var keyword = $(".thVal2").val().trim();
+                $.ajax({
+                    url: '<?php echo BASE_URL ?>/nearly/shipmentexpect',
+                    type: 'POST',
+                    data: {data:id,keyword:keyword},
+                    success:function(data){
+                        $(currentEle).html(keyword);
+                    }
+                });
+        });
+    }
+
+});
+
+</script>

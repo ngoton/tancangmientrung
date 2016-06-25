@@ -1,0 +1,562 @@
+
+<?php
+$url_order = 'ASC';
+if ($order_by == 'equipment_id')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+
+elseif ($order_by == 'equipment_date')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'vehicle')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'tire_in')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'tire_out')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'vehicle_km')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+
+
+    $i = $sonews*$page-($sonews-1);
+
+?>
+
+<div id="loading"></div>
+<div id="winpopup"></div>
+<center style="clear:both;margin-bottom: -30px;"><h1> DANH SÁCH THAY THẾ VỎ </h1></center>
+<div id="content" style="padding:5px;">
+<?php if ($_SESSION['role_logined'] != 7 ) { ?>    
+<div class="add-box">
+    <a class="add_button" onClick="add_click();">Thêm bảng thay thế vỏ</a>
+    <a class="add_button" id="import_excel" href="<?= $this->url('equipment/import')?>">Import Excel</a>
+</div>
+<?php } ?>
+	<div class="search-box">
+        
+        <input type="search" id="search-input" name="s" value="<?php echo isset($keyword)?$keyword:null; ?>" placeholder="Tìm kiếm">
+        <input type="button" name="" id="search-submit" class="button-search" value="Tìm kiếm" onclick="searchall('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');">
+    </div>
+    <div class="tablenav top">
+        <div class="add-box">
+                  
+            Ngày  <input style="width:100px" type="search" name="batdau" id="batdau" placeholder="Chọn ngày" <?php if(isset($batdau)) echo "value='$batdau'"; ?> >   
+             <input type="button" name="xem" id="xem" value="Xem" onclick="searchall('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');">  
+            
+        </div>
+    </div>
+    <div class="tablenav top">
+        <div style="clear:both"></div>
+        
+        <div class="add-box">
+            <input type="button" name="chon" id="chon" value="Chọn" onclick="searchall('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');">  
+        </div>
+        <div class="add-box" style="margin-right: 5px">
+            <select name="sl_vehicle" id="sl_vehicle">
+                <option selected="selected" value="">Xe</option>
+                <?php foreach ($vehicles as $sm) { ?>
+                <option value="<?php echo $sm->vehicle_id ?>"><?php echo $sm->vehicle_number ?></option>
+                <?php } ?>
+            </select>
+
+            
+            
+        </div>
+        <?php if ($_SESSION['role_logined'] != 7 ) { ?>
+    	<div class="alignleft actions">
+			<select name="action" id="action">
+            	<option value="-1" selected="selected">Chọn</option>
+                
+                <option value="delete">Xóa</option>
+            </select>
+            <input type="button" name="" id="doaction" class="button action" value="Áp dụng" onclick="action();">
+		</div>
+        <?php } ?>
+		<div class="alignleft actions">
+		<select name="m" id="chonloc">
+			<option  value="18446744073709">Hiển thị tất cả</option>
+			<option value="5">Hiển thị 5 giá trị</option>
+            <option value="10">Hiển thị 10 giá trị</option>
+            <option value="15">Hiển thị 15 giá trị</option>
+            <option selected="selected" value="20">Hiển thị 20 giá trị</option>
+		</select>
+		<input type="button" name="" id="post-query-submit" class="button" value="Chọn lọc" onclick="searchall('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');">						 		
+        </div>
+
+      </div>
+
+</div>
+
+<table class="table_data">
+<thead>
+    <tr>
+    	<th  class="fix"><input type="checkbox" onclick="checkall('checkbox', this)" name="checkall"/></th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','equipment_id','<?php echo $url_order ?>')">STT <?php if ($order_by == 'equipment_id'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','equipment_date','<?php echo $url_order ?>')">Ngày <?php if ($order_by == 'equipment_date'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','vehicle','<?php echo $url_order ?>')">Số xe <?php if ($order_by == 'vehicle'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','tire_in','<?php echo $url_order ?>')">Vỏ thay vào  <?php if ($order_by == 'tire_in'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','tire_out','<?php echo $url_order ?>')">Vỏ thay ra  <?php if ($order_by == 'tire_out'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','vehicle_km','<?php echo $url_order ?>')">Số công tơ met  <?php if ($order_by == 'vehicle_km'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','approve','<?php echo $url_order ?>')">Trạng thái  <?php if ($order_by == 'approve'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        
+        <?php if ($_SESSION['role_logined'] != 7 ) { ?>   
+        <th  class="fix">&nbsp;</th>
+        <?php } ?>
+    </tr>
+    
+   </thead>
+   <tbody>
+    <?php foreach ($equipments as $equipment) : ?>
+        <tr onClick="HighLightTR(this,'#4d90fe','cc3333');" id="<?php echo $equipment->equipment_id ?>" class="edit_tr">
+        	<td><input name="check[]" type="checkbox" class="checkbox" value="<?php echo $equipment->equipment_id ?>"></td>
+            <td class="fix"><?php echo $i++; ?></td>
+            
+            <td class="fix" id="equipment_date_<?php echo $equipment->equipment_id; ?>"><?php echo $lib->hien_thi_ngay_thang($equipment->equipment_date); ?></td>
+            <td class="fix" data="<?php echo $equipment->vehicle ?>" id="vehicle_<?php echo $equipment->equipment_id; ?>"><?php echo $equipment->vehicle_number; ?></td>
+            <td class="fix" data="<?php echo $equipment->tire_in ?>" id="tire_in_<?php echo $equipment->equipment_id; ?>"><?php echo isset($tire_data['serie'][$equipment->tire_in])?$tire_data['serie'][$equipment->tire_in]:null; ?></td>
+            <td class="fix" data="<?php echo $equipment->tire_out ?>" id="tire_out_<?php echo $equipment->equipment_id; ?>"><?php echo isset($tire_data['serie'][$equipment->tire_out])?$tire_data['serie'][$equipment->tire_out]:null; ?></td>
+            <td class="fix" id="vehicle_km_<?php echo $equipment->equipment_id; ?>"><?php echo $lib->formatMoney($equipment->vehicle_km); ?></td>
+            <td class="fix" id="approve_<?php echo $equipment->equipment_id; ?>"><?php echo $equipment->approve==1?"Đã chấp nhận":"Chưa chấp nhận"; ?></td>
+            <?php if ($_SESSION['role_logined'] != 7 ) { ?>
+            <td>
+                <a class="error" href="#">Sửa</a>
+                | 
+                <a class="error" onclick="del(<?php echo $equipment->equipment_id ?>)" >Xóa</a>
+            </td>
+            <?php } ?>
+        </tr>
+    <?php endforeach; ?>
+   </tbody>
+</table>
+<?php
+$this->helper('slidePaginator');
+?>
+
+<div id="error" class="error"><?php echo isset($error) ? $error : null; ?></div>
+
+<div class="add-field">
+        <fieldset class="groupbox">
+            <legend>
+                <span><h3>Thông tin vỏ thay thế</h3></span>
+            </legend>
+            <div class="login_body">
+                  <form id="add_equipment" method="post" action="">
+                      <table style="margin-top:0px;width:100%">
+                        <tr>
+                            
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td></td>
+                            <td>&nbsp;</td>
+                            <td><div class="add-box"><a class="add_button" onClick="add_click();">Thêm bảng thay thế vỏ</a></div></td>
+                            
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>Ngày </td>
+                            <td>
+                                <input type="text"  id="equipment_date" name="equipment_date" tabindex="1" required="required">
+                            </td>
+                            <td>Vỏ thay vào </td>
+                            <td>
+                                <select id="tire_in"  name="tire_in" tabindex="4" required="required">
+                                    <?php foreach ($tires_in as $tire) {
+                                        echo '<option value="'.$tire->tire_id.'">'.$tire->tire_serie.'</option>';
+                                    } ?>
+                                </select>
+                            </td>
+                            
+                            
+
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>Số xe </td>
+                            <td>
+                                <input type="text" autofocus autocomplete="off"   id="vehicle" name="vehicle" tabindex="2" required="required" placeholder="Nhập tên hoặc * để chọn" >
+                                <ul id="vehicle_list_id"></ul>
+                            </td>
+                            <td>Vỏ thay ra </td>
+                            <td>
+                                <select id="tire_out"  name="tire_out" tabindex="5" required="required">
+                                    <?php foreach ($tires_out as $tire) {
+                                        echo '<option value="'.$tire->tire_id.'">'.$tire->tire_serie.'</option>';
+                                    } ?>
+                                </select>
+                            </td>
+                            
+                        </tr>
+                        
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>Số công tơ met </td>
+                            <td>
+                                <input type="text" class="number" id="vehicle_km" name="vehicle_km" tabindex="3" required="required"> 
+                            </td>
+                            <td>Tình trạng</td>
+                            <td>
+                               <select style="width:150px" id="tire_status" name="tire_status" tabindex="6" >
+                                    
+                                    <option value="0">Hư</option>
+                                    <option value="2">Dự phòng</option>
+                                    <option value="3">Đã bán</option>
+                                </select>
+                            </td>
+                            
+                        </tr>
+                        
+                        
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td><input type="hidden" readonly id="yes" name="yes" required="required" ></td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        
+                        
+                         <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                            </td>
+                            <td><input type="submit" name="submit" value="Hoàn tất" tabindex="7"></td>
+                            <td ><input type="reset" name="reset" value="Nhập lại" tabindex="8"></td>
+                            <td></td>
+                            <td></td>
+                             
+                        </tr>
+                    </table> 
+                </form>
+            </div>
+        </fieldset>
+    </div>
+
+<?php if ($_SESSION['role_logined'] != 7 ) { ?>
+<script type="text/javascript">
+$('html').click(function(e) {
+    if(e.target == '[object HTMLDivElement]' || e.target == '[object HTMLBodyElement]') {
+        $('.add-field').slideUp(500);    
+    }
+   $('#vehicle_list_id').slideUp(200);
+});
+    $('.edit_tr').click(function(){
+        if(!$('.checkbox').is(':checked')){
+            $("html, body").animate({ scrollTop: $('.add-field').offset().top }, 300);
+        }
+        
+        var equipment_date = $(this).find("#equipment_date_"+$(this).attr('id')).text();
+        var vehicle = $(this).find("#vehicle_"+$(this).attr('id')).text();
+        var tire_in = $(this).find("#tire_in_"+$(this).attr('id')).attr('data');
+        var tire_out = $(this).find("#tire_out_"+$(this).attr('id')).attr('data');
+        var vehicle_km = $(this).find("#vehicle_km_"+$(this).attr('id')).text();
+        //alert(equipment_from);
+        $('#yes').val($(this).attr('id'));
+        
+        $('#vehicle').val(vehicle);
+        $('#vehicle_km').val(vehicle_km);
+        $('#equipment_date').val(equipment_date.replace(/\//g,"-"));
+        $('#tire_in option[value='+tire_in+']').attr('selected','selected');
+
+        $('#tire_out option[value='+tire_out+']').attr('selected','selected');
+        
+        $('#vehicle').attr('data',$(this).find("#vehicle_"+$(this).attr('id')).attr('data'));
+        $("#vehicle").attr("code",'true');
+    });
+
+
+</script>
+<script type="text/javascript">
+
+function add_click(){
+    $('#yes').val("");
+    $('.add-field').slideDown(500);
+    $("html, body").animate({ scrollTop: $('.add-field').offset().top }, 300);
+
+        //$('#equipment_date').focus();
+        $('#vehicle_km').val(0);
+        
+
+        $('#vehicle').val("");
+        $("#vehicle").attr("code",'false');
+        
+        $('.number').focus(function(){
+            if ( $(this).val() == '0') {
+               $(this).val(""); 
+            };
+            
+        });
+        $('.number').blur(function(){
+            if ( $(this).val() == "") {
+                $(this).val(0);
+            };
+            
+        });
+
+
+}
+
+
+$(document).ready(function(){
+            // Validate form
+            $("#add_equipment").validate({
+                errorElement: "span", // Định dạng cho thẻ HTML hiện thông báo lỗi
+                rules: {
+                    
+                },
+                submitHandler: function(form) {
+                
+                    if ($('#vehicle').attr('code') == 'false') {
+                        $('#vehicle').val("");
+                        $('#vehicle').focus();
+                        return false;
+                    };
+                
+                    var equipment_date = $('#equipment_date').attr('value');
+                    var tire_in = $('#tire_in').attr('value');
+                    var vehicle = $('#vehicle').attr('data');
+                    var tire_out = $('#tire_out').attr('value');
+                    var vehicle_km = $('#vehicle_km').attr('value');
+                    var tire_status = $('#tire_status').attr('value');
+                    
+                    var yes = $('#yes').attr('value');
+                    
+                    var action      = "them";
+                 
+                    $.ajax({
+                        type: "POST", // phương thức gởi đi
+                        url: "<?php echo BASE_URL ?>/equipment/add", // nơi mà dữ liệu sẽ chuyển đến khi submit
+                        data: {
+                            equipment_date: equipment_date,
+                            tire_in: tire_in,
+                            vehicle: vehicle,
+                            tire_out: tire_out,
+                            vehicle_km: vehicle_km,
+                            tire_status: tire_status,
+                            yes: yes,
+                            }, // giá trị post
+                        success: function(answer){ // if everything goes well
+                            $('#error').hide();
+                            $('#error').slideToggle(100); // hiển thị thẻ div success
+                            $('#error').html('<div class="successbox">'+answer+'</div>'); // đặt kết quả trả về từ test.php vào thẻ div success
+                            $('#error').fadeOut(10000);
+
+                            if (yes != "") {
+                                if (answer.trim() != "Bảng này đã tồn tại") {
+                                    $('#equipment_date_'+yes).text(equipment_date);
+                                    $('#tire_in_'+yes).text($("#tire_in option:selected").text());
+                                    $('#vehicle_km_'+yes).text(vehicle_km);
+                                    $('#vehicle_'+yes).text($('#vehicle').val());
+                                    $('#tire_out_'+yes).text($("#tire_out option:selected").text());
+                                }
+                            }
+                            else{
+                                if (answer.trim() != "Bảng này đã tồn tại") {
+                                    var lastID = parseInt($('#lasted').html());
+                                    var rowCount = parseInt($('.table_data > tbody > tr').length);
+                                    $('.table_data > tbody:last')
+                                    .append(
+                                        '<tr onclick="HighLightTR(this,"#4d90fe","cc3333");" id="'+parseInt(lastID+1)+'" class="edit_tr"><td><input name="check[]" type="checkbox" class="checkbox" value="'+parseInt(lastID+1)+'"></td><td class="fix">'+parseInt(rowCount+1)+'</td><td class="fix" id="equipment_date_'+parseInt(lastID+1)+'">'+equipment_date+'</td><td class="fix" id="vehicle_'+parseInt(lastID+1)+'">'+$('#vehicle').val()+'</td><td class="fix" id="tire_in_'+parseInt(lastID+1)+'">'+$("#tire_in option:selected").text()+'</td><td class="fix" id="tire_out_'+parseInt(lastID+1)+'">'+$("#tire_out option:selected").text()+'</td><td class="fix" id="vehicle_km_'+parseInt(lastID+1)+'">'+vehicle_km+'</td><td class="fix" id="approve_'+parseInt(lastID+1)+'">Chưa chấp nhận</td><td><a class="error" href="#">Sửa</a> | <a class="error" onclick="del('+parseInt(lastID+1)+')">Xóa</a></td></tr>'
+                                    );
+
+                                    $('#lasted').html(parseInt(lastID+2));
+                                }
+                            }
+                        }
+                    });
+                    return false;
+                     
+                 }
+            });
+   
+   
+    $('#vehicle').keyup(function(){
+      
+        var keyword = $(this).val();
+        $.ajax({
+            url: '<?php echo BASE_URL ?>/equipment/getvehicle',
+            type: 'POST',
+            data: {keyword:keyword},
+            success:function(data){
+                $('#vehicle_list_id').slideDown(200);
+                $('#vehicle_list_id').html(data);
+            }
+        });
+        if ($('#vehicle').val() == "" || $('#vehicle').attr('data') == "") {
+            //$('#loc_from').val("");
+            $('#vehicle').attr('data',"");
+            $('#vehicle').attr('code',false);
+        }
+      
+   });  
+
+   
+   $('.number').keyup(function(event) {
+
+          // skip for arrow keys
+      if(event.which >= 37 && event.which <= 40) return;
+
+      // format number
+      $(this).val(function(index, value) {
+        return value
+          .replace(/[^0-9-.]/g, "")
+          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        ;
+      });
+    });
+    
+
+});
+function get_number(id){
+    return $(id).val().replace(/\,/g,'');
+}
+function set_item_vehicle(value,name) {
+    // change input value
+    $('#vehicle').val(name);
+    $("#vehicle").attr("data",value);
+    $("#vehicle").attr("code",'true');
+    
+    $.ajax({
+            url: '<?php echo BASE_URL ?>/equipment/gettireout',
+            type: 'POST',
+            data: {xe:value},
+            success:function(data){
+                //alert(data);
+                var data = jQuery.parseJSON(data);
+                $('#tire_out').empty();
+                $.each(data.data, function(index, tire) {
+                    $('#tire_out')
+                     .append($("<option></option>")
+                     .attr("value",tire.tire_id)
+                     .text(tire.tire_serie)); 
+                     
+                });
+                
+            }
+        });
+
+    // hide proposition list
+    $('#vehicle_list_id').hide();
+    $('#vehicle').focus();
+     
+     
+}
+
+</script>
+<?php } ?>
+
+<div style="display:none" id="lasted"></div>
+<script type="text/javascript">
+    var count = parseInt(<?php echo $lastID ?>);
+    $('#lasted').html(count);
+
+    $("#import_excel").click(function(){
+        $("#winpopup").dialog({
+            draggable:true,
+            modal: true,
+            autoOpen: false,
+            height:200,
+            width:500,
+            resizable: false,
+            title:'Import Excel',
+            
+        });
+        $("#winpopup").load($(this).attr('href'));
+        $("#winpopup").dialog("open");
+         
+        return false;
+    });
+</script>
+<script type="text/javascript">
+    $(function() {
+    var pickerOpts = {
+        closeText: "Đóng",
+        currentText: "Hiện tại",
+        nextText: "Tiếp",
+        prevText: "Quay lại",
+        monthNames: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        monthNamesShort: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        dayNames: ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm",
+        "Thứ sáu", "Thứ bảy"],
+        dayNamesShort: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        dayNamesMin: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        //defaultDate: "+1w",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy',
+        firstDay: 1,
+        isRTL: false,
+        showButtonPanel: true,
+         
+    };  
+    $("#equipment_date").datepicker(pickerOpts);
+
+    
+              
+            
+    
+});
+ var pickerOpts2 = {
+        closeText: "Đóng",
+        currentText: "Hiện tại",
+        nextText: "Tiếp",
+        prevText: "Quay lại",
+        monthNames: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        monthNamesShort: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        dayNames: ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm",
+        "Thứ sáu", "Thứ bảy"],
+        dayNamesShort: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        dayNamesMin: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        //defaultDate: "+1w",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy',
+        firstDay: 1,
+        isRTL: false,
+        showButtonPanel: true,
+        onClose: function(selectedDate) {
+                
+                //$( "#ketthuc" ).datepicker( "option", "minDate", selectedDate );
+
+         },
+         
+    };  
+    $("#batdau").datepicker(pickerOpts2);
+
+var x = "<?php echo $xe ?>";
+$('#sl_vehicle option[value='+x+']').attr('selected','selected');
+var ch = "<?php echo $limit ?>";
+$('#chonloc option[value='+ch+']').attr('selected','selected');
+
+</script>
+</div>
+<style type="text/css">
+    #ui-datepicker-div{
+        font-size: 13px;
+    }
+</style>

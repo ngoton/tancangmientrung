@@ -1,0 +1,76 @@
+<script type="text/javascript" src="<?php echo BASE_URL ?>/public/js/editor/ckeditor.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	
+			// Validate form
+			$("#add").validate({
+				errorElement: "span", // Định dạng cho thẻ HTML hiện thông báo lỗi
+				rules: {
+				}
+					 
+				 
+			});
+	
+});
+</script>
+<div class="login_form">
+  <div class="goback"><a href="<?php echo $this->url('post') ?>">&larr;</a></div>   
+  <div id="error" class="error"><?php echo isset($error) ? $error : null; ?></div>   
+        <div class="login_body">
+          <h1>THÊM BÀI VIẾT</h1>
+              <form id="add" method="post" action="" enctype="multipart/form-data">
+                  <table style="margin-top:20px;">
+                    <tr>
+                        <td>Tiêu đề </td>
+                        <td><input type="text" id="post_title" name="post_title" tabindex="1" autofocus required="required"></td>
+                        
+                    </tr>
+                    <tr>
+                        <td>Mô tả </td>
+                        <td><textarea id="post_description" name="post_description" tabindex="2" ></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Nội dung </td>
+                        <td><textarea id="post_content" name="post_content" tabindex="3" required="required"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Hình đại diện </td>
+                        <td><input type="file" id="post_image" name="post_image" tabindex="4" ></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Chuyên mục </td>
+                        <td>
+                          <select name="menu" id="menu" tabindex="4" required="required" tabindex="5">
+                            <?php
+                            foreach ($menus as $menu) {
+                              if ($menu->menu_parent == 0) {
+                                echo '<option value="'.$menu->menu_id.'">'.$menu->menu_name.'</option>';
+                              }
+                              foreach ($menus as $menu_child) {
+                                if ($menu_child->menu_parent == $menu->menu_id) {
+                                  echo '<option value="'.$menu_child->menu_id.'">-- '.$menu_child->menu_name.'</option>';
+                                }
+                                
+                              }
+                              
+                            }
+                            ?>
+                          </select>
+                        </td>
+                    </tr>
+                    
+                     <tr>
+                        <td ><input type="reset" name="reset" value="Nhập lại" tabindex="7"></td>
+                         <td><input type="submit" name="submit" value="Hoàn tất" tabindex="6"></td>
+                         
+                    </tr>
+                </table> 
+            </form>
+        </div>
+        
+        </div>
+
+<script type="text/javascript">
+  CKEDITOR.replace('post_content');
+</script>

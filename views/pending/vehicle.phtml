@@ -1,0 +1,130 @@
+
+<?php
+$url_order = 'ASC';
+if ($order_by == 'vehicle_id')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+
+
+
+
+    $i = $sonews*$page-($sonews-1);
+
+?>
+
+<div id="loading"></div>
+<div id="winpopup"></div>
+<center style="clear:both;margin-bottom: -30px;"><h1> DANH SÁCH THAY THẾ VỎ </h1></center>
+<div id="content" style="padding:5px;">
+    
+
+	<div class="search-box">
+        
+        <input type="search" id="search-input" name="s" value="<?php echo isset($keyword)?$keyword:null; ?>" placeholder="Tìm kiếm">
+        <input type="button" name="" id="search-submit" class="button-search" value="Tìm kiếm" onclick="searchall('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');">
+    </div>
+    
+
+</div>
+
+<table class="table_data">
+<thead>
+    <tr>
+        <th class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','vehicle_id','<?php echo $url_order ?>')">STT <?php if ($order_by == 'vehicle_id'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','vehicle','<?php echo $url_order ?>')">Số xe <?php if ($order_by == 'vehicle'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','tire','<?php echo $url_order ?>')">Số vỏ thay  <?php if ($order_by == 'tire'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        
+        
+        
+           
+        <th  class="fix">&nbsp;</th>
+    </tr>
+    
+   </thead>
+   <tbody>
+    <?php foreach ($vehicles as $vehicle) : ?>
+        <tr onClick="HighLightTR(this,'#4d90fe','cc3333');" id="<?php echo $vehicle->vehicle_id ?>" class="edit_tr">
+            <td class="fix"><?php echo $i++; ?></td>
+            
+            <td class="fix" data="<?php echo $vehicle->vehicle_id ?>" id="vehicle_<?php echo $vehicle->vehicle_id; ?>"><?php echo $vehicle->vehicle_number; ?></td>
+            <td class="fix"  id="vehicle_<?php echo $vehicle->vehicle_id; ?>"><?php echo $vehicle->total; ?></td>
+            <td>
+                 <?php if($vehicle->approve != 1){ ?>
+                <a  class="error approve" data="<?php echo $vehicle->vehicle_id; ?>"  >Chấp nhận</a>
+                <?php } else if($vehicle->approve == 1){ ?>
+                <a class="ok" >Đã chấp nhận</a>
+                <?php } ?>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+   </tbody>
+</table>
+
+
+<div id="error" class="error"><?php echo isset($error) ? $error : null; ?></div>
+
+<script type="text/javascript">
+    
+
+$('.approve').click(function(){
+    var id = $(this).attr("data")
+    var r = confirm("Bạn có chắc chắn không?");
+      if (r == true){
+        $('#loading').html("<img src='<?php echo BASE_URL ?>/public/images/loading.gif'/>").fadeIn(500);
+        $.post("<?php echo BASE_URL ?>/pending/approve", {data: id},
+           function(data){
+            
+
+            $('#loading').fadeOut(500);
+            
+            setTimeout(function() {
+                                        sapxep('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');
+                                      }, 2000)
+           
+           }); 
+      }
+
+});
+
+
+
+
+
+var pickerOpts = {
+        closeText: "Đóng",
+        currentText: "Hiện tại",
+        nextText: "Tiếp",
+        prevText: "Quay lại",
+        monthNames: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        monthNamesShort: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        dayNames: ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm",
+        "Thứ sáu", "Thứ bảy"],
+        dayNamesShort: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        dayNamesMin: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        //defaultDate: "+1w",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy',
+        firstDay: 1,
+        isRTL: false,
+        showButtonPanel: true,
+        
+         
+    };  
+    $("#batdau").datepicker(pickerOpts);
+</script>
+<style type="text/css">
+    #ui-datepicker-div{
+        font-size: 13px;
+    }
+</style>

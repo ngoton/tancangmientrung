@@ -1,0 +1,171 @@
+
+<?php
+$url_order = 'ASC';
+if ($order_by == 'equipment_id')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+
+elseif ($order_by == 'equipment_date')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'vehicle')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'tire_in')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'tire_out')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'vehicle_km')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+
+
+    $i = $sonews*$page-($sonews-1);
+
+?>
+
+<div id="loading"></div>
+<div id="winpopup"></div>
+<center style="clear:both;margin-bottom: -30px;"><h1> DANH SÁCH THAY THẾ VỎ </h1></center>
+<div id="content" style="padding:5px;">
+    
+
+	<div class="search-box">
+        
+        <input type="search" id="search-input" name="s" value="<?php echo isset($keyword)?$keyword:null; ?>" placeholder="Tìm kiếm">
+        <input type="button" name="" id="search-submit" class="button-search" value="Tìm kiếm" onclick="searchall('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');">
+    </div>
+    <div class="tablenav top">
+        <div class="add-box">
+                  
+            Ngày  <input style="width:100px" type="search" name="batdau" id="batdau" placeholder="Chọn ngày" <?php if(isset($batdau)) echo "value='$batdau'"; ?> >  
+            <input type="button" name="xem" id="xem" value="Xem" onclick="searchall('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');">    
+            
+        </div>
+
+    	<div class="alignleft actions">
+            <select name="sl_trangthai" id="sl_trangthai" style="width:200px">
+                <option value="-1" >Tình trạng</option>
+                <option value="0" selected="selected" >Chưa chấp nhận</option>
+                <option value="1">Đã chấp nhận</option>
+            </select>
+            <input type="button" name="" id="trangthai" class="button action" value="Xem" onclick="searchall('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');">
+        </div>
+
+      </div>
+
+</div>
+
+<table class="table_data">
+<thead>
+    <tr>
+    	<th rowspan="2" class="fix"><input type="checkbox" onclick="checkall('checkbox', this)" name="checkall"/></th>
+        <th rowspan="2" class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','equipment_id','<?php echo $url_order ?>')">STT <?php if ($order_by == 'equipment_id'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','equipment_date','<?php echo $url_order ?>')">Ngày <?php if ($order_by == 'equipment_date'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','vehicle','<?php echo $url_order ?>')">Số xe <?php if ($order_by == 'vehicle'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','tire_in','<?php echo $url_order ?>')">Vỏ thay vào  <?php if ($order_by == 'tire_in'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','tire_out','<?php echo $url_order ?>')">Vỏ thay ra  <?php if ($order_by == 'tire_out'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','vehicle_km','<?php echo $url_order ?>')">Số công tơ met  <?php if ($order_by == 'vehicle_km'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        
+        
+           
+        <th  class="fix">&nbsp;</th>
+    </tr>
+    
+   </thead>
+   <tbody>
+    <?php foreach ($equipments as $equipment) : ?>
+        <tr onClick="HighLightTR(this,'#4d90fe','cc3333');" id="<?php echo $equipment->equipment_id ?>" class="edit_tr">
+        	<td><input name="check[]" type="checkbox" class="checkbox" value="<?php echo $equipment->equipment_id ?>"></td>
+            <td class="fix"><?php echo $i++; ?></td>
+            
+            <td class="fix" id="equipment_date_<?php echo $equipment->equipment_id; ?>"><?php echo $lib->hien_thi_ngay_thang($equipment->equipment_date); ?></td>
+            <td class="fix" data="<?php echo $equipment->vehicle ?>" id="vehicle_<?php echo $equipment->equipment_id; ?>"><?php echo $equipment->vehicle_number; ?></td>
+            <td class="fix" data="<?php echo $equipment->tire_in ?>" id="tire_in_<?php echo $equipment->equipment_id; ?>"><?php echo isset($tire_data['serie'][$equipment->tire_in])?$tire_data['serie'][$equipment->tire_in]:null; ?></td>
+            <td class="fix" data="<?php echo $equipment->tire_out ?>" id="tire_out_<?php echo $equipment->equipment_id; ?>"><?php echo isset($tire_data['serie'][$equipment->tire_out])?$tire_data['serie'][$equipment->tire_out]:null; ?></td>
+            <td class="fix" id="vehicle_km_<?php echo $equipment->equipment_id; ?>"><?php echo $lib->formatMoney($equipment->vehicle_km); ?><td>
+                 <?php if($equipment->approve != 1){ ?>
+                <a style="float:right" class="error approve" data="<?php echo $equipment->equipment_id; ?>"  >Chấp nhận</a>
+                <?php } else if($equipment->approve == 1){ ?>
+                <a class="ok" >Đã chấp nhận</a>
+                <?php } ?>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+   </tbody>
+</table>
+<?php
+$this->helper('slidePaginator');
+?>
+
+<div id="error" class="error"><?php echo isset($error) ? $error : null; ?></div>
+
+<script type="text/javascript">
+    
+
+$('.approve').click(function(){
+    var id = $(this).attr("data")
+    var r = confirm("Bạn có chắc chắn không?");
+      if (r == true){
+        $('#loading').html("<img src='<?php echo BASE_URL ?>/public/images/loading.gif'/>").fadeIn(500);
+        $.post("<?php echo BASE_URL ?>/equipment/approve", {data: id},
+           function(data){
+            
+
+            $('#loading').fadeOut(500);
+            
+            setTimeout(function() {
+                                        sapxep('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');
+                                      }, 2000)
+           
+           }); 
+      }
+
+});
+
+
+var tt = "<?php echo $trangthai ?>";
+$('#sl_trangthai option[value='+tt+']').attr('selected','selected');
+
+
+var pickerOpts = {
+        closeText: "Đóng",
+        currentText: "Hiện tại",
+        nextText: "Tiếp",
+        prevText: "Quay lại",
+        monthNames: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        monthNamesShort: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        dayNames: ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm",
+        "Thứ sáu", "Thứ bảy"],
+        dayNamesShort: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        dayNamesMin: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        //defaultDate: "+1w",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy',
+        firstDay: 1,
+        isRTL: false,
+        showButtonPanel: true,
+        
+         
+    };  
+    $("#batdau").datepicker(pickerOpts);
+</script>
+<style type="text/css">
+    #ui-datepicker-div{
+        font-size: 13px;
+    }
+</style>

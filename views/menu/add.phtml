@@ -1,0 +1,50 @@
+<script type="text/javascript">
+$(document).ready(function(){
+	
+			// Validate form
+			$("#add").validate({
+				errorElement: "span", // Định dạng cho thẻ HTML hiện thông báo lỗi
+				rules: {
+				}
+					 
+				 
+			});
+	
+});
+</script>
+<div class="login_form">
+  <div class="goback"><a href="<?php echo $this->url('menu') ?>">&larr;</a></div>      
+        <div class="login_body">
+          <h1>THÊM DANH MỤC</h1>
+              <form id="add" method="post" action="">
+                  <table style="margin-top:20px;">
+                    <tr>
+                        <td>Tên danh mục </td>
+                        <td><input type="text" id="menu_name" name="menu_name" tabindex="1" autofocus required="required"></td>
+                        
+                    </tr>
+                    <tr>
+                        <td>Danh mục cha </td>
+                        <td>
+                          <select name="menu_parent" id="menu_parent" tabindex="2" required="required">
+                            <option value="0">-------Không-------</option>
+                            <?php
+                            foreach ($menu_parent as $menu_parent) {
+                              echo '<option value="'.$menu_parent->menu_id.'">'.$menu_parent->menu_name.'</option>';
+                            }
+                            ?>
+                          </select>
+                        </td>
+                    </tr>
+                    
+                     <tr>
+                        <td ><input type="reset" name="reset" value="Nhập lại" tabindex="4"></td>
+                         <td><input type="submit" name="submit" value="Hoàn tất" tabindex="3"></td>
+                         
+                    </tr>
+                </table> 
+            </form>
+        </div>
+        <div id="error" class="error"><?php echo isset($error) ? $error : null; ?></div>
+        </div>
+

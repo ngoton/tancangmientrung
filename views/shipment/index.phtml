@@ -1,0 +1,2663 @@
+
+<?php
+$url_order = 'ASC';
+if ($order_by == 'shipment_id')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+
+elseif ($order_by == 'shipment_from')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'shipment_to')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'vehicle')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'customer')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'shipment_charge')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'shipment_ton')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'oil_add')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'cost_add')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'shipment_revenue')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'shipment_cost')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'shipment_profit')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'shipment_date')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'shipment_round')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'shipment_excess')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'road_oil')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'oil_excess')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+
+    $i = $sonews*$page-($sonews-1);
+
+?>
+
+<div id="loading"></div>
+<div id="winpopup"></div>
+<center style="clear:both;margin-bottom: -30px;"><h1> ĐIỀU XE </h1></center>
+<div id="content" style="padding:5px;">
+<?php if ($_SESSION['role_logined'] != 7 && $_SESSION['role_logined'] != 4 ) { ?>  
+<div class="add-box">
+    <a class="add_button" onClick="add_click();">Thêm bảng lô hàng</a>
+    <a class="add_button" id="import_excel" href="<?= $this->url('shipment/import')?>">Import Excel</a>
+    <a class="add_button" id="export_excel" href="<?= $this->url('shipment/export/'.strtotime($batdau).'/'.strtotime($ketthuc).'/'.$xe.'/'.$vong)?>">Export Excel</a>
+</div>
+<?php } ?>
+
+	<div class="search-box">
+        
+        <input type="search" id="search-input" name="s" value="<?php echo isset($keyword)?$keyword:null; ?>" placeholder="Tìm kiếm">
+        <input type="button" name="" id="search-submit" class="button-search" value="Tìm kiếm" onclick="searchall('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');">
+    </div>
+    
+ <div class="tablenav top">
+        <!-- <div class="alignleft">
+            <a class="add_button" href="<?php echo $this->url('shipment/report') ?>">Thống kê</a>
+        </div> -->
+        <div class="add-box">
+                  
+            Từ  <input style="width:100px" type="search" name="batdau" id="batdau" placeholder="Chọn ngày" <?php if(isset($batdau)) echo "value='$batdau'"; ?> >  
+            Đến  <input style="width:100px" type="search" name="ketthuc" id="ketthuc" placeholder="Chọn ngày" <?php if(isset($ketthuc)) echo "value='$ketthuc'"; ?> >  
+             <input type="button" name="xem" id="xem" value="Xem" onclick="searchall('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');">  
+            
+        </div>
+    </div>
+    <div class="tablenav top">
+        <div style="clear:both"></div>
+        
+        <div class="add-box">
+            <input type="button" name="chon" id="chon" value="Chọn" onclick="searchall('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');">  
+        </div>
+        <div class="add-box" style="margin-right: 5px">
+            
+
+            <select name="sl_round" id="sl_round" >
+                <option selected="selected" value="0">Vòng chạy</option>
+                <option value="1">Vòng 1</option>
+                <option value="2">Vòng 2</option>
+                <option value="3">Vòng 3</option>
+                <option value="4">Vòng 4</option>
+                <option value="5">Vòng 5</option>
+                <option value="6">Vòng 6</option>
+                <option value="7">Vòng 7</option>
+                <option value="8">Vòng 8</option>
+                <option value="9">Vòng 9</option>
+                <option value="10">Vòng 10</option>
+            </select>
+
+
+            
+        </div>
+        <div class="add-box" style="margin-right: 5px">
+            <select name="sl_vehicle" id="sl_vehicle">
+                <option selected="selected" value="">Xe</option>
+                <?php foreach ($vehicles as $sm) { ?>
+                <option value="<?php echo $sm->vehicle_id ?>"><?php echo $sm->vehicle_number ?></option>
+                <?php } ?>
+            </select>
+
+            
+            
+        </div>
+        <?php if ($_SESSION['role_logined'] != 7 && $_SESSION['role_logined'] != 4 ) { ?>
+        <div class="alignleft actions">
+            <select name="action" id="action">
+                <option value="-1" selected="selected">Chọn</option>
+                
+                <option value="delete">Xóa</option>
+                
+            </select>
+            <input type="button" name="" id="doaction" class="button action" value="Áp dụng" onclick="action();">
+        </div>
+        <?php } ?>
+        <div class="alignleft actions">
+        <select name="m" id="chonloc">
+            <option  value="18446744073709">Hiển thị tất cả</option>
+            <option value="10">Hiển thị 10 giá trị</option>
+            <option value="20">Hiển thị 20 giá trị</option>
+            <option value="30">Hiển thị 30 giá trị</option>
+            <option selected="selected" value="50">Hiển thị 50 giá trị</option>
+        </select>
+        <input type="button" name="" id="post-query-submit" class="button" value="Chọn lọc" onclick="searchall('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');">                               
+        </div>
+
+      </div>
+
+</div>
+
+<table class="table_data">
+<thead>
+    <tr>
+    	<th  class="fix"><input type="checkbox" onclick="checkall('checkbox', this)" name="checkall"/></th>
+        
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','shipment_round','<?php echo $url_order ?>')">Vòng chạy <?php if ($order_by == 'shipment_round'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','vehicle','<?php echo $url_order ?>')">Xe <?php if ($order_by == 'vehicle'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','shipment_date','<?php echo $url_order ?>')">Ngày <?php if ($order_by == 'shipment_date'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','shipment_from','<?php echo $url_order ?>')">Kho đi <?php if ($order_by == 'shipment_from'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','shipment_to','<?php echo $url_order ?>')">Kho đến <?php if ($order_by == 'shipment_to'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','customer','<?php echo $url_order ?>')">Khách hàng <?php if ($order_by == 'customer'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','shipment_charge','<?php echo $url_order ?>')">Cước<?php if ($order_by == 'shipment_charge'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','shipment_ton','<?php echo $url_order ?>')">Trọng tải <?php if ($order_by == 'shipment_ton'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','road_oil','<?php echo $url_order ?>')">Định mức lit dầu <?php if ($order_by == 'road_oil'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','oil_cost','<?php echo $url_order ?>')">Chi phí dầu <?php if ($order_by == 'oil_cost'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','shipment_cost','<?php echo $url_order ?>')">Chi phí cố định <?php if ($order_by == 'shipment_cost'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','cost_add','<?php echo $url_order ?>')">Chi phí phát sinh <?php if ($order_by == 'cost_add'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','cost_vat','<?php echo $url_order ?>')">Chi phí có HĐ <?php if ($order_by == 'cost_vat'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','oil_excess','<?php echo $url_order ?>')">Dầu phát sinh <?php if ($order_by == 'oil_excess'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','shipment_revenue','<?php echo $url_order ?>')">Doanh thu <?php if ($order_by == 'shipment_revenue'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','shipment_cost','<?php echo $url_order ?>')">Tổng chi phí <?php if ($order_by == 'shipment_cost'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','shipment_profit','<?php echo $url_order ?>')">Lợi nhuận <?php if ($order_by == 'shipment_profit'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        
+        <?php if ($_SESSION['role_logined'] != 7 ) { ?>  
+        <th  class="fix">&nbsp;</th>
+        <?php } ?>
+    </tr>
+    
+   </thead>
+   <tbody>
+    <?php $v = array(); $doanhthu = array(); $chiphi = array(); $loinhuan = array(); $litdau = array(); ?>
+    <?php foreach ($shipments as $shipment) : ?>
+    
+    
+        <tr onClick="HighLightTR(this,'#4d90fe','cc3333');" data="<?php echo $shipment->vehicle_id.$shipment->shipment_round ?>" id="<?php echo $shipment->shipment_id ?>" class="edit_tr" alt="<?php echo $shipment->shipment_complete ?>" tabindex="<?php echo $shipment->approve_oil ?>" title="<?php echo $shipment->shipment_sub ?>" >
+        	<td>
+                <?php if($shipment->shipment_complete != 1){ ?>
+                 <?php if($shipment->not_del != 1){ ?>
+                <input name="check[]" type="checkbox" class="checkbox" value="<?php echo $shipment->shipment_id ?>">
+                <?php } } ?>
+            </td>
+            <td class="fix" id="shipment_round_<?php echo $shipment->shipment_id; ?>"><?php echo $shipment->shipment_round; ?></td>
+            <td nowrap class="fix" data="<?php echo $shipment->vehicle; ?>" id="vehicle_<?php echo $shipment->shipment_id; ?>"><?php echo $shipment->vehicle_number; ?></td>
+            
+            <td class="fix" id="shipment_date_<?php echo $shipment->shipment_id; ?>"><?php echo $lib->hien_thi_ngay_thang($shipment->shipment_date); ?></td>
+            <td nowrap class="fix" data="<?php echo $shipment->shipment_from; ?>" id="shipment_from_<?php echo $shipment->shipment_id; ?>"><?php echo $shipment->shipment_from==$warehouse['warehouse_id'][$shipment->shipment_from]?$warehouse['warehouse_name'][$shipment->shipment_from]:null ?></td>
+            <td nowrap class="fix" data="<?php echo $shipment->shipment_to; ?>" id="shipment_to_<?php echo $shipment->shipment_id; ?>"><?php echo $shipment->shipment_to==$warehouse['warehouse_id'][$shipment->shipment_to]?$warehouse['warehouse_name'][$shipment->shipment_to]:null ?></td>
+            
+            <td class="fix" data="<?php echo $shipment->customer; ?>" id="customer_<?php echo $shipment->shipment_id; ?>"><?php echo $shipment->customer_name; ?></td>
+            <td class="fix" id="shipment_charge_<?php echo $shipment->shipment_id; ?>"><?php echo $lib->formatMoney($shipment->shipment_charge); ?></td>
+            <td class="fix" id="shipment_ton_<?php echo $shipment->shipment_id; ?>"><?php echo $shipment->shipment_ton; ?></td>
+            <td class="fix" ><?php echo $lib->formatMoney($road['road_oil'][$shipment->shipment_id]); ?></td>
+            <td class="fix" ><?php echo $lib->formatMoney($road['oil_cost'][$shipment->shipment_id]); ?></td>
+            
+            <td class="fix" ><?php echo $lib->formatMoney($warehouse['boiduong_cn'][$shipment->shipment_id]+$road['bridge_cost'][$shipment->shipment_id]+$road['police_cost'][$shipment->shipment_id]+$road['tire_cost'][$shipment->shipment_id]+$shipment->bridge_cost_add); ?></td>
+
+            
+
+            <td <?php if($shipment->approve!=1 && $shipment->cost_add > 0) echo 'style="background: url(../public/images/no.png) bottom left  no-repeat"'; else echo 'style="background:  url(../public/images/ok.png) bottom left no-repeat"' ?>  id="cost_add1_<?php echo $shipment->shipment_id; ?>" class="fix masterTooltip" title="<?php echo $shipment->cost_add_comment; echo ($shipment->approve==1)?' (đã chấp nhận)': (($shipment->approve!=1 && $shipment->cost_add > 0)?' (chưa chấp nhận)':null); ?>" >
+                <?php echo $lib->formatMoney($shipment->cost_add); ?> <br>
+                <?php if($shipment->approve!=1 && $shipment->cost_add > 0 && $_SESSION['role_logined'] == 1) { ?>
+                <button data="<?php echo $shipment->shipment_id ?>"  class="ok approve">OK</button> 
+                <?php } ?>
+            </td>
+            <td class="fix" id="cost_vat_<?php echo $shipment->shipment_id; ?>" class="fix masterTooltip" title="<?php echo $shipment->cost_vat_comment; ?>" ><?php echo $lib->formatMoney($shipment->cost_vat); ?></td>
+            <td class="fix" id="oil_excess_<?php echo $shipment->shipment_id; ?>"><?php echo $lib->formatMoney($shipment->oil_excess); ?></td>
+            <td class="fix" id="shipment_revenue_<?php echo $shipment->shipment_id; ?>"><?php echo $lib->formatMoney($shipment->shipment_revenue+$shipment->revenue_other+$shipment->shipment_charge_excess); ?></td>
+            <td class="fix" id="shipment_cost_<?php echo $shipment->shipment_id; ?>"><?php echo $lib->formatMoney($shipment->shipment_cost-($road['road_time'][$shipment->shipment_id]*3000000)); ?></td>
+            <td class="fix" id="shipment_profit_<?php echo $shipment->shipment_id; ?>"><?php echo $lib->formatMoney($shipment->shipment_profit+($road['road_time'][$shipment->shipment_id]*3000000)+$shipment->revenue_other+$shipment->shipment_charge_excess); ?></td>
+
+            <td style="display:none" id="oil_cost_<?php echo $shipment->shipment_id; ?>"><?php echo $lib->formatMoney(round($shipment->oil_cost*1.1)); ?></td>
+            <td style="display:none" id="oil_add_<?php echo $shipment->shipment_id; ?>"><?php echo $shipment->oil_add; ?></td>
+            <td style="display:none" id="oil_add_dc_<?php echo $shipment->shipment_id; ?>"><?php echo $shipment->oil_add_dc; ?></td>
+            <td style="display:none" id="oil_add2_<?php echo $shipment->shipment_id; ?>"><?php echo $shipment->oil_add2; ?></td>
+            <td style="display:none" id="oil_add_dc2_<?php echo $shipment->shipment_id; ?>"><?php echo $shipment->oil_add_dc2; ?></td>
+            <td style="display:none" id="cost_add_<?php echo $shipment->shipment_id; ?>"><?php echo $lib->formatMoney($shipment->cost_add); ?></td>
+            <td style="display:none" id="cost_add_comment_<?php echo $shipment->shipment_id; ?>"><?php echo $shipment->cost_add_comment; ?></td>
+            <td style="display:none" id="shipment_loan_<?php echo $shipment->shipment_id; ?>"><?php echo $lib->formatMoney($shipment->shipment_loan); ?></td>
+            <td style="display:none" id="loan_content_<?php echo $shipment->shipment_id; ?>"><?php echo $shipment->loan_content; ?></td>
+            <td style="display:none" id="sub_driver_<?php echo $shipment->shipment_id; ?>"><?php echo $shipment->sub_driver; ?></td>
+            <td style="display:none" id="sub_driver_name_<?php echo $shipment->shipment_id; ?>"><?php echo $shipment->sub_driver_name; ?></td>
+            <td style="display:none" id="sub_driver2_<?php echo $shipment->shipment_id; ?>"><?php echo $shipment->sub_driver2; ?></td>
+            <td style="display:none" id="advance_<?php echo $shipment->shipment_id; ?>"><?php echo $shipment->advance; ?></td>
+            <td style="display:none" id="advance_comment_<?php echo $shipment->shipment_id; ?>"><?php echo $shipment->advance_comment; ?></td>
+            <td style="display:none" id="cost_vat_comment_<?php echo $shipment->shipment_id; ?>"><?php echo $shipment->cost_vat_comment; ?></td>
+            <td style="display:none" id="commission_<?php echo $shipment->shipment_id; ?>"><?php echo $shipment->commission; ?></td>
+            <td style="display:none" id="commission_number_<?php echo $shipment->shipment_id; ?>"><?php echo $shipment->commission_number; ?></td>
+            <td style="display:none" class="fix" id="oil_excess_comment_<?php echo $shipment->shipment_id; ?>"><?php echo $shipment->oil_excess_comment; ?></td>
+            <td style="display:none" class="fix" id="oil_excess_dc_<?php echo $shipment->shipment_id; ?>"><?php echo $shipment->oil_excess_dc; ?></td>
+            <td style="display:none" id="oil_residual_<?php echo $shipment->shipment_id; ?>"><?php echo $shipment->oil_residual; ?></td>
+            <td style="display:none" id="cost_excess_<?php echo $shipment->shipment_id; ?>"><?php echo $lib->formatMoney($shipment->cost_excess); ?></td>
+            <td style="display:none" id="cost_excess_comment_<?php echo $shipment->shipment_id; ?>"><?php echo $shipment->cost_excess_comment; ?></td>
+            <td style="display:none" id="oil_residual_comment_<?php echo $shipment->shipment_id; ?>"><?php echo $shipment->oil_residual_comment; ?></td>
+            <td style="display:none" id="revenue_other_<?php echo $shipment->shipment_id; ?>"><?php echo $lib->formatMoney($shipment->revenue_other); ?></td>
+            <td style="display:none" id="shipment_sub_<?php echo $shipment->shipment_id; ?>"><?php echo $shipment->shipment_sub; ?></td>
+            <td class="fix" style="display:none"  id="shipment_charge_excess_<?php echo $shipment->shipment_id; ?>"><?php echo $lib->formatMoney($shipment->shipment_charge_excess); ?></td>
+            <td class="fix" style="display:none"  id="shipment_charge_excess_comment_<?php echo $shipment->shipment_id; ?>"><?php echo $shipment->shipment_charge_excess_comment; ?></td>
+            <td class="fix" style="display:none"  id="bridge_cost_add_<?php echo $shipment->shipment_id; ?>"><?php echo $lib->formatMoney($shipment->bridge_cost_add); ?></td>
+
+            <?php if ($_SESSION['role_logined'] != 7 ) { ?>
+            <td>
+                <?php if ($_SESSION['role_logined'] != 4 ) { ?>
+                    <?php if($shipment->shipment_complete != 1){ ?>
+                     <?php if($shipment->not_del != 1){ ?>
+                    <button class="error" onclick="del(<?php echo $shipment->shipment_id ?>)" >Xóa</button>
+                    <?php } } ?>
+
+                    <?php if($shipment->shipment_complete != 1){ ?>
+                    <button class="hoantat" data="<?php echo $shipment->shipment_id ?>" >Hoàn tất</button>
+                    <?php } ?>
+                <?php } ?>
+
+                <?php if($_SESSION['role_logined'] == 1 || $_SESSION['role_logined'] == 4 ){ ?>
+                <?php if($shipment->shipment_complete == 1 || $shipment->not_del == 1){ ?>
+                    <button value="0" class="unlock" data="<?php echo $shipment->shipment_id ?>" >Mở</button>
+                <?php } } ?>
+
+                <?php if($_SESSION['role_logined'] == 1 || $_SESSION['role_logined'] == 8 ){ ?>
+                <?php if($shipment->approve_oil == 1){ ?>
+                    <button value="0" class="unlock_oil" data="<?php echo $shipment->shipment_id ?>" >Unlock</button>
+                <?php } } ?>
+
+            </td>
+            <?php } ?>
+        </tr>
+
+        <?php 
+        $month = intval(date('m',$shipment->shipment_date));
+        $year = date('Y',$shipment->shipment_date);
+        $thang = $month;
+        $nam = $year;
+            if(date('d',$shipment->shipment_date)>29){
+                $month = intval(date('m',$shipment->shipment_date)+1);
+                if ($month == 13) {
+                    $month = 1;
+                    $nam = $year+1;
+                    $year = $year+1;
+                }
+            }
+
+        $v[$shipment->vehicle.$shipment->shipment_round.$month.$year] = isset($v[$shipment->vehicle.$shipment->shipment_round.$month.$year])?($v[$shipment->vehicle.$shipment->shipment_round.$month.$year] + 1) : (0+1) ;
+        
+        $doanhthu[$shipment->vehicle_id][$shipment->shipment_round.$month.$year] = isset($doanhthu[$shipment->vehicle_id][$shipment->shipment_round.$month.$year])?($doanhthu[$shipment->vehicle_id][$shipment->shipment_round.$month.$year]+$shipment->shipment_revenue+$shipment->revenue_other+$shipment->shipment_charge_excess):(0+$shipment->shipment_revenue+$shipment->revenue_other+$shipment->shipment_charge_excess);
+        $chiphi[$shipment->vehicle_id][$shipment->shipment_round.$month.$year] = isset($chiphi[$shipment->vehicle_id][$shipment->shipment_round.$month.$year])?($chiphi[$shipment->vehicle_id][$shipment->shipment_round.$month.$year]+$shipment->shipment_cost-($road['road_time'][$shipment->shipment_id]*3000000)):(0+$shipment->shipment_cost-($road['road_time'][$shipment->shipment_id]*3000000));
+        $loinhuan[$shipment->vehicle_id][$shipment->shipment_round.$month.$year] = isset($loinhuan[$shipment->vehicle_id][$shipment->shipment_round.$month.$year])?($loinhuan[$shipment->vehicle_id][$shipment->shipment_round.$month.$year]+$shipment->shipment_profit+($road['road_time'][$shipment->shipment_id]*3000000)):(0+$shipment->shipment_profit+($road['road_time'][$shipment->shipment_id]*3000000));
+
+        $chiphidau[$shipment->vehicle_id][$shipment->shipment_round.$month.$year] = isset($chiphidau[$shipment->vehicle_id][$shipment->shipment_round.$month.$year])?($chiphidau[$shipment->vehicle_id][$shipment->shipment_round.$month.$year]+$road['oil_cost'][$shipment->shipment_id]):(0+$road['oil_cost'][$shipment->shipment_id]);
+
+        
+        $litdau[$shipment->vehicle_id][$shipment->shipment_round.$month.$year] = isset($litdau[$shipment->vehicle_id][$shipment->shipment_round.$month.$year])?$litdau[$shipment->vehicle_id][$shipment->shipment_round.$month.$year]+$road['road_oil'][$shipment->shipment_id]:(0+$road['road_oil'][$shipment->shipment_id]);
+
+        $dauphatsinh[$shipment->vehicle_id][$shipment->shipment_round.$month.$year] = isset($dauphatsinh[$shipment->vehicle_id][$shipment->shipment_round.$month.$year])?($dauphatsinh[$shipment->vehicle_id][$shipment->shipment_round.$month.$year]+$shipment->oil_excess):(0+$shipment->oil_excess);
+        /*$chiphidaudocduong[$shipment->vehicle_id][$shipment->shipment_round] = isset($chiphidaudocduong[$shipment->vehicle_id][$shipment->shipment_round])?($chiphidaudocduong[$shipment->vehicle_id][$shipment->shipment_round]+$road['oil_add'][$shipment->shipment_id]):(0+$road['oil_add'][$shipment->shipment_id]);*/
+
+        $chiphicodinh[$shipment->vehicle_id][$shipment->shipment_round.$month.$year] = isset($chiphicodinh[$shipment->vehicle_id][$shipment->shipment_round.$month.$year])?($chiphicodinh[$shipment->vehicle_id][$shipment->shipment_round.$month.$year]+($warehouse['boiduong_cn'][$shipment->shipment_id]+$road['bridge_cost'][$shipment->shipment_id]+$road['police_cost'][$shipment->shipment_id]+$road['tire_cost'][$shipment->shipment_id]+$shipment->bridge_cost_add)):(0+($warehouse['boiduong_cn'][$shipment->shipment_id]+$road['bridge_cost'][$shipment->shipment_id]+$road['police_cost'][$shipment->shipment_id]+$road['tire_cost'][$shipment->shipment_id]+$shipment->bridge_cost_add));
+
+        $phiphatsinh[$shipment->vehicle_id][$shipment->shipment_round.$month.$year] = isset($phiphatsinh[$shipment->vehicle_id][$shipment->shipment_round.$month.$year])?($phiphatsinh[$shipment->vehicle_id][$shipment->shipment_round.$month.$year]+(($shipment->approve==1)?$shipment->cost_add:0)):(0+(($shipment->approve==1)?$shipment->cost_add:0));
+
+        $phihd[$shipment->vehicle_id][$shipment->shipment_round.$month.$year] = isset($phihd[$shipment->vehicle_id][$shipment->shipment_round.$month.$year])?($phihd[$shipment->vehicle_id][$shipment->shipment_round.$month.$year]+$shipment->cost_vat):(0+$shipment->cost_vat);
+
+        if($arr[$shipment->vehicle.$shipment->shipment_round.$month.$year] == $v[$shipment->vehicle.$shipment->shipment_round.$month.$year]){
+            ?>
+                <tr  style="font-weight: bold; color: rgb(23, 119, 226);background-color: rgb(222, 239, 236);" >
+                    <td class="fix" colspan="7" ></td>
+                    <th style="background: rgb(23, 119, 226); color: white; border-right: 1px solid rgb(236, 235, 235);border-top: 1px solid #80C8E5;padding: 7px;" colspan="2">
+                        Tổng cộng
+                    </th>
+                    <td class="fix " ><?php echo $lib->formatMoney($litdau[$shipment->vehicle_id][$shipment->shipment_round.$month.$year]) ?></td>
+                    <td class="fix " ><?php echo $lib->formatMoney($chiphidau[$shipment->vehicle_id][$shipment->shipment_round.$month.$year]) ?></td>
+                   
+                    <td class="fix " ><?php echo $lib->formatMoney($chiphicodinh[$shipment->vehicle_id][$shipment->shipment_round.$month.$year]) ?></td>
+                    
+                    <td class="fix " ><?php echo $lib->formatMoney($phiphatsinh[$shipment->vehicle_id][$shipment->shipment_round.$month.$year]) ?></td>
+                    <td class="fix " ><?php echo $lib->formatMoney($phihd[$shipment->vehicle_id][$shipment->shipment_round.$month.$year]) ?></td>
+                    <td class="fix " ><?php echo $lib->formatMoney($dauphatsinh[$shipment->vehicle_id][$shipment->shipment_round.$month.$year]) ?></td>
+                    <td class="fix " ><?php echo $lib->formatMoney($doanhthu[$shipment->vehicle_id][$shipment->shipment_round.$month.$year]) ?></td>
+                    <td id="total_shipment_cost" class="fix " ><?php echo $lib->formatMoney($chiphi[$shipment->vehicle_id][$shipment->shipment_round.$month.$year]) ?></td>
+                    <td class="fix " ><?php echo $lib->formatMoney($loinhuan[$shipment->vehicle_id][$shipment->shipment_round.$month.$year]) ?></td>
+                    <td nowrap>
+                        <a class="view_shipment" href="<?php echo BASE_URL.'/shipment/view/'.$shipment->vehicle.'/'.$shipment->shipment_round.'/'.$month.'/'.$nam ?>">Chi tiết</a>
+                    </td>
+                </tr>
+        <?php
+            
+         }
+         
+         
+        ?>
+            
+
+    <?php endforeach; ?>
+   </tbody>
+</table>
+<?php
+$this->helper('slidePaginator');
+?>
+
+<div class="add-field">
+    
+        <fieldset class="groupbox">
+            <center style="margin-bottom: -15px;">
+                <select id="shipment_temp" name="shipment_temp" style="width:150px">
+                    <option>- Lô hàng đã nhận -</option>
+                    <?php foreach ($shipment_temps as $shipment_temp) { ?>
+                        <option value="<?php echo $shipment_temp->shipment_temp_id ?>">
+                            <?php echo $lib->hien_thi_ngay_thang($shipment_temp->shipment_temp_date). ' -' ?>
+                            <?php echo $shipment_temp->shipment_temp_ton. ' tấn (chuyến) ' ?>
+                            <?php echo $shipment_temp->marketing_from==$warehouse['warehouse_id'][$shipment_temp->marketing_from]?$warehouse['warehouse_name'][$shipment_temp->marketing_from]:null ?>
+                             >>> 
+                            <?php echo $shipment_temp->marketing_to==$warehouse['warehouse_id'][$shipment_temp->marketing_to]?$warehouse['warehouse_name'][$shipment_temp->marketing_to]:null ?> 
+                        </option>
+                    <?php } ?>
+                </select>
+            </center>
+            <div class="tabs">
+                <ul class="tab-links">
+                    <li class="active"><a href="#tab1">Lô hàng chính</a></li>
+                    <li><a href="#tab2">Lô hàng phụ</a></li>
+                    
+                </ul>
+             
+                <div class="tab-content">
+                    <div id="tab1" class="tab active">
+
+                        <div class="login_body">
+                              <form id="add_shipment" method="post" action="">
+                                  <table style="margin-top:0px;width:100%">
+                                    
+                                    <tr>
+                                        <td>Xe</td>
+                                        <td>
+                                            <input type="text" autofocus autocomplete="off"   id="vehicle" name="vehicle" tabindex="1" required="required" placeholder="Nhập tên hoặc * để chọn" >
+                                            <ul id="vehicle_list_id"></ul>
+                                        </td>
+                                        <td>Kho đi </td>
+                                        <td>
+                                            <input type="text"  autocomplete="off"  id="shipment_from" name="shipment_from" tabindex="5" required="required" placeholder="Nhập tên hoặc * để chọn" >
+                                            <ul id="shipment_from_list_id"></ul>
+                                        </td>
+                                        
+                                        
+                                        <td>Cước </td>
+                                        <td>
+                                            <input style="width:90px" type="text" class="number" id="shipment_charge" name="shipment_charge" tabindex="9" >
+                                        </td>
+
+                                        <td>Hoa hồng</td>
+                                        <td><input type="text" class="number" id="commission" name="commission" tabindex="13" ></td>
+
+                                        
+
+                                    </tr>
+                                    <tr>
+                                        <td>Khách hàng </td>
+                                        <td>
+                                            <input type="text" autocomplete="off" id="customer"  name="customer" tabindex="2" required="required" placeholder="Nhập tên hoặc * để chọn"  >
+                                            <ul id="customer_list_id"></ul>
+                                        </td>
+                                        
+                                        <td>Kho đến </td>
+                                        <td>
+                                            <input type="text"  autocomplete="off"  id="shipment_to" name="shipment_to" tabindex="6" required="required" placeholder="Nhập tên hoặc * để chọn" >
+                                            <ul id="shipment_to_list_id"></ul>
+                                        </td>
+                                        
+                                        <td>Trọng tải </td>
+                                        <td>
+                                            <input style="width:30px" type="text" class="number" id="shipment_ton" name="shipment_ton" tabindex="10" >
+                                            &nbsp; &nbsp;
+                                            <span id="sp_thuc_chuyen">Thực chuyển</span>
+                                            <input style="width:30px" type="text" class="number" id="shipment_ton_net" name="shipment_ton_net" tabindex="8" >
+                                        </td>
+                                        <td>Đơn vị</td>
+                                        <td><input style="width:30px" type="text" class="number" id="commission_number" name="commission_number" tabindex="14" ></td>
+                                        
+                                        
+                                    </tr>
+                                    <tr>
+                                        <td>Vòng chạy </td>
+                                        <td><input type="text" style="width:50px" class="number" id="shipment_round" name="shipment_round" tabindex="3" required="required" ></td>
+                                        <td>Giá dầu </td>
+                                        <td><input type="text" class="number" id="oil_cost" name="oil_cost" tabindex="7" required="required" ></td>
+                                        <td>Cước phát sinh</td>
+                                        <td>
+                                            <input style="width:90px" type="text" class="number" id="shipment_charge_excess" name="shipment_charge_excess" tabindex="9" >
+                                        </td>
+                                        
+                                        <td>Chi hộ </td>
+                                        <td><input type="text" class="number" id="shipment_loan" name="shipment_loan" tabindex="15" ></td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td>Ngày</td>
+                                        <td><input type="text"  id="shipment_date" name="shipment_date" tabindex="4" required="required" ></td>
+                                        <td><input type="checkbox"  id="sub_driver" name="sub_driver" value="1" tabindex="8" > Tài xế phụ</td>
+                                        <td>
+                                            <input type="text" disabled style="width:90px" id="sub_driver_name" name="sub_driver_name" >
+                                            
+                                        </td>
+                                        <td>Nội dung</td>
+                                        <td><textarea type="text"  id="shipment_charge_excess_comment" name="shipment_charge_excess_comment" tabindex="16" placeholder="Nội dung cước phát sinh" ></textarea></td>
+                                        
+                                        <td>Nội dung chi</td>
+                                        <td><textarea type="text"  id="loan_content" name="loan_content" tabindex="16" placeholder="Nội dung chi hộ" ></textarea></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Ứng dầu lần 1 </td>
+                                        <td>
+                                            <select name="oil_add_dc" id="oil_add_dc" style="width:120px">
+                                                <option value="1"> Bãi </option>
+                                                <option  value="2"> Long Bình </option>
+                                                <option value="3"> Đăk Lăk </option>
+                                                <option value="4"> Quy Nhơn </option>
+                                                <option value="6"> Quỳnh Trung </option>
+                                                <option value="7"> GL-78-Chuprong </option>
+                                                <option value="8"> ĐL-Đức Thành </option>
+                                                <option value="5"> Dọc đường </option>
+                                            </select>
+                                            
+                                            <input style="width:50px" type="text" class="number" id="oil_add" name="oil_add" tabindex="11" >
+                                        </td>
+                                        <td>Ứng dầu lần 2</td>
+                                        <td>
+                                            <select name="oil_add_dc2" id="oil_add_dc2" style="width:120px">
+                                                <option value="1"> Bãi </option>
+                                                <option  value="2"> Long Bình </option>
+                                                <option value="3"> Đăk Lăk </option>
+                                                <option value="4"> Quy Nhơn </option>
+                                                <option value="6"> Quỳnh Trung </option>
+                                                <option value="7"> GL-78-Chuprong </option>
+                                                <option value="8"> ĐL-Đức Thành </option>
+                                                <option value="5"> Dọc đường </option>
+                                            </select>
+                                            
+                                            <input style="width:50px" type="text" class="number" id="oil_add2" name="oil_add2" tabindex="12" >
+                                        </td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td colspan="8">
+                                            <fieldset class="groupbox">
+                                                <legend>
+                                                    <span><h3>Chi phí</h3></span>
+                                                </legend>
+
+                                                <table>
+                                                    <tr>
+                                                        <td>Chi phí phát sinh </td>
+                                                        <td><input type="text" class="number" id="cost_add" name="cost_add" tabindex="17" ></td>
+                                                        <td>Comment </td>
+                                                        <td><textarea type="text"  id="cost_add_comment" name="cost_add_comment" tabindex="18" placeholder="Nội dung chi phí phát sinh" ></textarea></td>
+                                                        <td>Chi phí có HĐ </td>
+                                                        <td><input type="text" class="number" id="cost_vat" name="cost_vat" tabindex="19" ></td>
+                                                        <td>Dầu phát sinh </td>
+                                                        <td><input style="width:30px" type="text" class="number" id="oil_excess" name="oil_excess" tabindex="20" >
+                                                            <input style="width:145px" id="oil_excess_dc" name="oil_excess_dc" placeholder="Địa điểm đổ dầu" ><br>
+                                                            <input id="oil_excess_comment" name="oil_excess_comment" placeholder="Nội dung" >
+                                                        </td>
+                                                        
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Tạm ứng</td>
+                                                        <td><input type="text" class="number" id="advance" name="advance" tabindex="21" ></td>
+                                                        <td>Nội dung</td>
+                                                        <td><textarea type="text"  id="advance_comment" name="advance_comment" tabindex="22" placeholder="Nội dung tạm ứng" ></textarea></td>
+                                                        <td>Nội dung</td>
+                                                        <td><textarea type="text"  id="cost_vat_comment" name="cost_vat_comment" tabindex="23" placeholder="Nội dung phi phí có HĐ" ></textarea></td>
+                                                        <td>Dầu thừa/thiếu </td>
+                                                        <td><input style="width:30px" type="text" class="number" id="oil_residual" name="oil_residual" tabindex="24" >
+                                                            <textarea style="width:150px"  id="oil_residual_comment" name="oil_residual_comment" placeholder="Nội dung" ></textarea>
+                                                        </td>
+                                                        
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Chi phí thừa</td>
+                                                        <td><input type="text" class="number" id="cost_excess" name="cost_excess" tabindex="25" ></td>
+                                                        <td>Nội dung</td>
+                                                        <td><textarea type="text"  id="cost_excess_comment" name="cost_excess_comment" tabindex="26" placeholder="Nội dung phi phí thừa" ></textarea></td>
+                                                        <td>Cầu đường phát sinh</td>
+                                                        <td><input type="text" class="number" id="bridge_cost_add" name="bridge_cost_add" tabindex="27" ></td>
+                                                    </tr>
+                                                </table>
+
+                                            </fieldset>
+                                        </td>
+                                    </tr>
+                                    
+                                    
+                                    
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td><input type="hidden" readonly id="yes" name="yes" required="required" ></td>
+                                        <td><input type="hidden" readonly id="check_temp" name="check_temp" required="required" ></td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                    
+                                    
+                                     <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td><input type="submit" name="submit" value="Hoàn tất" tabindex="28"></td>
+                                        <td ><input type="reset" name="reset" value="Nhập lại" tabindex="29"></td>
+                                        <td></td>
+                                        <td></td>
+                                         
+                                    </tr>
+                                </table> 
+                            </form>
+                        </div>
+                    </div>
+
+                    <div id="tab2" class="tab active">
+
+                        <div class="login_body">
+                              <form id="add_shipment_sub" method="post" action="">
+                                  <table style="margin-top:0px;width:100%">
+                                    
+                                    <tr>
+                                        <td>Xe</td>
+                                        <td>
+                                            <input type="text" autofocus autocomplete="off"   id="vehicle_sub" name="vehicle_sub" tabindex="1" required="required" placeholder="Nhập tên hoặc * để chọn" >
+                                            <ul id="vehicle_sub_list_id"></ul>
+                                        </td>
+                                        <td>Kho đi </td>
+                                        <td>
+                                            <input type="text"  autocomplete="off"  id="shipment_from_sub" name="shipment_from_sub" tabindex="5" required="required" placeholder="Nhập tên hoặc * để chọn" >
+                                            <ul id="shipment_from_sub_list_id"></ul>
+                                        </td>
+                                        
+                                        
+                                        <td>Cước </td>
+                                        <td>
+                                            <input style="width:90px" type="text" class="number" id="shipment_charge_sub" name="shipment_charge_sub" tabindex="9" >
+                                        </td>
+                                        <td>Hoa hồng</td>
+                                        <td><input type="text" class="number" id="commission_sub" name="commission_sub" tabindex="13" ></td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>Khách hàng </td>
+                                        <td>
+                                            <input type="text" autocomplete="off" id="customer_sub"  name="customer_sub" tabindex="2" required="required" placeholder="Nhập tên hoặc * để chọn"  >
+                                            <ul id="customer_sub_list_id"></ul>
+                                        </td>
+                                        
+                                        <td>Kho đến </td>
+                                        <td>
+                                            <input type="text"  autocomplete="off"  id="shipment_to_sub" name="shipment_to_sub" tabindex="6" required="required" placeholder="Nhập tên hoặc * để chọn" >
+                                            <ul id="shipment_to_sub_list_id"></ul>
+                                        </td>
+                                        
+                                        <td>Trọng tải </td>
+                                        <td>
+                                            <input style="width:30px" type="text" class="number" id="shipment_ton_sub" name="shipment_ton_sub" tabindex="10" >
+                                            &nbsp; &nbsp;
+                                            <span id="sp_thuc_chuyen_sub">Thực chuyển</span>
+                                            <input style="width:30px" type="text" class="number" id="shipment_ton_net_sub" name="shipment_ton_net_sub" tabindex="8" >
+                                        </td>
+                                        <td>Đơn vị</td>
+                                        <td><input style="width:30px" type="text" class="number" id="commission_number_sub" name="commission_number_sub" tabindex="14" ></td>
+                                        
+                                        
+                                    </tr>
+                                    <tr>
+                                        <td>Vòng chạy </td>
+                                        <td><input type="text" style="width:50px" class="number" id="shipment_round_sub" name="shipment_round_sub" tabindex="3" required="required" ></td>
+                                        <td>Giá dầu </td>
+                                        <td><input type="text" class="number" id="oil_cost_sub" name="oil_cost_sub" tabindex="7" required="required" ></td>
+                                        
+                                        <td>Ứng dầu lần 1 </td>
+                                        <td>
+                                            <select name="oil_add_dc_sub" id="oil_add_dc_sub" style="width:120px">
+                                                <option value="1"> Bãi </option>
+                                                <option  value="2"> Long Bình </option>
+                                                <option value="3"> Đăk Lăk </option>
+                                                <option value="4"> Quy Nhơn </option>
+                                                <option value="6"> Quỳnh Trung </option>
+                                                <option value="7"> GL-78-Chuprong </option>
+                                                <option value="8"> ĐL-Đức Thành </option>
+                                                <option value="5"> Dọc đường </option>
+                                            </select>
+                                            
+                                            <input style="width:50px" type="text" class="number" id="oil_add_sub" name="oil_add_sub" tabindex="11" >
+                                        </td>
+                                        <td>Chi hộ </td>
+                                        <td><input type="text" class="number" id="shipment_loan_sub" name="shipment_loan_sub" tabindex="15" ></td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td>Ngày</td>
+                                        <td><input type="text"  id="shipment_date_sub" name="shipment_date_sub" tabindex="4" required="required" ></td>
+                                        <td><input type="checkbox"  id="sub_driver_sub" name="sub_driver_sub" value="1" tabindex="8" > Tài xế phụ</td>
+                                        <td>
+                                            <input type="text" disabled style="width:90px" id="sub_driver_name_sub" name="sub_driver_name_sub" >
+                                            
+                                        </td>
+                                        <td>Ứng dầu lần 2</td>
+                                        <td>
+                                            <select name="oil_add_dc2_sub" id="oil_add_dc2_sub" style="width:120px">
+                                                <option value="1"> Bãi </option>
+                                                <option  value="2"> Long Bình </option>
+                                                <option value="3"> Đăk Lăk </option>
+                                                <option value="4"> Quy Nhơn </option>
+                                                <option value="6"> Quỳnh Trung </option>
+                                                <option value="7"> GL-78-Chuprong </option>
+                                                <option value="8"> ĐL-Đức Thành </option>
+                                                <option value="5"> Dọc đường </option>
+                                            </select>
+                                            
+                                            <input style="width:50px" type="text" class="number" id="oil_add2_sub" name="oil_add2_sub" tabindex="12" >
+                                        </td>
+                                        <td>Nội dung chi</td>
+                                        <td><textarea type="text"  id="loan_content_sub" name="loan_content_sub" tabindex="16" placeholder="Nội dung chi hộ" ></textarea></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Chi phí phát sinh </td>
+                                        <td><input type="text" class="number" id="cost_add_sub" name="cost_add_sub" tabindex="17" ></td>
+                                        <td>Comment </td>
+                                        <td><textarea type="text"  id="cost_add_comment_sub" name="cost_add_comment_sub" tabindex="18" placeholder="Nội dung chi phí phát sinh" ></textarea></td>
+                                    </tr>
+                                    
+                                                                        
+                                    
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td><input type="hidden" readonly id="yes_sub" name="yes_sub" required="required" ></td>
+                                        <td><input type="hidden" readonly id="check_temp_sub" name="check_temp_sub" required="required" ></td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                    
+                                    
+                                     <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td><input type="submit" name="submit" value="Hoàn tất" tabindex="19"></td>
+                                        <td ><input type="reset" name="reset" value="Nhập lại" tabindex="20"></td>
+                                        <td></td>
+                                        <td></td>
+                                         
+                                    </tr>
+                                </table> 
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </fieldset>
+    <div id="error" class="error"><?php echo isset($error) ? $error : null; ?></div>
+</div>
+
+<?php if ($_SESSION['role_logined'] != 7 && $_SESSION['role_logined'] != 4 ) { ?>
+<script type="text/javascript">
+var dd = 0;
+var ud = 0;
+
+var dd2 = 0;
+var ud2 = 0;
+
+$('html').click(function(e) {
+    if(e.target == '[object HTMLDivElement]' || e.target == '[object HTMLBodyElement]') {
+        $('.add-field').slideUp(500);    
+    }
+   $('#shipment_from_list_id').slideUp(200);
+    $('#shipment_to_list_id').slideUp(200);
+    $('#vehicle_list_id').slideUp(200);
+    $('#customer_list_id').slideUp(200);
+    $('#shipment_from_sub_list_id').slideUp(200);
+    $('#shipment_to_sub_list_id').slideUp(200);
+    $('#vehicle_sub_list_id').slideUp(200);
+    $('#customer_sub_list_id').slideUp(200);
+});
+    $('.edit_tr').click(function(e){
+        var check_sub = $(this).attr('title');
+        if (check_sub==1) {
+            $('#tab2').show();
+            $('.tab-links li:nth-child(2)').show();
+            $('#tab2').addClass('active');
+            $('#tab1').hide();
+            $('.tab-links li:nth-child(2)').addClass('active');
+            $('.tab-links li:nth-child(1)').hide();
+            $('#tab2').css({'display':'block'});
+            $('#tab1').hide();
+
+            if(e.target != '[object HTMLButtonElement]' && !$('.checkbox').is(':focus') ){
+                if(!$('.checkbox').is(':checked')){
+                    $("html, body").animate({ scrollTop: $('.add-field').offset().top }, 300);
+                }
+                
+                var shipment_from = $(this).find("#shipment_from_"+$(this).attr('id')).text();
+                var shipment_to = $(this).find("#shipment_to_"+$(this).attr('id')).text();
+                var customer = $(this).find("#customer_"+$(this).attr('id')).text();
+                var vehicle = $(this).find("#vehicle_"+$(this).attr('id')).text();
+                var shipment_charge = $(this).find("#shipment_charge_"+$(this).attr('id')).text();
+                var shipment_ton = $(this).find("#shipment_ton_"+$(this).attr('id')).text();
+                var shipment_round = $(this).find("#shipment_round_"+$(this).attr('id')).text();
+                var oil_cost = $(this).find("#oil_cost_"+$(this).attr('id')).text();
+                var oil_add = $(this).find("#oil_add_"+$(this).attr('id')).text();
+                var oil_add2 = $(this).find("#oil_add2_"+$(this).attr('id')).text();
+                var cost_add = $(this).find("#cost_add_"+$(this).attr('id')).text();
+                var oil_add_dc = $(this).find("#oil_add_dc_"+$(this).attr('id')).text();
+                var oil_add_dc2 = $(this).find("#oil_add_dc2_"+$(this).attr('id')).text();
+                var cost_add_comment = $(this).find("#cost_add_comment_"+$(this).attr('id')).text();
+                var shipment_date = $(this).find("#shipment_date_"+$(this).attr('id')).text();
+                var shipment_loan = $(this).find("#shipment_loan_"+$(this).attr('id')).text();
+                var loan_content = $(this).find("#loan_content_"+$(this).attr('id')).text();
+                var sub_driver = $(this).find("#sub_driver_"+$(this).attr('id')).text();
+                var sub_driver_name = $(this).find("#sub_driver_name_"+$(this).attr('id')).text();
+                var sub_driver2 = $(this).find("#sub_driver2_"+$(this).attr('id')).text();
+                var oil_excess = $(this).find("#oil_excess_"+$(this).attr('id')).text();
+                var oil_excess_comment = $(this).find("#oil_excess_comment_"+$(this).attr('id')).text();
+                var oil_excess_dc = $(this).find("#oil_excess_dc_"+$(this).attr('id')).text();
+                var advance = $(this).find("#advance_"+$(this).attr('id')).text();
+                var advance_comment = $(this).find("#advance_comment_"+$(this).attr('id')).text();
+                var commission = $(this).find("#commission_"+$(this).attr('id')).text();
+                var commission_number = $(this).find("#commission_number_"+$(this).attr('id')).text();
+
+                var oil_residual = $(this).find("#oil_residual_"+$(this).attr('id')).text();
+                var oil_residual_comment = $(this).find("#oil_residual_comment_"+$(this).attr('id')).text();
+
+                var cost_vat = $(this).find("#cost_vat_"+$(this).attr('id')).text();
+                var cost_vat_comment = $(this).find("#cost_vat_comment_"+$(this).attr('id')).text();
+
+                var cost_excess = $(this).find("#cost_excess_"+$(this).attr('id')).text();
+                var cost_excess_comment = $(this).find("#cost_excess_comment_"+$(this).attr('id')).text();
+
+                var revenue_other = $(this).find("#revenue_other_"+$(this).attr('id')).text();
+
+
+
+
+                //alert(shipment_from);
+                $('#yes_sub').val($(this).attr('id'));
+                
+                $('#shipment_from_sub').val(shipment_from);
+                $('#shipment_to_sub').val(shipment_to);
+                $('#customer_sub').val(customer);
+                $('#vehicle_sub').val(vehicle);
+                $('#shipment_charge_sub').val(shipment_charge);
+                $('#shipment_ton_sub').val(shipment_ton);
+                $('#shipment_round_sub').val(shipment_round);
+                $('#oil_cost_sub').val(oil_cost);
+                $('#oil_add_sub').val(oil_add);
+                $('#oil_add2_sub').val(oil_add2);
+                $('#cost_add_sub').val(cost_add);
+                $('#cost_add_comment_sub').val(cost_add_comment);
+                $('#shipment_date_sub').val(shipment_date.replace(/\//g,"-"));
+
+                $('#commission_sub').val(commission);
+                $('#commission_number_sub').val(commission_number);
+
+                $('#shipment_loan_sub').val(shipment_loan);
+                $('#loan_content_sub').val(loan_content);
+                if (sub_driver == 1) {
+                    $('#sub_driver_sub').prop('checked',true);
+                    $('#sub_driver_name_sub').attr('disabled',false);
+                };
+                if (sub_driver2 == 1) {
+                    $('#sub_driver2_sub').prop('checked',true);
+                };
+                $('#sub_driver_name_sub').val(sub_driver_name);
+                
+                
+                
+                $('#oil_add_dc_sub option[value='+oil_add_dc+']').attr('selected','selected');
+                $('#oil_add_dc2_sub option[value='+oil_add_dc2+']').attr('selected','selected');
+
+                $('#shipment_from_sub').attr('data',$(this).find("#shipment_from_"+$(this).attr('id')).attr('data'));
+                
+                $("#shipment_from_sub").attr("code",'true');
+                $('#shipment_to_sub').attr('data',$(this).find("#shipment_to_"+$(this).attr('id')).attr('data'));
+                
+                $("#shipment_to_sub").attr("code",'true');
+
+                $('#vehicle_sub').attr('data',$(this).find("#vehicle_"+$(this).attr('id')).attr('data'));
+                $("#vehicle_sub").attr("code",'true');
+                $('#customer_sub').attr('data',$(this).find("#customer_"+$(this).attr('id')).attr('data'));
+                $("#customer_sub").attr("code",'true');
+                
+                /*$('#oil_add').prop('disabled',false);
+                if (oil_add_dc == 5) {
+                    $('#oil_add').prop('disabled',true);
+                };*/
+
+                $('#sp_thuc_chuyen_sub').show();
+                $('#shipment_ton_net_sub').show();
+                $('#shipment_ton_net_sub').val(shipment_ton);
+                $("#shipment_ton_net_sub").attr("required",'required');
+
+
+                dd = oil_add_dc;
+                ud = oil_add;
+
+                dd2 = oil_add_dc2;
+                ud2 = oil_add2;
+
+                $( ".add-field" ).dialog( "open" );
+
+            }
+        }
+        else{
+            $('#tab1').show();
+            $('.tab-links li:nth-child(1)').show();
+            $('#tab1').addClass('active');
+            $('#tab2').hide();
+            $('.tab-links li:nth-child(1)').addClass('active');
+            $('.tab-links li:nth-child(2)').hide();
+            $('#tab1').css({'display':'block'});
+            $('#tab2').hide();
+
+            if(e.target != '[object HTMLButtonElement]' && !$('.checkbox').is(':focus') ){
+                if(!$('.checkbox').is(':checked')){
+                    $("html, body").animate({ scrollTop: $('.add-field').offset().top }, 300);
+                }
+                
+                var shipment_from = $(this).find("#shipment_from_"+$(this).attr('id')).text();
+                var shipment_to = $(this).find("#shipment_to_"+$(this).attr('id')).text();
+                var customer = $(this).find("#customer_"+$(this).attr('id')).text();
+                var vehicle = $(this).find("#vehicle_"+$(this).attr('id')).text();
+                var shipment_charge = $(this).find("#shipment_charge_"+$(this).attr('id')).text();
+                var shipment_ton = $(this).find("#shipment_ton_"+$(this).attr('id')).text();
+                var shipment_round = $(this).find("#shipment_round_"+$(this).attr('id')).text();
+                var oil_cost = $(this).find("#oil_cost_"+$(this).attr('id')).text();
+                var oil_add = $(this).find("#oil_add_"+$(this).attr('id')).text();
+                var oil_add2 = $(this).find("#oil_add2_"+$(this).attr('id')).text();
+                var cost_add = $(this).find("#cost_add_"+$(this).attr('id')).text();
+                var oil_add_dc = $(this).find("#oil_add_dc_"+$(this).attr('id')).text();
+                var oil_add_dc2 = $(this).find("#oil_add_dc2_"+$(this).attr('id')).text();
+                var cost_add_comment = $(this).find("#cost_add_comment_"+$(this).attr('id')).text();
+                var shipment_date = $(this).find("#shipment_date_"+$(this).attr('id')).text();
+                var shipment_loan = $(this).find("#shipment_loan_"+$(this).attr('id')).text();
+                var loan_content = $(this).find("#loan_content_"+$(this).attr('id')).text();
+                var sub_driver = $(this).find("#sub_driver_"+$(this).attr('id')).text();
+                var sub_driver_name = $(this).find("#sub_driver_name_"+$(this).attr('id')).text();
+                var sub_driver2 = $(this).find("#sub_driver2_"+$(this).attr('id')).text();
+                var oil_excess = $(this).find("#oil_excess_"+$(this).attr('id')).text();
+                var oil_excess_comment = $(this).find("#oil_excess_comment_"+$(this).attr('id')).text();
+                var oil_excess_dc = $(this).find("#oil_excess_dc_"+$(this).attr('id')).text();
+                var advance = $(this).find("#advance_"+$(this).attr('id')).text();
+                var advance_comment = $(this).find("#advance_comment_"+$(this).attr('id')).text();
+                var commission = $(this).find("#commission_"+$(this).attr('id')).text();
+                var commission_number = $(this).find("#commission_number_"+$(this).attr('id')).text();
+
+                var oil_residual = $(this).find("#oil_residual_"+$(this).attr('id')).text();
+                var oil_residual_comment = $(this).find("#oil_residual_comment_"+$(this).attr('id')).text();
+
+                var cost_vat = $(this).find("#cost_vat_"+$(this).attr('id')).text();
+                var cost_vat_comment = $(this).find("#cost_vat_comment_"+$(this).attr('id')).text();
+
+                var cost_excess = $(this).find("#cost_excess_"+$(this).attr('id')).text();
+                var cost_excess_comment = $(this).find("#cost_excess_comment_"+$(this).attr('id')).text();
+
+                var shipment_charge_excess = $(this).find("#shipment_charge_excess_"+$(this).attr('id')).text();
+                var shipment_charge_excess_comment = $(this).find("#shipment_charge_excess_comment_"+$(this).attr('id')).text();
+
+                var bridge_cost_add = $(this).find("#bridge_cost_add_"+$(this).attr('id')).text();
+
+                //var revenue_other = $(this).find("#revenue_other_"+$(this).attr('id')).text();
+
+                //alert(shipment_from);
+                $('#yes').val($(this).attr('id'));
+                
+                $('#shipment_from').val(shipment_from);
+                $('#shipment_to').val(shipment_to);
+                $('#customer').val(customer);
+                $('#vehicle').val(vehicle);
+                $('#shipment_charge').val(shipment_charge);
+                $('#shipment_ton').val(shipment_ton);
+                $('#shipment_round').val(shipment_round);
+                $('#oil_cost').val(oil_cost);
+                $('#oil_add').val(oil_add);
+                $('#oil_add2').val(oil_add2);
+                $('#cost_add').val(cost_add);
+                $('#cost_add_comment').val(cost_add_comment);
+                $('#shipment_date').val(shipment_date.replace(/\//g,"-"));
+
+                $('#shipment_loan').val(shipment_loan);
+                $('#loan_content').val(loan_content);
+                if (sub_driver == 1) {
+                    $('#sub_driver').prop('checked',true);
+                    $('#sub_driver_name').attr('disabled',false);
+                };
+                if (sub_driver2 == 1) {
+                    $('#sub_driver2').prop('checked',true);
+                };
+                $('#sub_driver_name').val(sub_driver_name);
+                $('#oil_excess').val(oil_excess);
+                $('#oil_excess_comment').val(oil_excess_comment);
+                $('#oil_excess_dc').val(oil_excess_dc);
+                $('#advance').val(advance);
+                $('#advance_comment').val(advance_comment);
+                $('#commission_number').val(commission_number);
+                $('#commission').val(commission);
+
+                $('#oil_residual').val(oil_residual);
+                $('#oil_residual_comment').val(oil_residual_comment);
+
+                $('#cost_vat').val(cost_vat);
+                $('#cost_vat_comment').val(cost_vat_comment);
+
+                $('#cost_excess').val(cost_excess);
+                $('#cost_excess_comment').val(cost_excess_comment);
+
+                $('#shipment_charge_excess').val(shipment_charge_excess);
+                $('#shipment_charge_excess_comment').val(shipment_charge_excess_comment);
+
+                $('#bridge_cost_add').val(bridge_cost_add);
+
+                //$('#revenue_other').val(revenue_other);
+                
+                
+                $('#oil_add_dc option[value='+oil_add_dc+']').attr('selected','selected');
+                $('#oil_add_dc2 option[value='+oil_add_dc2+']').attr('selected','selected');
+
+                $('#shipment_from').attr('data',$(this).find("#shipment_from_"+$(this).attr('id')).attr('data'));
+                
+                $("#shipment_from").attr("code",'true');
+                $('#shipment_to').attr('data',$(this).find("#shipment_to_"+$(this).attr('id')).attr('data'));
+                
+                $("#shipment_to").attr("code",'true');
+
+                $('#vehicle').attr('data',$(this).find("#vehicle_"+$(this).attr('id')).attr('data'));
+                $("#vehicle").attr("code",'true');
+                $('#customer').attr('data',$(this).find("#customer_"+$(this).attr('id')).attr('data'));
+                $("#customer").attr("code",'true');
+                
+                /*$('#oil_add').prop('disabled',false);
+                if (oil_add_dc == 5) {
+                    $('#oil_add').prop('disabled',true);
+                };*/
+
+                $('#sp_thuc_chuyen').show();
+                $('#shipment_ton_net').show();
+                $('#shipment_ton_net').val(shipment_ton);
+                $("#shipment_ton_net").attr("required",'required');
+
+
+                dd = oil_add_dc;
+                ud = oil_add;
+
+                dd2 = oil_add_dc2;
+                ud2 = oil_add2;
+
+                $( ".add-field" ).dialog( "open" );
+
+            }
+        }
+
+
+        var lock = $(this).attr('alt');
+        if (lock==1) {
+            /*$('input[name="submit"]').remove();
+            $('input[name="reset"]').remove();
+            $('input[type="button"]').remove();*/
+            $('#shipment_charge').attr('disabled',true);
+            //$('#shipment_charge_excess').attr('disabled',true);
+            $('#shipment_ton').attr('disabled',true);
+            $('#shipment_ton_net').attr('disabled',true);
+            $('#vehicle').attr('disabled',true);
+            $('#shipment_from').attr('disabled',true);
+            $('#shipment_to').attr('disabled',true);
+            //$('#shipment_round').attr('disabled',true);
+            $('#customer').attr('disabled',true);
+
+            $('.add-field input').attr('disabled',true);
+
+            $('#shipment_charge_sub').attr('disabled',true);
+            $('#shipment_ton_sub').attr('disabled',true);
+            $('#shipment_ton_net_sub').attr('disabled',true);
+            $('#vehicle_sub').attr('disabled',true);
+            $('#shipment_from_sub').attr('disabled',true);
+            $('#shipment_to_sub').attr('disabled',true);
+            //$('#shipment_round_sub').attr('disabled',true);
+            $('#customer_sub').attr('disabled',true);
+        }
+
+        var oil_lock = $(this).attr('tabindex');
+        if (oil_lock==1) {
+            $('#oil_add_dc').attr('disabled',true);
+            $('#oil_add').attr('disabled',true);
+            $('#oil_add_dc2').attr('disabled',true);
+            $('#oil_add2').attr('disabled',true);
+
+            $('#oil_add_dc_sub').attr('disabled',true);
+            $('#oil_add_sub').attr('disabled',true);
+            $('#oil_add_dc2_sub').attr('disabled',true);
+            $('#oil_add2_sub').attr('disabled',true);
+        }
+
+    });
+
+
+</script>
+<script type="text/javascript">
+
+function add_click(){
+    $('#yes').val("");
+    $('#yes_sub').val("");
+    $('#check_temp').val("");
+    $('#check_temp_sub').val("");
+
+    $('.add-field').slideDown(500);
+    $("html, body").animate({ scrollTop: $('.add-field').offset().top }, 300);
+
+        $('#vehicle').focus();
+        
+        $('#shipment_charge').val(0);
+        $('#shipment_ton').val(0);
+        $('#shipment_round').val(0);
+        $('#oil_add').val(0);
+        $('#oil_add2').val(0);
+        $('#cost_add').val(0);
+        $('#oil_cost').val(<?php echo $giadauhientai ?>);
+        $('#cost_add_comment').val("");
+        $('#shipment_date').val("");
+        $('#oil_add_dc option[value=1]').attr('selected','selected');
+        $('#oil_add_dc2 option[value=1]').attr('selected','selected');
+        $('#loan_content').val("");
+        $('#shipment_loan').val(0);
+        $('#sub_driver').prop('checked',false);
+        $('#sub_driver2').prop('checked',false);
+        $('#sub_driver_name').val("");
+        $('#sub_driver_name').attr('disabled',true);
+        $('#oil_excess').val(0);
+        $('#oil_excess_comment').val("");
+        $('#oil_excess_dc').val("");
+        $('#advance').val(0);
+        $('#advance_comment').val("");
+        $('#commission_number').val(1);
+        $('#commission').val(0);
+
+        $('#oil_residual').val(0);
+        $('#oil_residual_comment').val("");
+
+        $('#cost_vat').val(0);
+        $('#cost_vat_comment').val("");
+
+        $('#cost_excess').val(0);
+        $('#cost_excess_comment').val("");
+
+        $('#shipment_charge_excess').val(0);
+        $('#shipment_charge_excess_comment').val("");
+
+        $('#bridge_cost_add').val(0);
+
+
+        $('.number').focus(function(){
+            if ( $(this).val() == '0') {
+               $(this).val(""); 
+            };
+            
+        });
+        $('.number').blur(function(){
+            if ( $(this).val() == "") {
+                $(this).val(0);
+            };
+            
+        });
+
+
+
+        $("#shipment_from").attr("code",'false');
+        $('#shipment_from').val("");
+        $("#shipment_to").attr("code",'false');
+        $('#shipment_to').val("");
+
+        $('#customer').val("");
+        $('#vehicle').val("");
+        $("#customer").attr("code",'false');
+        $("#vehicle").attr("code",'false');
+
+        $('#shipment_charge').prop('disabled',false);
+        //$('#shipment_charge_excess').prop('disabled',false);
+        $('#shipment_ton').prop('disabled',false);
+
+        $('#shipment_ton_net').attr('disabled',false);
+        $('#vehicle').attr('disabled',false);
+        $('#shipment_from').attr('disabled',false);
+        $('#shipment_to').attr('disabled',false);
+        //$('#shipment_round').attr('disabled',false);
+        $('#customer').attr('disabled',false);
+
+        $('.add-field input').attr('disabled',false);
+
+        //$('#oil_add').prop('disabled',false);
+
+        $('#oil_add_dc').attr('disabled',false);
+        $('#oil_add').attr('disabled',false);
+        $('#oil_add_dc2').attr('disabled',false);
+        $('#oil_add2').attr('disabled',false);
+
+        $('#oil_add_dc_sub').attr('disabled',false);
+        $('#oil_add_sub').attr('disabled',false);
+        $('#oil_add_dc2_sub').attr('disabled',false);
+        $('#oil_add2_sub').attr('disabled',false);
+
+        $('#sp_thuc_chuyen').hide();
+        $('#shipment_ton_net').hide();
+        $('#shipment_ton_net').val("");
+
+
+        $('#shipment_charge_sub').val(0);
+        $('#shipment_ton_sub').val(0);
+        $('#shipment_round_sub').val(0);
+        $('#oil_add_sub').val(0);
+        $('#oil_add2_sub').val(0);
+        $('#cost_add_sub').val(0);
+        $('#oil_cost_sub').val(<?php echo $giadauhientai ?>);
+        $('#cost_add_comment_sub').val("");
+        $('#shipment_date_sub').val("");
+        $('#oil_add_dc_sub option[value=1]').attr('selected','selected');
+        $('#oil_add_dc2_sub option[value=1]').attr('selected','selected');
+        $('#loan_content_sub').val("");
+        $('#shipment_loan_sub').val(0);
+        $('#commission_sub').val(0);
+        $('#commission_number_sub').val(1);
+        $('#sub_driver_sub').prop('checked',false);
+        $('#sub_driver2_sub').prop('checked',false);
+        $('#sub_driver_name_sub').val("");
+        $('#sub_driver_name_sub').attr('disabled',true);
+        $("#shipment_from_sub").attr("code",'false');
+        $('#shipment_from_sub').val("");
+        $("#shipment_to_sub").attr("code",'false');
+        $('#shipment_to_sub').val("");
+
+        $('#customer_sub').val("");
+        $('#vehicle_sub').val("");
+        $("#customer_sub").attr("code",'false');
+        $("#vehicle_sub").attr("code",'false');
+
+        $('#shipment_charge_sub').prop('disabled',false);
+        $('#shipment_ton_sub').prop('disabled',false);
+
+        $('#shipment_ton_net_sub').attr('disabled',false);
+        $('#vehicle_sub').attr('disabled',false);
+        $('#shipment_from_sub').attr('disabled',false);
+        $('#shipment_to_sub').attr('disabled',false);
+        //$('#shipment_round_sub').attr('disabled',false);
+        $('#customer_sub').attr('disabled',false);
+
+        //$('#oil_add').prop('disabled',false);
+
+        $('#sp_thuc_chuyen_sub').hide();
+        $('#shipment_ton_net_sub').hide();
+        $('#shipment_ton_net_sub').val("");
+
+        $('#tab1').show();
+        $('.tab-links li:nth-child(2)').show();
+        $('.tab-links li:nth-child(1)').show();
+        $('.tab-links li:nth-child(1)').addClass('active');
+        $('.tab-links li:nth-child(2)').removeClass('active');
+        $('#tab1').addClass('active');
+        $('#tab2').removeClass('active');
+
+        $( ".add-field" ).dialog( "open" );
+
+        $('.number').val(function(index, value) {
+            return value
+              .replace(/[^0-9-.]/g, "")
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+            ;
+          });
+
+}
+
+
+$(document).ready(function(){
+            // Validate form
+            $("#add_shipment").validate({
+                errorElement: "span", // Định dạng cho thẻ HTML hiện thông báo lỗi
+                rules: {
+                    
+                },
+                submitHandler: function(form) {
+                
+                    if ($('#shipment_from').attr('code') == 'false') {
+                        $('#shipment_from').val("");
+                        $('#shipment_from').focus();
+                        return false;
+                    };
+                    if ($('#shipment_to').attr('code') == 'false') {
+                        $('#shipment_to').val("");
+                        $('#shipment_to').focus();
+                        return false;
+                    };
+                    if ($('#vehicle').attr('code') == 'false') {
+                        $('#vehicle').val("");
+                        $('#vehicle').focus();
+                        return false;
+                    };
+                    if ($('#customer').attr('code') == 'false') {
+                        $('#customer').val("");
+                        $('#customer').focus();
+                        return false;
+                    };
+
+                    if ($('#cost_add').attr('value') != 0 && $('#cost_add').attr('value') != "" && $('#cost_add_comment').attr('value') == "") {
+                        
+                        $('#cost_add_comment').focus();
+                        return false;
+                    };
+                    if ($('#shipment_loan').attr('value') != 0 && $('#shipment_loan').attr('value') != "" && $('#loan_content').attr('value') == "") {
+                        
+                        $('#loan_content').focus();
+                        return false;
+                    };
+                    if ($('#advance').attr('value') != 0 && $('#advance').attr('value') != "" && $('#advance_comment').attr('value') == "") {
+                        
+                        $('#advance_comment').focus();
+                        return false;
+                    };
+                    /*if ($('#shipment_ton').attr('value') != 0 && $('#shipment_ton_net').attr('value') == 0) {
+                        $('#shipment_ton_net').focus();
+                        return false;
+                    };*/
+                
+                    var shipment_from = $('#shipment_from').attr('data');
+                    var shipment_to = $('#shipment_to').attr('data');
+                    var vehicle = $('#vehicle').attr('data');
+                    var customer = $('#customer').attr('data');
+                    var shipment_charge = $('#shipment_charge').attr('value');
+                    var shipment_ton = $('#shipment_ton').attr('value');
+                    var shipment_round = $('#shipment_round').attr('value');
+                    var oil_add = $('#oil_add').attr('value');
+                    var oil_add2 = $('#oil_add2').attr('value');
+                    var cost_add = $('#cost_add').attr('value');
+                    var oil_cost = $('#oil_cost').attr('value');
+                    var oil_add_dc = $('#oil_add_dc').val();
+                    var oil_add_dc2 = $('#oil_add_dc2').val();
+                    var cost_add_comment = $('#cost_add_comment').val();
+                    var shipment_date = $('#shipment_date').attr('value');
+
+                    var shipment_ton_net = $('#shipment_ton_net').val();
+
+                    if ($('#sub_driver').is(":checked"))
+                    {
+                      var sub_driver = $("#sub_driver").val();
+                    }
+                    else{
+                        var sub_driver = 0;
+                    }
+                    if ($('#sub_driver2').is(":checked"))
+                    {
+                      var sub_driver2 = $("#sub_driver2").val();
+                    }
+                    else{
+                        var sub_driver2 = 0;
+                    }
+                    
+                    var sub_driver_name = $('#sub_driver_name').val();
+
+                    if (sub_driver == 1 && sub_driver_name == "") {
+                        $('#sub_driver_name').focus();
+                        return false;
+                    };
+
+                    var shipment_loan = $('#shipment_loan').val();
+                    var loan_content = $('#loan_content').val();
+
+                    var oil_excess = $('#oil_excess').val();
+                    var oil_excess_comment = $('#oil_excess_comment').val();
+                    var oil_excess_dc = $('#oil_excess_dc').val();
+                    var advance = $('#advance').val();
+                    var advance_comment = $('#advance_comment').val();
+                    var commission = $('#commission').val();
+                    var commission_number = $('#commission_number').val();
+
+                    var oil_residual = $('#oil_residual').attr('value');
+                    var oil_residual_comment = $('#oil_residual_comment').attr('value');
+
+                    var cost_vat = $('#cost_vat').val();
+                    var cost_vat_comment = $('#cost_vat_comment').val();
+
+                    var cost_excess = $('#cost_excess').val();
+                    var cost_excess_comment = $('#cost_excess_comment').val();
+
+                    var shipment_charge_excess = $('#shipment_charge_excess').attr('value');
+                    var shipment_charge_excess_comment = $('#shipment_charge_excess_comment').attr('value');
+
+                    var bridge_cost_add = $('#bridge_cost_add').attr('value');
+
+
+                    //var revenue_other = $('#revenue_other').val();
+                    var check_temp = $('#check_temp').attr('value');
+
+                    var yes = $('#yes').attr('value');
+                    
+                    var action      = "them";
+                 
+                    $.ajax({
+                        type: "POST", // phương thức gởi đi
+                        url: "<?php echo BASE_URL ?>/shipment/add", // nơi mà dữ liệu sẽ chuyển đến khi submit
+                        data: {
+                            shipment_from: shipment_from,
+                            shipment_to: shipment_to,
+                            customer: customer,
+                            vehicle: vehicle,
+                            shipment_charge: shipment_charge,
+                            shipment_ton: shipment_ton,
+                            shipment_round: shipment_round,
+                            oil_add: oil_add,
+                            oil_add2: oil_add2,
+                            cost_add: cost_add,
+                            oil_cost: oil_cost,
+                            oil_add_dc: oil_add_dc,
+                            oil_add_dc2: oil_add_dc2,
+                            cost_add_comment: cost_add_comment,
+                            shipment_date: shipment_date,
+                            shipment_ton_net: shipment_ton_net,
+                            sub_driver: sub_driver,
+                            sub_driver_name: sub_driver_name,
+                            sub_driver2: sub_driver2,
+                            shipment_loan: shipment_loan,
+                            loan_content: loan_content,
+                            oil_excess: oil_excess,
+                            oil_excess_comment: oil_excess_comment,
+                            oil_excess_dc: oil_excess_dc,
+                            advance: advance,
+                            advance_comment: advance_comment,
+                            commission: commission,
+                            commission_number: commission_number,
+                            oil_residual: oil_residual,
+                            oil_residual_comment: oil_residual_comment,
+                            cost_vat: cost_vat,
+                            cost_vat_comment: cost_vat_comment,
+                            cost_excess: cost_excess,
+                            cost_excess_comment: cost_excess_comment,
+                            yes: yes,
+                            check_temp: check_temp,
+                            shipment_charge_excess: shipment_charge_excess,
+                            shipment_charge_excess_comment: shipment_charge_excess_comment,
+                            bridge_cost_add: bridge_cost_add,
+
+                            }, // giá trị post
+                        success: function(answer){ // if everything goes well
+                            //alert(answer);
+                            var data = jQuery.parseJSON(answer);
+                            
+                            $('#error').hide();
+                            $('#error').slideToggle(100); // hiển thị thẻ div success
+                            $('#error').html('<div class="successbox">'+data.err+'</div>'); // đặt kết quả trả về từ test.php vào thẻ div success
+                            $('#error').fadeOut(10000);
+
+                            if (yes != "") {
+                                if (data.err.trim() != "Bảng này đã tồn tại") {
+                                    $('#shipment_charge_'+yes).text(shipment_charge);
+                                    $('#shipment_ton_'+yes).text(shipment_ton);
+                                    $('#shipment_from_'+yes).text($('#shipment_from').val());
+                                    $('#shipment_to_'+yes).text($('#shipment_to').val());
+                                    $('#customer_'+yes).text($('#customer').val());
+                                    $('#vehicle_'+yes).text($('#vehicle').val());
+                                    $('#shipment_round_'+yes).text(shipment_round);
+                                    $('#shipment_revenue_'+yes).text(data.revenue);
+                                    $('#shipment_cost_'+yes).text(data.cost);
+                                    $('#shipment_profit_'+yes).text(data.profit);
+                                    $('#oil_cost_'+yes).text(oil_cost);
+                                    $('#shipment_date_'+yes).text(shipment_date);
+                                    $('#oil_excess_'+yes).text(oil_excess);
+
+                                    setTimeout(function() {
+                                        sapxep('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');
+                                      }, 200);
+                                }
+                            }
+                            else{
+                                if (data.err.trim() != "Bảng này đã tồn tại" && data.err.trim() != "Vui lòng hoàn tất vòng trước" && data.err.trim() != "Vui lòng cập nhật trọng tải vòng trước") {
+                                    var lastID = parseInt($('#lasted').html());
+                                    var rowCount = parseInt($('.table_data > tbody > tr').length);
+                                    $('.table_data > tbody:last')
+                                    .append(
+                                        '<tr onclick="HighLightTR(this,"#4d90fe","cc3333");" id="'+parseInt(lastID+1)+'" class="edit_tr"><td><input name="check[]" type="checkbox" class="checkbox" value="'+parseInt(lastID+1)+'"></td><td class="fix">'+parseInt(rowCount+1)+'</td><td class="fix" id="vehicle_'+parseInt(lastID+1)+'">'+$( "#vehicle" ).val()+'</td><td class="fix" id="shipment_round_'+parseInt(lastID+1)+'">'+shipment_round+'</td><td class="fix" id="shipment_date_'+parseInt(lastID+1)+'">'+shipment_date+'</td><td class="fix" id="shipment_from_'+parseInt(lastID+1)+'">'+$( "#shipment_from" ).val()+'</td><td class="fix" id="shipment_to_'+parseInt(lastID+1)+'">'+$( "#shipment_to" ).val()+'</td><td class="fix" id="customer_'+parseInt(lastID+1)+'">'+$( "#customer" ).val()+'</td><td class="fix" id="shipment_charge_'+parseInt(lastID+1)+'">'+shipment_charge+'</td><td class="fix" id="shipment_ton_'+parseInt(lastID+1)+'">'+shipment_ton+'</td><td class="fix" id="oil_cost_'+parseInt(lastID+1)+'">'+oil_cost+'</td><td class="fix" id="oil_excess_'+parseInt(lastID+1)+'">'+oil_excess+'</td><td class="fix" id="shipment_revenue_'+parseInt(lastID+1)+'">'+data.revenue+'</td><td class="fix" id="shipment_cost_'+parseInt(lastID+1)+'">'+data.cost+'</td><td class="fix" id="shipment_profit_'+parseInt(lastID+1)+'">'+data.profit+'</td><td><a class="error" onclick="del('+parseInt(lastID+1)+')">Xóa</a></td></tr>'
+                                    );
+
+                                    $('#lasted').html(parseInt(lastID+2));
+
+                                   setTimeout(function() {
+                                        sapxep('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');
+                                      }, 200);
+                                }
+                            }
+
+                            
+                            
+                        }
+                    });
+                    return false;
+                     
+                 }
+            });
+
+
+
+            $("#add_shipment_sub").validate({
+                errorElement: "span", // Định dạng cho thẻ HTML hiện thông báo lỗi
+                rules: {
+                    
+                },
+                submitHandler: function(form) {
+                
+                    if ($('#shipment_from_sub').attr('code') == 'false') {
+                        $('#shipment_from_sub').val("");
+                        $('#shipment_from_sub').focus();
+                        return false;
+                    };
+                    if ($('#shipment_to_sub').attr('code') == 'false') {
+                        $('#shipment_to_sub').val("");
+                        $('#shipment_to_sub').focus();
+                        return false;
+                    };
+                    if ($('#vehicle_sub').attr('code') == 'false') {
+                        $('#vehicle_sub').val("");
+                        $('#vehicle_sub').focus();
+                        return false;
+                    };
+                    if ($('#customer_sub').attr('code') == 'false') {
+                        $('#customer_sub').val("");
+                        $('#customer_sub').focus();
+                        return false;
+                    };
+
+                    if ($('#cost_add_sub').attr('value') != 0 && $('#cost_add_sub').attr('value') != "" && $('#cost_add_comment_sub').attr('value') == "") {
+                        
+                        $('#cost_add_comment_sub').focus();
+                        return false;
+                    };
+                    if ($('#shipment_loan_sub').attr('value') != 0 && $('#shipment_loan_sub').attr('value') != "" && $('#loan_content_sub').attr('value') == "") {
+                        
+                        $('#loan_content_sub').focus();
+                        return false;
+                    };
+                    /*if ($('#shipment_ton').attr('value') != 0 && $('#shipment_ton_net').attr('value') == 0) {
+                        $('#shipment_ton_net').focus();
+                        return false;
+                    };*/
+                
+                    var shipment_from = $('#shipment_from_sub').attr('data');
+                    var shipment_to = $('#shipment_to_sub').attr('data');
+                    var vehicle = $('#vehicle_sub').attr('data');
+                    var customer = $('#customer_sub').attr('data');
+                    var shipment_charge = $('#shipment_charge_sub').attr('value');
+                    var shipment_ton = $('#shipment_ton_sub').attr('value');
+                    var shipment_round = $('#shipment_round_sub').attr('value');
+                    var oil_add = $('#oil_add_sub').attr('value');
+                    var oil_add2 = $('#oil_add2_sub').attr('value');
+                    var cost_add = $('#cost_add_sub').attr('value');
+                    var oil_cost = $('#oil_cost_sub').attr('value');
+                    var commission = $('#commission_sub').attr('value');
+                    var commission_number = $('#commission_number_sub').attr('value');
+                    var oil_add_dc = $('#oil_add_dc_sub').val();
+                    var oil_add_dc2 = $('#oil_add_dc2_sub').val();
+                    var cost_add_comment = $('#cost_add_comment_sub').val();
+                    var shipment_date = $('#shipment_date_sub').attr('value');
+
+                    var shipment_ton_net = $('#shipment_ton_net_sub').val();
+
+                    if ($('#sub_driver_sub').is(":checked"))
+                    {
+                      var sub_driver = $("#sub_driver_sub").val();
+                    }
+                    else{
+                        var sub_driver = 0;
+                    }
+                    if ($('#sub_driver2_sub').is(":checked"))
+                    {
+                      var sub_driver2 = $("#sub_driver2_sub").val();
+                    }
+                    else{
+                        var sub_driver2 = 0;
+                    }
+                    
+                    var sub_driver_name = $('#sub_driver_name_sub').val();
+
+                    if (sub_driver == 1 && sub_driver_name == "") {
+                        $('#sub_driver_name_sub').focus();
+                        return false;
+                    };
+
+                    var shipment_loan = $('#shipment_loan_sub').val();
+                    var loan_content = $('#loan_content_sub').val();
+
+                    var check_temp = $('#check_temp_sub').attr('value');
+
+                    var yes = $('#yes_sub').attr('value');
+                    
+                    var action      = "them";
+                 
+                    $.ajax({
+                        type: "POST", // phương thức gởi đi
+                        url: "<?php echo BASE_URL ?>/shipment/addsub", // nơi mà dữ liệu sẽ chuyển đến khi submit
+                        data: {
+                            shipment_from: shipment_from,
+                            shipment_to: shipment_to,
+                            customer: customer,
+                            vehicle: vehicle,
+                            shipment_charge: shipment_charge,
+                            shipment_ton: shipment_ton,
+                            shipment_round: shipment_round,
+                            oil_add: oil_add,
+                            oil_add2: oil_add2,
+                            cost_add: cost_add,
+                            oil_cost: oil_cost,
+                            oil_add_dc: oil_add_dc,
+                            oil_add_dc2: oil_add_dc2,
+                            cost_add_comment: cost_add_comment,
+                            shipment_date: shipment_date,
+                            shipment_ton_net: shipment_ton_net,
+                            sub_driver: sub_driver,
+                            sub_driver_name: sub_driver_name,
+                            sub_driver2: sub_driver2,
+                            shipment_loan: shipment_loan,
+                            loan_content: loan_content,
+                            commission_number: commission_number,
+                            commission: commission,
+                            
+                            yes: yes,
+                            check_temp: check_temp,
+                            }, // giá trị post
+                        success: function(answer){ // if everything goes well
+                            //alert(answer);
+                            var data = jQuery.parseJSON(answer);
+                            
+                            $('#error').hide();
+                            $('#error').slideToggle(100); // hiển thị thẻ div success
+                            $('#error').html('<div class="successbox">'+data.err+'</div>'); // đặt kết quả trả về từ test.php vào thẻ div success
+                            $('#error').fadeOut(10000);
+
+                            if (yes != "") {
+                                if (data.err.trim() != "Bảng này đã tồn tại") {
+                                    $('#shipment_charge_'+yes).text(shipment_charge);
+                                    $('#shipment_ton_'+yes).text(shipment_ton);
+                                    $('#shipment_from_'+yes).text($('#shipment_from').val());
+                                    $('#shipment_to_'+yes).text($('#shipment_to').val());
+                                    $('#customer_'+yes).text($('#customer').val());
+                                    $('#vehicle_'+yes).text($('#vehicle').val());
+                                    $('#shipment_round_'+yes).text(shipment_round);
+                                    $('#shipment_revenue_'+yes).text(data.revenue);
+                                    $('#shipment_cost_'+yes).text(data.cost);
+                                    $('#shipment_profit_'+yes).text(data.profit);
+                                    $('#oil_cost_'+yes).text(oil_cost);
+                                    $('#shipment_date_'+yes).text(shipment_date);
+                                    $('#oil_excess_'+yes).text(oil_excess);
+
+                                    setTimeout(function() {
+                                        sapxep('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');
+                                      }, 200);
+                                }
+                            }
+                            else{
+                                if (data.err.trim() != "Bảng này đã tồn tại" && data.err.trim() != "Vui lòng hoàn tất vòng trước" && data.err.trim() != "Vui lòng cập nhật trọng tải vòng trước") {
+                                    var lastID = parseInt($('#lasted').html());
+                                    var rowCount = parseInt($('.table_data > tbody > tr').length);
+                                    $('.table_data > tbody:last')
+                                    .append(
+                                        '<tr onclick="HighLightTR(this,"#4d90fe","cc3333");" id="'+parseInt(lastID+1)+'" class="edit_tr"><td><input name="check[]" type="checkbox" class="checkbox" value="'+parseInt(lastID+1)+'"></td><td class="fix">'+parseInt(rowCount+1)+'</td><td class="fix" id="vehicle_'+parseInt(lastID+1)+'">'+$( "#vehicle" ).val()+'</td><td class="fix" id="shipment_round_'+parseInt(lastID+1)+'">'+shipment_round+'</td><td class="fix" id="shipment_date_'+parseInt(lastID+1)+'">'+shipment_date+'</td><td class="fix" id="shipment_from_'+parseInt(lastID+1)+'">'+$( "#shipment_from" ).val()+'</td><td class="fix" id="shipment_to_'+parseInt(lastID+1)+'">'+$( "#shipment_to" ).val()+'</td><td class="fix" id="customer_'+parseInt(lastID+1)+'">'+$( "#customer" ).val()+'</td><td class="fix" id="shipment_charge_'+parseInt(lastID+1)+'">'+shipment_charge+'</td><td class="fix" id="shipment_ton_'+parseInt(lastID+1)+'">'+shipment_ton+'</td><td class="fix" id="oil_cost_'+parseInt(lastID+1)+'">'+oil_cost+'</td><td class="fix" id="oil_excess_'+parseInt(lastID+1)+'">'+oil_excess+'</td><td class="fix" id="shipment_revenue_'+parseInt(lastID+1)+'">'+data.revenue+'</td><td class="fix" id="shipment_cost_'+parseInt(lastID+1)+'">'+data.cost+'</td><td class="fix" id="shipment_profit_'+parseInt(lastID+1)+'">'+data.profit+'</td><td><a class="error" onclick="del('+parseInt(lastID+1)+')">Xóa</a></td></tr>'
+                                    );
+
+                                    $('#lasted').html(parseInt(lastID+2));
+
+                                   setTimeout(function() {
+                                        sapxep('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');
+                                      }, 200);
+                                }
+                            }
+
+                            
+                            
+                        }
+                    });
+                    return false;
+                     
+                 }
+            });
+   
+
+
+
+   $('#shipment_from').keyup(function(){
+      
+        var keyword = $(this).val();
+        $.ajax({
+            url: '<?php echo BASE_URL ?>/shipment/getshipmentfrom',
+            type: 'POST',
+            data: {keyword:keyword},
+            success:function(data){
+                $('#shipment_from_list_id').slideDown(200);
+                $('#shipment_from_list_id').html(data);
+            }
+        });
+        if ($('#shipment_from').val() == "" || $('#shipment_from').attr('data') == "") {
+            //$('#loc_from').val("");
+            $('#shipment_from').attr('data',"");
+            $('#shipment_from').attr('code',false);
+        }
+      
+   });
+   $('#shipment_to').keyup(function(){
+      
+        var keyword = $(this).val();
+        $.ajax({
+            url: '<?php echo BASE_URL ?>/shipment/getshipmentto',
+            type: 'POST',
+            data: {keyword:keyword},
+            success:function(data){
+                $('#shipment_to_list_id').slideDown(200);
+                $('#shipment_to_list_id').html(data);
+            }
+        });
+        if ($('#shipment_to').val() == "" || $('#shipment_to').attr('data') == "") {
+            //$('#loc_from').val("");
+            $('#shipment_to').attr('data',"");
+            $('#shipment_to').attr('code',false);
+        }
+      
+   });
+   $('#customer').keyup(function(){
+      
+        var keyword = $(this).val();
+        $.ajax({
+            url: '<?php echo BASE_URL ?>/shipment/getcustomer',
+            type: 'POST',
+            data: {keyword:keyword},
+            success:function(data){
+                $('#customer_list_id').slideDown(200);
+                $('#customer_list_id').html(data);
+            }
+        });
+        if ($('#customer').val() == "" || $('#customer').attr('data') == "") {
+            //$('#loc_from').val("");
+            $('#customer').attr('data',"");
+            $('#customer').attr('code',false);
+        }
+      
+   });
+   $('#vehicle').keyup(function(){
+      
+        var keyword = $(this).val();
+        $.ajax({
+            url: '<?php echo BASE_URL ?>/shipment/getvehicle',
+            type: 'POST',
+            data: {keyword:keyword},
+            success:function(data){
+                $('#vehicle_list_id').slideDown(200);
+                $('#vehicle_list_id').html(data);
+            }
+        });
+        if ($('#vehicle').val() == "" || $('#vehicle').attr('data') == "") {
+            //$('#loc_from').val("");
+            $('#vehicle').attr('data',"");
+            $('#vehicle').attr('code',false);
+        }
+      
+   });
+
+$('#shipment_from_sub').keyup(function(){
+      
+        var keyword = $(this).val();
+        $.ajax({
+            url: '<?php echo BASE_URL ?>/shipment/getshipmentfromsub',
+            type: 'POST',
+            data: {keyword:keyword},
+            success:function(data){
+                $('#shipment_from_sub_list_id').slideDown(200);
+                $('#shipment_from_sub_list_id').html(data);
+            }
+        });
+        if ($('#shipment_from_sub').val() == "" || $('#shipment_from_sub').attr('data') == "") {
+            //$('#loc_from').val("");
+            $('#shipment_from_sub').attr('data',"");
+            $('#shipment_from_sub').attr('code',false);
+        }
+      
+   });
+   $('#shipment_to_sub').keyup(function(){
+      
+        var keyword = $(this).val();
+        $.ajax({
+            url: '<?php echo BASE_URL ?>/shipment/getshipmenttosub',
+            type: 'POST',
+            data: {keyword:keyword},
+            success:function(data){
+                $('#shipment_to_sub_list_id').slideDown(200);
+                $('#shipment_to_sub_list_id').html(data);
+            }
+        });
+        if ($('#shipment_to_sub').val() == "" || $('#shipment_to_sub').attr('data') == "") {
+            //$('#loc_from').val("");
+            $('#shipment_to_sub').attr('data',"");
+            $('#shipment_to_sub').attr('code',false);
+        }
+      
+   });
+   $('#customer_sub').keyup(function(){
+      
+        var keyword = $(this).val();
+        $.ajax({
+            url: '<?php echo BASE_URL ?>/shipment/getcustomersub',
+            type: 'POST',
+            data: {keyword:keyword},
+            success:function(data){
+                $('#customer_sub_list_id').slideDown(200);
+                $('#customer_sub_list_id').html(data);
+            }
+        });
+        if ($('#customer_sub').val() == "" || $('#customer_sub').attr('data') == "") {
+            //$('#loc_from').val("");
+            $('#customer_sub').attr('data',"");
+            $('#customer_sub').attr('code',false);
+        }
+      
+   });
+   $('#vehicle_sub').keyup(function(){
+      
+        var keyword = $(this).val();
+        $.ajax({
+            url: '<?php echo BASE_URL ?>/shipment/getvehiclesub',
+            type: 'POST',
+            data: {keyword:keyword},
+            success:function(data){
+                $('#vehicle_sub_list_id').slideDown(200);
+                $('#vehicle_sub_list_id').html(data);
+            }
+        });
+        if ($('#vehicle_sub').val() == "" || $('#vehicle_sub').attr('data') == "") {
+            //$('#loc_from').val("");
+            $('#vehicle_sub').attr('data',"");
+            $('#vehicle_sub').attr('code',false);
+        }
+      
+   });
+
+$('#sub_driver2').click(function(){
+    $('#sub_driver').prop('checked',false);
+});
+$('#sub_driver').click(function(){
+    $('#sub_driver2').prop('checked',false);
+    $('#sub_driver_name').attr('disabled',false);
+    $('#sub_driver_name').focus();
+});
+
+$('#sub_driver2_sub').click(function(){
+    $('#sub_driver_sub').prop('checked',false);
+});
+$('#sub_driver_sub').click(function(){
+    $('#sub_driver2_sub').prop('checked',false);
+    $('#sub_driver_name_sub').attr('disabled',false);
+    $('#sub_driver_name_sub').focus();
+});
+
+   
+   $('.number').keyup(function(event) {
+
+          // skip for arrow keys
+      if(event.which >= 37 && event.which <= 40) return;
+
+      // format number
+      $(this).val(function(index, value) {
+        return value
+          .replace(/[^0-9-.]/g, "")
+          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        ;
+      });
+    });
+    
+
+});
+function get_number(id){
+    return $(id).val().replace(/\,/g,'');
+}
+function set_item_shipment_from(value,name) {
+    // change input value
+    $('#shipment_from').val(name);
+    $("#shipment_from").attr("data",value);
+    $("#shipment_from").attr("code",'true');
+    
+    // hide proposition list
+    $('#shipment_from_list_id').hide();
+    $('#shipment_from').focus();
+
+    var from = value;
+    var to = $('#shipment_to').attr("data");
+    if(to != ""){
+        $.ajax({
+            url: '<?php echo BASE_URL ?>/shipment/checkroad',
+            type: 'POST',
+            data: {road_from:from, road_to:to},
+            success:function(data){
+
+                if (data.trim() == 0) {
+
+                    $('#shipment_charge').prop('disabled',true);
+                    $('#shipment_ton').prop('disabled',true);
+                }
+                else{
+                    $('#shipment_charge').prop('disabled',false);
+                    $('#shipment_ton').prop('disabled',false);
+                }
+            }
+        });
+    }
+}
+function set_item_shipment_to(value,name) {
+    // change input value
+    $('#shipment_to').val(name);
+    $("#shipment_to").attr("data",value);
+    $("#shipment_to").attr("code",'true');
+    
+    // hide proposition list
+    $('#shipment_to_list_id').hide();
+    $('#shipment_to').focus();
+     
+    var from = $('#shipment_from').attr("data");
+    var to = value;
+    if(from != ""){
+        $.ajax({
+            url: '<?php echo BASE_URL ?>/shipment/checkroad',
+            type: 'POST',
+            data: {road_from:from, road_to:to},
+            success:function(data){
+
+                if (data.trim() == 0) {
+
+                    $('#shipment_charge').prop('disabled',true);
+                    $('#shipment_ton').prop('disabled',true);
+                    $('#shipment_charge').val(0);
+                    $('#shipment_ton').val(0);
+                }
+                else{
+                    $('#shipment_charge').prop('disabled',false);
+                    $('#shipment_ton').prop('disabled',false);
+                }
+            }
+        });
+    } 
+}
+function set_item_vehicle(value,name) {
+    // change input value
+    $('#vehicle').val(name);
+    $("#vehicle").attr("data",value);
+    $("#vehicle").attr("code",'true');
+    
+    // hide proposition list
+    $('#vehicle_list_id').hide();
+    $('#vehicle').focus();
+     
+     
+}
+function set_item_customer(value,name) {
+    // change input value
+    $('#customer').val(name);
+    $("#customer").attr("data",value);
+    $("#customer").attr("code",'true');
+    
+    // hide proposition list
+    $('#customer_list_id').hide();
+    $('#customer').focus();
+     
+     if (name.trim().toLowerCase() == "không") {
+        $('#shipment_charge').prop('disabled',true);
+        $('#shipment_ton').prop('disabled',true);
+        $('#shipment_charge').val(0);
+        $('#shipment_ton').val(0);
+        
+     }
+     else{
+        $('#shipment_charge').prop('disabled',false);
+        $('#shipment_ton').prop('disabled',false);
+    }
+     
+}
+
+function set_item_shipment_from_sub(value,name) {
+    // change input value
+    $('#shipment_from_sub').val(name);
+    $("#shipment_from_sub").attr("data",value);
+    $("#shipment_from_sub").attr("code",'true');
+    
+    // hide proposition list
+    $('#shipment_from_sub_list_id').hide();
+    $('#shipment_from_sub').focus();
+
+    var from = value;
+    var to = $('#shipment_to_sub').attr("data");
+    if(to != ""){
+        $.ajax({
+            url: '<?php echo BASE_URL ?>/shipment/checkroad',
+            type: 'POST',
+            data: {road_from:from, road_to:to},
+            success:function(data){
+
+                if (data.trim() == 0) {
+
+                    $('#shipment_charge_sub').prop('disabled',true);
+                    $('#shipment_ton_sub').prop('disabled',true);
+                }
+                else{
+                    $('#shipment_charge_sub').prop('disabled',false);
+                    $('#shipment_ton_sub').prop('disabled',false);
+                }
+            }
+        });
+    }
+}
+function set_item_shipment_to_sub(value,name) {
+    // change input value
+    $('#shipment_to_sub').val(name);
+    $("#shipment_to_sub").attr("data",value);
+    $("#shipment_to_sub").attr("code",'true');
+    
+    // hide proposition list
+    $('#shipment_to_sub_list_id').hide();
+    $('#shipment_to_sub').focus();
+     
+    var from = $('#shipment_from_sub').attr("data");
+    var to = value;
+    if(from != ""){
+        $.ajax({
+            url: '<?php echo BASE_URL ?>/shipment/checkroad',
+            type: 'POST',
+            data: {road_from:from, road_to:to},
+            success:function(data){
+
+                if (data.trim() == 0) {
+
+                    $('#shipment_charge_sub').prop('disabled',true);
+                    $('#shipment_ton_sub').prop('disabled',true);
+                    $('#shipment_charge_sub').val(0);
+                    $('#shipment_ton_sub').val(0);
+                }
+                else{
+                    $('#shipment_charge_sub').prop('disabled',false);
+                    $('#shipment_ton_sub').prop('disabled',false);
+                }
+            }
+        });
+    } 
+}
+function set_item_vehicle_sub(value,name) {
+    // change input value
+    $('#vehicle_sub').val(name);
+    $("#vehicle_sub").attr("data",value);
+    $("#vehicle_sub").attr("code",'true');
+    
+    // hide proposition list
+    $('#vehicle_sub_list_id').hide();
+    $('#vehicle_sub').focus();
+     
+     
+}
+function set_item_customer_sub(value,name) {
+    // change input value
+    $('#customer_sub').val(name);
+    $("#customer_sub").attr("data",value);
+    $("#customer_sub").attr("code",'true');
+    
+    // hide proposition list
+    $('#customer_sub_list_id').hide();
+    $('#customer_sub').focus();
+     
+     if (name.trim().toLowerCase() == "không") {
+        $('#shipment_charge_sub').prop('disabled',true);
+        $('#shipment_ton_sub').prop('disabled',true);
+        $('#shipment_charge_sub').val(0);
+        $('#shipment_ton_sub').val(0);
+        
+     }
+     else{
+        $('#shipment_charge_sub').prop('disabled',false);
+        $('#shipment_ton_sub').prop('disabled',false);
+    }
+     
+}
+</script>
+<?php } ?>
+
+<div style="display:none" id="lasted"></div>
+<script type="text/javascript">
+    var count = parseInt(<?php echo $lastID ?>);
+    $('#lasted').html(count);
+
+    $("#import_excel").click(function(){
+        $("#winpopup").dialog({
+            draggable:true,
+            modal: true,
+            autoOpen: false,
+            height:200,
+            width:500,
+            resizable: false,
+            title:'Import Excel',
+            
+        });
+        $("#winpopup").load($(this).attr('href'));
+        $("#winpopup").dialog("open");
+         
+        return false;
+    });
+
+    $(".view_shipment").click(function(){
+        $("#winpopup").dialog({
+            draggable:true,
+            modal: true,
+            autoOpen: false,
+            height:$(window).height()-100,
+            width:$(window).width()-100,
+            resizable: true,
+            title:'Chi tiết lô hàng',
+            
+        });
+        $("#winpopup").load($(this).attr('href'));
+        $("#winpopup").dialog("open");
+         
+        return false;
+    });
+
+    
+</script>
+</div>
+
+
+<style type="text/css">
+    .ui-dialog .ui-dialog-content{
+        padding: 3px;
+    }
+
+    .showtooltip {
+        display:none;
+        position:absolute;
+        border:1px solid #333;
+        background-color:#161616;
+        border-radius:5px;
+        padding:10px;
+        color:#fff;
+        font-size:12px Arial;
+    }
+    
+    .ok{
+        color: green;
+        float: right;
+    }
+    .no{
+        color: red;
+    }
+
+
+.table_data td {
+    font-size: 13px;
+}
+.ui-front {
+  z-index: 1031;
+}
+
+</style>
+
+
+<script type="text/javascript">
+$(document).ready(function() {
+// Tooltip only Text
+$('.masterTooltip').hover(function(){
+        // Hover over code
+        var title = $(this).attr('title');
+        $(this).data('tipText', title).removeAttr('title');
+        $('<p class="showtooltip"></p>')
+        .text(title)
+        .appendTo('body')
+        .fadeIn('slow');
+}, function() {
+        // Hover out code
+        $(this).attr('title', $(this).data('tipText'));
+        $('.showtooltip').remove();
+}).mousemove(function(e) {
+        var mousex = e.pageX + 20; //Get X coordinates
+        var mousey = e.pageY + 10; //Get Y coordinates
+        $('.showtooltip')
+        .css({ top: mousey, left: mousex })
+});
+
+
+});
+
+$('#oil_add_dc').change(function(){
+    var vitri = $(this).val();
+    var xe = $('#vehicle').attr('data');
+    var vong = $('#shipment_round').val();
+    var ngay = "<?php echo strtotime(date('d-m-Y', mktime(date('H'), date('i'), date('s'), date('m'), date('d')+1, date('Y')) ))  ?>";
+    if (vitri == 5) {
+        $.post("<?php echo BASE_URL ?>/shipment/oiladd", 
+            {
+                xe:xe,
+                vong:vong,
+                ngay:ngay,
+             },
+           function(data){
+
+            $('#oil_add').val(data.trim());
+            //$('#oil_add').prop('disabled',true);
+            $('#oil_add').val(function(index, value) {
+                return value
+                  .replace(/[^0-9-.]/g, "")
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                ;
+              });
+           }); 
+    }
+    else {
+            $('#oil_add').prop('disabled',false);
+
+            if ( vitri != dd ) {
+                $('#oil_add').val(0);
+            }
+            else{
+                $('#oil_add').val(ud);
+            }
+    }
+
+});
+
+$('#oil_add_dc2').change(function(){
+    var vitri = $(this).val();
+    var xe = $('#vehicle').attr('data');
+    var vong = $('#shipment_round').val();
+    var ngay = "<?php echo strtotime(date('d-m-Y', mktime(date('H'), date('i'), date('s'), date('m'), date('d')+1, date('Y')) ))  ?>";
+    if (vitri == 5) {
+        $.post("<?php echo BASE_URL ?>/shipment/oiladd", 
+            {
+                xe:xe,
+                vong:vong,
+                ngay:ngay,
+             },
+           function(data){
+
+            $('#oil_add2').val(data.trim());
+            //$('#oil_add').prop('disabled',true);
+            $('#oil_add2').val(function(index, value) {
+                return value
+                  .replace(/[^0-9-.]/g, "")
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                ;
+              });
+           }); 
+    }
+    else {
+            $('#oil_add2').prop('disabled',false);
+
+            if ( vitri != dd2 ) {
+                $('#oil_add2').val(0);
+            }
+            else{
+                $('#oil_add2').val(ud2);
+            }
+    }
+
+});
+
+$('#oil_add_dc_sub').change(function(){
+    var vitri = $(this).val();
+    var xe = $('#vehicle_sub').attr('data');
+    var vong = $('#shipment_round_sub').val();
+    var ngay = "<?php echo strtotime(date('d-m-Y', mktime(date('H'), date('i'), date('s'), date('m'), date('d')+1, date('Y')) ))  ?>";
+    if (vitri == 5) {
+        $.post("<?php echo BASE_URL ?>/shipment/oiladd", 
+            {
+                xe:xe,
+                vong:vong,
+                ngay:ngay,
+             },
+           function(data){
+
+            $('#oil_add_sub').val(data.trim());
+            //$('#oil_add').prop('disabled',true);
+            $('#oil_add_sub').val(function(index, value) {
+                return value
+                  .replace(/[^0-9-.]/g, "")
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                ;
+              });
+           }); 
+    }
+    else {
+            $('#oil_add_sub').prop('disabled',false);
+
+            if ( vitri != dd ) {
+                $('#oil_add_sub').val(0);
+            }
+            else{
+                $('#oil_add_sub').val(ud);
+            }
+    }
+
+});
+
+$('#oil_add_dc2_sub').change(function(){
+    var vitri = $(this).val();
+    var xe = $('#vehicle_sub').attr('data');
+    var vong = $('#shipment_round_sub').val();
+    var ngay = "<?php echo strtotime(date('d-m-Y', mktime(date('H'), date('i'), date('s'), date('m'), date('d')+1, date('Y')) ))  ?>";
+    if (vitri == 5) {
+        $.post("<?php echo BASE_URL ?>/shipment/oiladd", 
+            {
+                xe:xe,
+                vong:vong,
+                ngay:ngay,
+             },
+           function(data){
+
+            $('#oil_add2_sub').val(data.trim());
+            //$('#oil_add').prop('disabled',true);
+            $('#oil_add2_sub').val(function(index, value) {
+                return value
+                  .replace(/[^0-9-.]/g, "")
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                ;
+              });
+           }); 
+    }
+    else {
+            $('#oil_add2_sub').prop('disabled',false);
+
+            if ( vitri != dd2 ) {
+                $('#oil_add2_sub').val(0);
+            }
+            else{
+                $('#oil_add2_sub').val(ud2);
+            }
+    }
+
+});
+</script>
+
+<script type="text/javascript">
+    $(function() {
+    var pickerOpts = {
+        closeText: "Đóng",
+        currentText: "Hiện tại",
+        nextText: "Tiếp",
+        prevText: "Quay lại",
+        monthNames: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        monthNamesShort: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        dayNames: ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm",
+        "Thứ sáu", "Thứ bảy"],
+        dayNamesShort: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        dayNamesMin: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        //defaultDate: "+1w",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy',
+        firstDay: 1,
+        isRTL: false,
+        showButtonPanel: true,
+         
+    };  
+    $("#shipment_date").datepicker(pickerOpts);
+
+    
+              
+    var pickerOpts6 = {
+        closeText: "Đóng",
+        currentText: "Hiện tại",
+        nextText: "Tiếp",
+        prevText: "Quay lại",
+        monthNames: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        monthNamesShort: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        dayNames: ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm",
+        "Thứ sáu", "Thứ bảy"],
+        dayNamesShort: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        dayNamesMin: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        //defaultDate: "+1w",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy',
+        firstDay: 1,
+        isRTL: false,
+        showButtonPanel: true,
+         
+    };  
+    $("#shipment_date_sub").datepicker(pickerOpts6);
+            
+    
+});
+
+
+
+</script>
+
+<?php if (isset($_SESSION) && $_SESSION['role_logined'] == 1) { ?>
+<script type="text/javascript">
+    $('.edit_tr').hover(function(){
+        // Hover over code
+        $('.approve').fadeIn('slow');
+}, function() {
+        // Hover out code
+        $('.approve').fadeOut();
+});
+
+$('.approve').click(function(){
+    var id = $(this).attr("data")
+    var r = confirm("Bạn có chắc chắn không?");
+      if (r == true){
+        $('#loading').html("<img src='<?php echo BASE_URL ?>/public/images/loading.gif'/>").fadeIn(500);
+        $.post("<?php echo BASE_URL ?>/shipment/approve", {data: id},
+           function(data){
+            
+
+            $('#loading').fadeOut(500);
+            
+            setTimeout(function() {
+                                        sapxep('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');
+                                      }, 2000)
+           
+           }); 
+      }
+
+});
+
+</script>
+<?php } ?>
+
+<style type="text/css">
+    #ui-datepicker-div{
+        font-size: 13px;
+    }
+</style>
+<script type="text/javascript">
+    $(function() {
+    var pickerOpts = {
+        closeText: "Đóng",
+        currentText: "Hiện tại",
+        nextText: "Tiếp",
+        prevText: "Quay lại",
+        monthNames: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        monthNamesShort: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        dayNames: ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm",
+        "Thứ sáu", "Thứ bảy"],
+        dayNamesShort: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        dayNamesMin: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        //defaultDate: "+1w",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy',
+        firstDay: 1,
+        isRTL: false,
+        showButtonPanel: true,
+        onClose: function(selectedDate) {
+                
+                $( "#ketthuc" ).datepicker( "option", "minDate", selectedDate );
+
+         },
+         
+    };  
+    $("#batdau").datepicker(pickerOpts);
+
+    var pickerOpts4 = {
+        closeText: "Đóng",
+        currentText: "Hiện tại",
+        nextText: "Tiếp",
+        prevText: "Quay lại",
+        monthNames: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        monthNamesShort: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        dayNames: ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm",
+        "Thứ sáu", "Thứ bảy"],
+        dayNamesShort: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        dayNamesMin: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        //defaultDate: "+1w",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy',
+        firstDay: 1,
+        isRTL: false,
+        showButtonPanel: true,
+        onClose: function(selectedDate) {
+                
+                $( "#batdau" ).datepicker( "option", "maxDate", selectedDate );
+                
+         },
+         
+    };  
+    $("#ketthuc").datepicker(pickerOpts4);
+              
+            
+    
+});
+
+var x = "<?php echo $xe ?>";
+$('#sl_vehicle option[value='+x+']').attr('selected','selected');
+var v = "<?php echo $vong ?>";
+$('#sl_round option[value='+v+']').attr('selected','selected');
+
+var ch = "<?php echo $limit ?>";
+$('#chonloc option[value='+ch+']').attr('selected','selected');
+
+var w = $(".table_data").width();
+
+      $(".container").width(w);
+      $(".navbar-inner").width(w);
+      $(".navbar").width(w);
+      //$("#container").width(w);
+</script>
+
+<script type="text/javascript">
+
+
+$( ".add-field" ).dialog({
+    autoOpen: false,
+    modal: true,
+    width: "auto",
+    title: "Lô hàng",
+    hide: 'fold',
+    show: 'blind'
+});
+
+$('.hoantat').click(function(){
+    var id = $(this).attr("data")
+    var r = confirm("Bạn có chắc chắn không?");
+      if (r == true){
+        $('#loading').html("<img src='<?php echo BASE_URL ?>/public/images/loading.gif'/>").fadeIn(500);
+        $.post("<?php echo BASE_URL ?>/shipment/complete", {data: id},
+           function(data){
+            $('#loading').fadeOut(500);
+            setTimeout(function() {
+                                        sapxep('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');
+                                      }, 2000)
+           
+           }); 
+      }
+
+});
+
+$('.unlock').click(function(){
+    var id = $(this).attr("data");
+    var value = $(this).attr("value");
+    var r = confirm("Bạn có chắc chắn không?");
+      if (r == true){
+        $('#loading').html("<img src='<?php echo BASE_URL ?>/public/images/loading.gif'/>").fadeIn(500);
+        $.post("<?php echo BASE_URL ?>/shipment/lock", {data: id, value: value},
+           function(data){
+            
+            $("html, body").animate({ scrollTop: 0 }, 100);
+            setTimeout(function() {
+                sapxep('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');
+              }, 200);
+
+            $('#loading').fadeOut(200);
+            
+            
+           
+           }); 
+      }
+
+});
+
+$('.unlock_oil').click(function(){
+    var id = $(this).attr("data");
+    var value = $(this).attr("value");
+    var r = confirm("Bạn có chắc chắn không?");
+      if (r == true){
+        $('#loading').html("<img src='<?php echo BASE_URL ?>/public/images/loading.gif'/>").fadeIn(500);
+        $.post("<?php echo BASE_URL ?>/shipment/lock_oil", {data: id, value: value},
+           function(data){
+            
+            $("html, body").animate({ scrollTop: 0 }, 100);
+            setTimeout(function() {
+                sapxep('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');
+              }, 200);
+
+            $('#loading').fadeOut(200);
+            
+            
+           
+           }); 
+      }
+
+});
+
+$('#shipment_temp').change(function(){
+    var id = $(this).val()
+    
+    $.post("<?php echo BASE_URL ?>/shipment/getshipmenttemp", {data: id},
+       function(answer){
+            var data = jQuery.parseJSON(answer);
+            $('#customer').val(data.customer_name);
+            $('#customer').attr('data',data.customer);
+            $('#customer').attr('code',true);
+
+            $('#shipment_from').val(data.shipment_from_name);
+            $('#shipment_from').attr('data',data.shipment_from);
+            $('#shipment_from').attr('code',true);
+
+            $('#shipment_to').val(data.shipment_to_name);
+            $('#shipment_to').attr('data',data.shipment_to);
+            $('#shipment_to').attr('code',true);
+
+            $('#shipment_ton').val(data.shipment_ton);
+            $('#shipment_charge').val(data.shipment_charge);
+            $('#commission').val(data.commission);
+            $('#commission_number').val(data.commission_number);
+            $('#shipment_loan').val(data.shipment_loan);
+            $('#loan_content').val(data.loan_content);
+
+            $('#customer_sub').val(data.customer_name);
+            $('#customer_sub').attr('data',data.customer);
+            $('#customer_sub').attr('code',true);
+
+            $('#shipment_from_sub').val(data.shipment_from_name);
+            $('#shipment_from_sub').attr('data',data.shipment_from);
+            $('#shipment_from_sub').attr('code',true);
+
+            $('#shipment_to_sub').val(data.shipment_to_name);
+            $('#shipment_to_sub').attr('data',data.shipment_to);
+            $('#shipment_to_sub').attr('code',true);
+
+            $('#shipment_ton_sub').val(data.shipment_ton);
+            $('#shipment_charge_sub').val(data.shipment_charge);
+            $('#commission_sub').val(data.commission);
+            $('#commission_number_sub').val(data.commission_number);
+            $('#shipment_loan_sub').val(data.shipment_loan);
+            $('#loan_content_sub').val(data.loan_content);
+
+            $('#check_temp').val(data.shipment_temp);
+            $('#check_temp_sub').val(data.shipment_temp);
+
+            $('#shipment_ton').attr("max",data.shipment_ton);
+            $( "#shipment_ton" ).keyup(function() {
+              if ( parseFloat(get_number("#shipment_ton")) > $(this).attr('max'))
+              {
+                  $(this).val($(this).attr('max'));
+              }       
+            }); 
+
+            $('#shipment_ton_sub').attr("max",data.shipment_ton);
+            $( "#shipment_ton_sub" ).keyup(function() {
+              if ( parseFloat(get_number("#shipment_ton_sub")) > $(this).attr('max'))
+              {
+                  $(this).val($(this).attr('max'));
+              }       
+            }); 
+
+            $('.number').val(function(index, value) {
+                return value
+                  .replace(/[^0-9-.]/g, "")
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                ;
+              });
+       }); 
+     
+
+});
+
+jQuery(document).ready(function() {
+    jQuery('.tabs .tab-links a').on('click', function(e)  {
+        var currentAttrValue = jQuery(this).attr('href');
+        // Show/Hide Tabs
+        jQuery('.tabs ' + currentAttrValue).slideDown(300).siblings().slideUp(300);
+ 
+        // Change/remove current tab to active
+        jQuery(this).parent('li').addClass('active').siblings().removeClass('active');
+ 
+        e.preventDefault();
+    });
+
+    jQuery('.tabs .tab-left a').on('click', function(e)  {
+        var currentAttrValue = jQuery(this).attr('href');
+ 
+        // Show/Hide Tabs
+        jQuery('.tabs ' + currentAttrValue).slideDown(300).siblings().slideUp(300);
+ 
+        // Change/remove current tab to active
+        jQuery(this).parent('li').addClass('active').siblings().removeClass('active');
+ 
+        e.preventDefault();
+    });
+});
+
+</script>

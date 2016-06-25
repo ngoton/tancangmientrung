@@ -1,0 +1,191 @@
+
+<?php
+
+
+    $i = 1;
+
+?>
+
+<div id="loading"></div>
+<div id="winpopup"></div>
+<center style="clear:both;margin-bottom: 20px;"><h1> BẢNG LƯƠNG TÀI XẾ</h1></center>
+
+<div id="content" style="padding:5px;">
+
+    <div class="add-box">
+    <a class="add_button" id="export_excel" href="<?php echo BASE_URL.'/driver/export/'.strtotime($batdau).'/'.strtotime($ketthuc) ?>">Export Excel</a>
+</div>
+<div >
+    <form id="report" name="report" action method="post">
+    Từ  <input style="width:100px" type="search" name="batdau" id="batdau" placeholder="Chọn ngày" <?php if(isset($batdau)) echo "value='$batdau'"; ?> >  
+    Đến  <input style="width:100px" type="search" name="ketthuc" id="ketthuc" placeholder="Chọn ngày" <?php if(isset($ketthuc)) echo "value='$ketthuc'"; ?> >  
+     <input type="submit" name="submit" id="xem" value="Xem">  
+     </form>                         
+</div>
+
+<table class="table_data">
+<thead>
+    <tr>
+    	
+        <th class="fix">
+            <a >STT </a>
+        </th>
+        <th  class="fix">
+            <a >Xe </a>
+        </th>
+        <th  class="fix">
+            <a >Họ tên </a>
+        </th>
+        <th  class="fix">
+            <a >Doanh thu </a>
+        </th>
+        <th  class="fix">
+            <a >Lương  </a>
+        </th>
+        
+           
+    </tr>
+    
+   </thead>
+   <tbody>
+    <?php $tongdoanhthu = 0; $tongluong=0; $tongphucap=0; $tongcong=0;   
+    
+    foreach ($drivers as $driver) {
+        $tongdoanhthu += isset($doanhthu[$driver->driver_id][$driver->vehicle])?$doanhthu[$driver->driver_id][$driver->vehicle]:0;
+        $tongphucap += ((isset($road['road_time'][$driver->driver_id][$driver->vehicle])?$road['road_time'][$driver->driver_id][$driver->vehicle]:0)-(isset($road['sub_driver']['road_time'][$driver->driver_id][$driver->vehicle])?$road['sub_driver']['road_time'][$driver->driver_id][$driver->vehicle]:0))*180000;
+
+    }
+        $tongluong = $tongdoanhthu*0.098;
+        $conlai = $tongluong-$tongphucap;
+        $thang13 = $conlai*(100-8.3);
+        $tyle = $tongluong>0?($thang13/$tongluong/100):0;
+        
+    ?>
+
+    <?php foreach ($drivers as $driver) : ?>
+    
+        <tr onClick="HighLightTR(this,'#4d90fe','cc3333');" id="<?php echo $driver->driver_id ?>" class="edit_tr">
+            <td class="fix"><?php echo $i++; ?></td>
+            <td class="fix" ><?php echo $vehicle_data[$driver->vehicle]; ?></td>
+            <td class="fix" ><?php echo $driver->driver_name; ?></td>
+            <td class="fix" ><?php echo isset($doanhthu[$driver->driver_id][$driver->vehicle])?$lib->formatMoney($doanhthu[$driver->driver_id][$driver->vehicle]):0 ?></td>
+            <td class="fix" ><?php echo isset($doanhthu[$driver->driver_id][$driver->vehicle])?$lib->formatMoney(round(($doanhthu[$driver->driver_id][$driver->vehicle]*0.098)*$tyle)):0 ?></td>
+            
+            
+            
+        </tr>
+
+    <?php $tongcong += isset($doanhthu[$driver->driver_id][$driver->vehicle])?round(($doanhthu[$driver->driver_id][$driver->vehicle]*0.098)*$tyle):0; ?>
+    <?php endforeach; ?>
+
+        <tr  style="font-weight: bold; color: rgb(23, 119, 226);" >
+            
+            <th colspan="2" style="border-right: 1px solid rgb(236, 235, 235);border-top: 1px solid #80C8E5;padding: 7px; text-align: right;" >
+                Tổng cộng
+            </th>
+            <td class="fix " ></td>
+            <td class="fix " ><?php echo $lib->formatMoney($tongdoanhthu) ?></td>
+            <td class="fix " ><?php echo $lib->formatMoney($tongcong) ?></td>
+            
+        </tr>
+
+   </tbody>
+</table>
+
+
+
+</div>
+
+<script type="text/javascript">
+    $(function() {
+
+        var w = $(".report").width();
+
+      $(".report-right-fix").width(w-375);
+
+
+    var pickerOpts = {
+        closeText: "Đóng",
+        currentText: "Hiện tại",
+        nextText: "Tiếp",
+        prevText: "Quay lại",
+        monthNames: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        monthNamesShort: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        dayNames: ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm",
+        "Thứ sáu", "Thứ bảy"],
+        dayNamesShort: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        dayNamesMin: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        //defaultDate: "+1w",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy',
+        firstDay: 1,
+        isRTL: false,
+        showButtonPanel: true,
+        onClose: function(selectedDate) {
+                
+                $( "#ketthuc" ).datepicker( "option", "minDate", selectedDate );
+
+         },
+         
+    };  
+    $("#batdau").datepicker(pickerOpts);
+
+    var pickerOpts4 = {
+        closeText: "Đóng",
+        currentText: "Hiện tại",
+        nextText: "Tiếp",
+        prevText: "Quay lại",
+        monthNames: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        monthNamesShort: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        dayNames: ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm",
+        "Thứ sáu", "Thứ bảy"],
+        dayNamesShort: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        dayNamesMin: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        //defaultDate: "+1w",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy',
+        firstDay: 1,
+        isRTL: false,
+        showButtonPanel: true,
+        onClose: function(selectedDate) {
+                
+                $( "#batdau" ).datepicker( "option", "maxDate", selectedDate );
+                
+         },
+         
+    };  
+    $("#ketthuc").datepicker(pickerOpts4);
+              
+            
+    
+});
+
+
+
+</script>
+<style type="text/css">
+    #ui-datepicker-div{
+        font-size: 13px;
+    }
+
+.showtooltip {
+        display:none;
+        position:absolute;
+        border:1px solid #333;
+        background-color:#161616;
+        border-radius:5px;
+        padding:10px;
+        color:#fff;
+        font-size:12px Arial;
+    }
+</style>

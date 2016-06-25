@@ -1,0 +1,161 @@
+<script language="javascript" type="text/javascript" src="<?php echo BASE_URL ?>/public/js/CLEditor1_2/jquery.cleditor.min.js"></script>  
+
+<link href="<?php echo BASE_URL ?>/public/js/CLEditor1_2/jquery.cleditor.css" rel="stylesheet" type="text/css" /> 
+<script type="text/javascript">
+$(document).ready(function(){
+
+			// Validate form
+			$("#laytin").validate({
+				errorElement: "span", // Định dạng cho thẻ HTML hiện thông báo lỗi
+				rules: {
+					
+				},
+				
+				submitHandler: function(form) {
+					$('#loading').html("<img src='<?php echo BASE_URL ?>/public/images/loading.gif'/>").fadeIn(500);
+					var post_title = $("input#post_title").val();
+					var post_description = $("textarea#post_description").val();
+					var post_content = $("textarea#post_content").val();
+					var post_image = $("input#post_image").val();
+					var menu = $("select#menu").val();
+					$.post("<?php echo $this->url('post/post') ?>",{post_title:post_title,post_description:post_description,post_content:post_content,post_image:post_image,menu:menu},function(data){
+
+						$('#loading').fadeOut(500);
+						$('#error').hide();
+							$('#error').slideToggle(100); // hiển thị thẻ div success
+							$('#error').html(data); // đặt kết quả trả về từ test.php vào thẻ div success
+					})
+					return false;
+				}
+			});
+	
+});
+</script>
+<script type="text/javascript">
+$(document).ready(function(){
+				 $("#post_content").cleditor({width:800,height:400});//khởi động WYSIWYG Editor
+        		var editor = $("#post_content").cleditor()[0]; //khai báo biến chứa editor này
+			
+				$("select#lienket").change(function() {
+					$('#loading').html("<img src='<?php echo BASE_URL ?>/public/images/loading.gif'/>").fadeIn(500);
+						if(this.href==""){
+							$("input#post_title").val("");
+							$("textarea#post_content").val("");	
+							$("div#content").html("");
+							editor.updateFrame();
+							return;
+						}
+						
+						$.post("#", {url:this.value}, function(data){
+							if(data){
+								var item = data.split("---+++---+++");
+								$("input#post_title").val(item[0]);
+								$("textarea#post_description").val(item[1]);
+								$("textarea#post_content").val(item[2]);
+								editor.updateFrame();
+								//$("div#content").html("<h3>"+item[0]+"</h3>"+"<h4>"+item[1]+"</h4>"+item[2]);
+								
+								var hinh=item[2].split("src=\"");
+                                var x = hinh[2].split(">");
+                                var mrk_len = x[0].length-1; // loai bo " cuoiimg
+                                var mrk_hinh = x[0].substr(0, mrk_len );
+                                var n = mrk_hinh.search('"');
+                                mrk_hinh = mrk_hinh.substr(0,n);
+
+                                $("input#post_image").val(mrk_hinh);
+								$("#mrk").attr("src", mrk_hinh);
+								
+								
+
+								}else{
+									this.value="";
+								}
+								$('#loading').fadeOut(500);
+						})
+						
+						
+				});
+		
+				
+				$("input#post_image").change(function(){
+					var img = $("input#post_image").val();
+					$("#mrk").attr("src", img);
+					})
+		
+    });
+</script> 
+
+
+
+<div class="login_form">
+  <div class="goback"><a href="<?php echo $this->url('post') ?>">&larr;</a></div>   
+  
+        <div class="login_body">
+          <h1>LẤY TIN TỰ ĐỘNG</h1>
+              <form id="laytin" method="post" action="" enctype="multipart/form-data">
+                  <table style="margin-top:20px;">
+                  	<tr>
+                  		<td colspan="2">
+                  			<select id="lienket" name="lienket" required="required" tabindex="1" autofocus> 
+								<option selected="selected" value="">Xin chọn liên kết</option> 
+							    <?php echo $label; ?>
+							</select>
+						</td>
+                  	</tr>
+                    <tr>
+                        <td>Tiêu đề </td>
+                        <td><input type="text" id="post_title" name="post_title" tabindex="2"  required="required"></td>
+                        
+                    </tr>
+                    <tr>
+                        <td>Mô tả </td>
+                        <td><textarea id="post_description" name="post_description" tabindex="3" ></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Nội dung </td>
+                        <td><textarea id="post_content" name="post_content" tabindex="4" required="required"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Hình đại diện </td>
+                        <td>
+                        	<img src="<?php echo BASE_URL ?>/public/images/img-blank.png" width="150" height="114" id="mrk" /> <br>
+                        	<input type="text" id="post_image" name="post_image" tabindex="5" >
+                        	<font color="#FF0033"> Nếu hình ảnh không hiển thị được, hãy thử sửa lại đường dẫn</font>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Chuyên mục </td>
+                        <td>
+                          <select name="menu" id="menu" tabindex="6" required="required">
+                            <?php
+                            foreach ($menus as $menu) {
+                              if ($menu->menu_parent == 0) {
+                                echo '<option value="'.$menu->menu_id.'">'.$menu->menu_name.'</option>';
+                              }
+                              foreach ($menus as $menu_child) {
+                                if ($menu_child->menu_parent == $menu->menu_id) {
+                                  echo '<option value="'.$menu_child->menu_id.'">-- '.$menu_child->menu_name.'</option>';
+                                }
+                                
+                              }
+                              
+                            }
+                            ?>
+                          </select>
+                        </td>
+                    </tr>
+                    
+                     <tr>
+                        <td ><input type="reset" name="reset" value="Nhập lại" tabindex="8"></td>
+                         <td><input type="submit" name="submit" value="Hoàn tất" tabindex="7"></td>
+                         
+                    </tr>
+                </table> 
+            </form>
+        </div>
+  
+  <div id="error" class="error"><?php echo isset($error) ? $error : null; ?></div>        
+</div>
+<div id="loading"></div>
+ 

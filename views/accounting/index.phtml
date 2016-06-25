@@ -1,0 +1,474 @@
+
+<?php
+$url_order = 'ASC';
+if ($order_by == 'shipment_id')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+
+elseif ($order_by == 'shipment_from')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'shipment_to')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'vehicle')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'customer')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'shipment_charge')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'shipment_ton')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'oil_add')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'cost_add')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'shipment_revenue')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'shipment_cost')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'shipment_profit')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'shipment_date')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'shipment_round')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'shipment_excess')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'shipment_bonus')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'cost_vat')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+
+    $i = $sonews*$page-($sonews-1);
+
+?>
+
+<div id="loading"></div>
+<div id="winpopup"></div>
+<center style="clear:both;margin-bottom: -30px;"><h1> THỦ QUỸ </h1></center>
+<div id="content" style="padding:5px;">
+  
+
+
+	<div class="search-box">
+        
+        <input type="search" id="search-input" name="s" value="<?php echo isset($keyword)?$keyword:null; ?>" placeholder="Tìm kiếm">
+        <input type="button" name="" id="search-submit" class="button-search" value="Tìm kiếm" onclick="searchall('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');">
+    
+        <div class="add-box">
+                  
+            Từ  <input style="width:100px" type="search" name="batdau" id="batdau" placeholder="Chọn ngày" <?php if(isset($batdau)) echo "value='$batdau'"; ?> >  
+            Đến  <input style="width:100px" type="search" name="ketthuc" id="ketthuc" placeholder="Chọn ngày" <?php if(isset($ketthuc)) echo "value='$ketthuc'"; ?> >  
+             <input type="button" name="xem" id="xem" value="Xem" onclick="searchall('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');">  
+            
+        </div>
+    </div>
+    <div class="tablenav top">
+        <div style="clear:both"></div>
+        
+        <div class="add-box">
+            <input type="button" name="chon" id="chon" value="Chọn" onclick="searchall('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');">  
+        </div>
+        
+        <div class="add-box" style="margin-right: 5px">
+            <select name="sl_vehicle" id="sl_vehicle">
+                <option selected="selected" value="">Xe</option>
+                <?php foreach ($vehicles as $sm) { ?>
+                <option value="<?php echo $sm->vehicle_id ?>"><?php echo $sm->vehicle_number ?></option>
+                <?php } ?>
+            </select>
+
+            
+            
+        </div>
+        <div class="alignleft actions">
+            <select name="sl_trangthai" id="sl_trangthai" style="width:200px">
+                <option value="-1" >Tình trạng</option>
+                <option value="0" selected="selected" >Chưa thanh toán</option>
+                <option value="1">Đã thanh toán</option>
+            </select>
+            <input type="button" name="" id="trangthai" class="button action" value="Xem" onclick="searchall('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');">
+        </div>
+
+      </div>
+
+</div>
+
+<table class="table_data">
+<thead>
+    <tr>
+    	<th  class="fix"><input type="checkbox" onclick="checkall('checkbox', this)" name="checkall"/></th>
+        <th  class="fix" >
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','shipment_id','<?php echo $url_order ?>')">STT <?php if ($order_by == 'shipment_id'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        
+        
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','vehicle','<?php echo $url_order ?>')">Xe <?php if ($order_by == 'vehicle'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','driver_name','<?php echo $url_order ?>')">Tên tài xế <?php if ($order_by == 'driver_name'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','shipment_date','<?php echo $url_order ?>')">Ngày <?php if ($order_by == 'shipment_date'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','shipment_from','<?php echo $url_order ?>')">Kho đi <?php if ($order_by == 'shipment_from'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','shipment_to','<?php echo $url_order ?>')">Kho đến <?php if ($order_by == 'shipment_to'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','shipment_cost','<?php echo $url_order ?>')">Chi phí cố định <?php if ($order_by == 'shipment_cost'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','cost_add','<?php echo $url_order ?>')">Chi phí phát sinh <?php if ($order_by == 'cost_add'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','cost_add','<?php echo $url_order ?>')">Chi phí có HĐ <?php if ($order_by == 'cost_add'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','oil_add','<?php echo $url_order ?>')">Dầu dọc đường <?php if ($order_by == 'oil_add'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','oil_add','<?php echo $url_order ?>')">Số lit <?php if ($order_by == 'oil_add'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','shipment_loan','<?php echo $url_order ?>')">Chi hộ <?php if ($order_by == 'shipment_loan'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','shipment_bonus','<?php echo $url_order ?>')">Thưởng vượt tải <?php if ($order_by == 'shipment_bonus'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','tong','<?php echo $url_order ?>')">Tổng cộng <?php if ($order_by == 'tong'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <?php if ($_SESSION['role_logined'] != 7 ) { ?>
+         <th  class="fix">
+            <a >Thanh toán </a>
+        </th>  
+        <?php } ?>
+    </tr>
+    
+   </thead>
+   <tbody>
+    <?php $cpcodinh=0; $cpphatsinh=0; $daudocduong=0; $solit=0; $chiho=0; $cptruoc=0; $thuongtruoc=0; $cphd=0; $hoahong=0; ?>
+    <?php foreach ($shipments as $shipment) : ?>
+
+    <?php $tong = ($warehouse['boiduong_cn'][$shipment->shipment_id]+round($road['bridge_cost'][$shipment->shipment_id]*1.1)+$road['police_cost'][$shipment->shipment_id]+$road['tire_cost'][$shipment->shipment_id])+(($road['oil_add'][$shipment->shipment_id]+$road['oil_add2'][$shipment->shipment_id])*round($shipment->oil_cost*1.1))+($shipment->approve==1?$shipment->cost_add:0)+$shipment->shipment_loan+$shipment->shipment_bonus+$shipment->bridge_cost_add ?>
+
+        <?php if ($tong!=0){ ?>
+    
+        <tr onClick="HighLightTR(this,'#4d90fe','cc3333');" data="<?php echo $shipment->vehicle_id.$shipment->shipment_round ?>" id="<?php echo $shipment->shipment_id ?>" class="edit_tr">
+        	<td><input name="check[]" type="checkbox" class="checkbox" value="<?php echo $shipment->shipment_id ?>"></td>
+            <td  class="fix"><?php echo $i++; ?></td>
+            
+            <td nowrap class="fix" data="<?php echo $shipment->vehicle; ?>" id="vehicle_<?php echo $shipment->shipment_id; ?>"><?php echo $shipment->vehicle_number; ?></td>
+            <td nowrap class="fix"  id="driver_name_<?php echo $shipment->shipment_id; ?>"><?php echo ($shipment->sub_driver == 1)?$shipment->sub_driver_name:(($shipment->sub_driver2 == 1)?"NGUYỄN VĂN LONG":(isset($driver_data[$shipment->shipment_id]['driver_name'])?$driver_data[$shipment->shipment_id]['driver_name']:null)); ?></td>
+            
+            <td class="fix" id="shipment_date_<?php echo $shipment->shipment_id; ?>"><?php echo $lib->hien_thi_ngay_thang($shipment->shipment_date); ?></td>
+            
+            <td nowrap class="fix" data="<?php echo $shipment->shipment_from; ?>" id="shipment_from_<?php echo $shipment->shipment_id; ?>"><?php echo $shipment->shipment_from==$warehouse['warehouse_id'][$shipment->shipment_from]?$warehouse['warehouse_name'][$shipment->shipment_from]:null ?></td>
+            <td nowrap class="fix" data="<?php echo $shipment->shipment_to; ?>" id="shipment_to_<?php echo $shipment->shipment_id; ?>"><?php echo $shipment->shipment_to==$warehouse['warehouse_id'][$shipment->shipment_to]?$warehouse['warehouse_name'][$shipment->shipment_to]:null ?></td>
+            
+            <td class="fix" ><?php echo $lib->formatMoney($warehouse['boiduong_cn'][$shipment->shipment_id]+round($road['bridge_cost'][$shipment->shipment_id]*1.1)+$road['police_cost'][$shipment->shipment_id]+$road['tire_cost'][$shipment->shipment_id]+$shipment->bridge_cost_add); ?></td>
+            <td <?php if($shipment->approve!=1 && $shipment->cost_add > 0) echo 'style="background: url(../public/images/no.png) bottom left  no-repeat"'; else echo 'style="background:  url(../public/images/ok.png) bottom left no-repeat"' ?>  id="cost_add1_<?php echo $shipment->shipment_id; ?>" class="fix masterTooltip" title="<?php echo $shipment->cost_add_comment; echo ($shipment->approve==1)?' (đã chấp nhận)': (($shipment->approve!=1 && $shipment->cost_add > 0)?' (chưa chấp nhận)':null); ?>" >
+                <?php echo $lib->formatMoney($shipment->cost_add); ?> <br>
+                <?php if($shipment->approve!=1 && $shipment->cost_add > 0 && $_SESSION['role_logined'] == 1) { ?>
+                <span data="<?php echo $shipment->shipment_id ?>"  class="ok approve">OK</span> 
+                <?php } ?>
+            </td>
+            <td class="fix" id="cost_vat_<?php echo $shipment->shipment_id; ?>" class="fix masterTooltip" title="<?php echo $shipment->cost_vat_comment; ?>" ><?php echo $lib->formatMoney($shipment->cost_vat); ?></td>
+           <td class="fix" ><?php echo $lib->formatMoney(($road['oil_add'][$shipment->shipment_id]+$road['oil_add2'][$shipment->shipment_id])*round($shipment->oil_cost*1.1)); ?></td>
+           <td class="fix" ><?php echo $lib->formatMoney($road['oil_add'][$shipment->shipment_id]+$road['oil_add2'][$shipment->shipment_id]); ?></td>
+           
+            <td class="fix masterTooltip" title="<?php echo $shipment->loan_content; ?>" ><?php echo $lib->formatMoney($shipment->shipment_loan); ?></td>
+            
+            <td class="fix"  ><?php echo $lib->formatMoney($shipment->shipment_bonus); ?></td>
+    
+           
+           <td class="fix" ><?php echo $lib->formatMoney($tong); ?></td>
+           <?php if ($_SESSION['role_logined'] != 7 ) { ?>
+            <td>
+                 <?php if($shipment->shipment_pay != 1){ ?>
+                <a style="float:right" class="error thanhtoan" data="<?php echo $shipment->shipment_id; ?>"  >Chuyển tiền</a>
+                <?php } else if($shipment->shipment_pay == 1){ ?>
+                <a class="ok" >Đã thanh toán</a>
+                <?php } ?>
+            </td>
+            <?php } ?>
+        
+            
+        </tr>
+
+        <?php
+                $cpcodinh += $shipment->shipment_excess+$warehouse['boiduong_cn'][$shipment->shipment_id]+round($road['bridge_cost'][$shipment->shipment_id]*1.1)+$road['police_cost'][$shipment->shipment_id]+$road['tire_cost'][$shipment->shipment_id]+$shipment->bridge_cost_add;
+                $cpphatsinh += $shipment->cost_add;
+                $daudocduong += ($road['oil_add'][$shipment->shipment_id]+$road['oil_add2'][$shipment->shipment_id])*round($shipment->oil_cost*1.1);
+                $solit += ($road['oil_add'][$shipment->shipment_id]+$road['oil_add2'][$shipment->shipment_id]);
+                $chiho += $shipment->shipment_loan;
+                
+                $thuongtruoc += $shipment->shipment_bonus;
+                $cphd += $shipment->cost_vat;
+                $hoahong += ($shipment->commission*$shipment->commission_number);
+        ?>
+        <?php } ?>
+            
+
+    <?php endforeach; ?>
+
+    <?php $tatca = ($cpcodinh+$cpphatsinh+$daudocduong+$chiho+$cptruoc+$thuongtruoc+$cptruoc); ?>
+
+        <tr  style="font-weight: bold; color: rgb(23, 119, 226);" >
+            <td class="fix" colspan="6" ></td>
+            <th style="border-right: 1px solid rgb(236, 235, 235);border-top: 1px solid #80C8E5;padding: 7px; text-align: right;" >
+                Tổng cộng
+            </th>
+            <td class="fix " ><?php echo $lib->formatMoney($cpcodinh) ?></td>
+            <td class="fix " ><?php echo $lib->formatMoney($cpphatsinh) ?></td>
+            <td class="fix " ><?php echo $lib->formatMoney($cphd) ?></td>
+            <td class="fix " ><?php echo $lib->formatMoney($daudocduong) ?></td>
+            <td class="fix " ><?php echo $lib->formatMoney($solit) ?></td>
+            <td class="fix " ><?php echo $lib->formatMoney($chiho) ?></td>
+            <td class="fix " ><?php echo $lib->formatMoney($thuongtruoc) ?></td>
+            
+            <td class="fix " ><?php echo $lib->formatMoney($tatca) ?></td>
+           
+        </tr>
+
+   </tbody>
+</table>
+<?php
+$this->helper('slidePaginator');
+?>
+
+<div id="error" class="error"><?php echo isset($error) ? $error : null; ?></div>
+
+
+</div>
+
+
+<style type="text/css">
+    .ui-dialog .ui-dialog-content{
+        padding: 3px;
+    }
+
+    .showtooltip {
+        display:none;
+        position:absolute;
+        border:1px solid #333;
+        background-color:#161616;
+        border-radius:5px;
+        padding:10px;
+        color:#fff;
+        font-size:12px Arial;
+    }
+    
+    .ok{
+        color: green;
+        float: right;
+    }
+    .no{
+        color: red;
+    }
+
+
+</style>
+
+
+<script type="text/javascript">
+$(document).ready(function() {
+// Tooltip only Text
+$('.masterTooltip').hover(function(){
+        // Hover over code
+        var title = $(this).attr('title');
+        $(this).data('tipText', title).removeAttr('title');
+        $('<p class="showtooltip"></p>')
+        .text(title)
+        .appendTo('body')
+        .fadeIn('slow');
+}, function() {
+        // Hover out code
+        $(this).attr('title', $(this).data('tipText'));
+        $('.showtooltip').remove();
+}).mousemove(function(e) {
+        var mousex = e.pageX + 20; //Get X coordinates
+        var mousey = e.pageY + 10; //Get Y coordinates
+        $('.showtooltip')
+        .css({ top: mousey, left: mousex })
+});
+
+
+});
+
+
+$('.thanhtoan').click(function(){
+    var id = $(this).attr("data")
+    var r = confirm("Bạn có chắc chắn không?");
+      if (r == true){
+        $('#loading').html("<img src='<?php echo BASE_URL ?>/public/images/loading.gif'/>").fadeIn(500);
+        $.post("<?php echo BASE_URL ?>/accounting/pay", {data: id},
+           function(data){
+            $('tr#'+id).remove();
+
+            $('#loading').fadeOut(500);
+            
+           
+           }); 
+      }
+
+});
+
+<?php if (isset($_SESSION) && $_SESSION['role_logined'] == 1) { ?>
+
+$('.approve').click(function(){
+    var id = $(this).attr("data")
+    var r = confirm("Bạn có chắc chắn không?");
+      if (r == true){
+        $('#loading').html("<img src='<?php echo BASE_URL ?>/public/images/loading.gif'/>").fadeIn(500);
+        $.post("<?php echo BASE_URL ?>/shipment/approve", {data: id},
+           function(data){
+            
+
+            $('#loading').fadeOut(500);
+            
+            setTimeout(function() {
+                                        sapxep('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');
+                                      }, 2000)
+           
+           }); 
+      }
+
+});
+<?php } ?>
+
+</script>
+
+<script type="text/javascript">
+    $(function() {
+    var pickerOpts = {
+        closeText: "Đóng",
+        currentText: "Hiện tại",
+        nextText: "Tiếp",
+        prevText: "Quay lại",
+        monthNames: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        monthNamesShort: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        dayNames: ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm",
+        "Thứ sáu", "Thứ bảy"],
+        dayNamesShort: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        dayNamesMin: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        //defaultDate: "+1w",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy',
+        firstDay: 1,
+        isRTL: false,
+        showButtonPanel: true,
+         
+    };  
+    $("#shipment_date").datepicker(pickerOpts);
+
+    
+              
+            
+    
+});
+
+
+
+</script>
+
+
+
+<style type="text/css">
+    #ui-datepicker-div{
+        font-size: 13px;
+    }
+</style>
+<script type="text/javascript">
+    $(function() {
+    var pickerOpts = {
+        closeText: "Đóng",
+        currentText: "Hiện tại",
+        nextText: "Tiếp",
+        prevText: "Quay lại",
+        monthNames: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        monthNamesShort: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        dayNames: ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm",
+        "Thứ sáu", "Thứ bảy"],
+        dayNamesShort: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        dayNamesMin: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        //defaultDate: "+1w",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy',
+        firstDay: 1,
+        isRTL: false,
+        showButtonPanel: true,
+        onClose: function(selectedDate) {
+                
+                $( "#ketthuc" ).datepicker( "option", "minDate", selectedDate );
+
+         },
+         
+    };  
+    $("#batdau").datepicker(pickerOpts);
+
+    var pickerOpts4 = {
+        closeText: "Đóng",
+        currentText: "Hiện tại",
+        nextText: "Tiếp",
+        prevText: "Quay lại",
+        monthNames: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        monthNamesShort: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        dayNames: ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm",
+        "Thứ sáu", "Thứ bảy"],
+        dayNamesShort: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        dayNamesMin: ["CN", "T2", "T3", "T4", "T5",
+        "T6", "T7"],
+        //defaultDate: "+1w",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy',
+        firstDay: 1,
+        isRTL: false,
+        showButtonPanel: true,
+        onClose: function(selectedDate) {
+                
+                $( "#batdau" ).datepicker( "option", "maxDate", selectedDate );
+                
+         },
+         
+    };  
+    $("#ketthuc").datepicker(pickerOpts4);
+              
+            
+    
+});
+
+var x = "<?php echo $xe ?>";
+$('#sl_vehicle option[value='+x+']').attr('selected','selected');
+
+var tt = "<?php echo $trangthai ?>";
+$('#sl_trangthai option[value='+tt+']').attr('selected','selected');
+
+var w = $(".table_data").width();
+
+      $(".container").width(w);
+      $(".navbar-inner").width(w);
+      $(".navbar").width(w);
+      //$("#container").width(w);
+</script>

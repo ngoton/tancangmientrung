@@ -1,0 +1,51 @@
+<script type="text/javascript" src="<?php echo BASE_URL ?>/public/js/editor/ckeditor.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	
+			// Validate form
+			$("#edit").validate({
+				errorElement: "span", // Định dạng cho thẻ HTML hiện thông báo lỗi
+				rules: {
+				}
+					 
+				 
+			});
+	
+});
+</script>
+<div class="login_form">
+
+        <div class="goback"><a href="<?php echo $this->url('video') ?>">&larr;</a></div>
+         <div id="error" class="error"><?php echo isset($error) ? $error : null; ?></div>
+        <div class="login_body">
+          <h1>CẬP NHẬT THÔNG TIN VIDEO</h1>
+              <form id="edit" method="post" action="" enctype="multipart/form-data">
+                  <table style="margin-top:20px;">
+                    
+                    <tr>
+                        <td>Tiêu đề video</td>
+                        <td><input type="text" id="video_title" name="video_title" tabindex="1" value="<?php echo $video->video_title ?>" autofocus ></td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        <td>Mô tả </td>
+                        <td>
+                          <textarea name="video_description" id="video_description" tabindex="2" ><?php echo $video->video_description ?></textarea>
+                        </td>
+                    </tr>
+                    
+                     <tr>
+                        <td ><input type="reset" name="reset" value="Nhập lại" tabindex="4"></td>
+                         <td><input type="submit" name="submit" value="Hoàn tất" tabindex="3"></td>
+                         
+                    </tr>
+                </table> 
+            </form>
+        </div>
+        
+        </div>
+
+<script type="text/javascript">
+  CKEDITOR.replace('video_description');
+</script>

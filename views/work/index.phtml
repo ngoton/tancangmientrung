@@ -1,0 +1,368 @@
+
+<?php
+$url_order = 'ASC';
+if ($order_by == 'work_id')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+
+elseif ($order_by == 'work_name')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'time_work')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+elseif ($order_by == 'frequency')
+    $url_order = $order == 'ASC' ? 'DESC' : 'ASC';
+
+
+
+
+    $i = $sonews*$page-($sonews-1);
+
+?>
+
+<div id="loading"></div>
+<div id="winpopup"></div>
+<center style="clear:both;margin-bottom: -30px;"><h1> ĐỊNH MỨC THỜI GIAN LÀM VIỆC </h1></center>
+<div id="content" style="padding:5px;">
+    
+<div class="add-box">
+    <a class="add_button" onClick="add_click();">Thêm bảng định mức</a>
+    <a class="add_button" id="import_excel" href="<?= $this->url('work/import')?>">Import Excel</a>
+</div>
+	<div class="search-box">
+        
+        <input type="search" id="search-input" name="s" value="<?php echo isset($keyword)?$keyword:null; ?>" placeholder="Tìm kiếm">
+        <input type="button" name="" id="search-submit" class="button-search" value="Tìm kiếm" onclick="searchall('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');">
+    </div>
+    <div class="tablenav top">
+    	<div class="alignleft actions">
+			<select name="action" id="action">
+            	<option value="-1" selected="selected">Chọn</option>
+                
+                <option value="delete">Xóa</option>
+            </select>
+            <input type="button" name="" id="doaction" class="button action" value="Áp dụng" onclick="action();">
+		</div>
+		<div class="alignleft actions">
+		<select name="m" id="chonloc">
+			<option  value="18446744073709">Hiển thị tất cả</option>
+			<option value="5">Hiển thị 5 giá trị</option>
+            <option value="10">Hiển thị 10 giá trị</option>
+            <option value="15">Hiển thị 15 giá trị</option>
+            <option selected="selected" value="20">Hiển thị 20 giá trị</option>
+		</select>
+		<input type="button" name="" id="post-query-submit" class="button" value="Chọn lọc" onclick="searchall('<?php echo $page ?>','<?php echo $order_by ?>','<?php echo $order ?>');">						 		
+        </div>
+
+      </div>
+
+</div>
+
+<table class="table_data">
+<thead>
+    <tr>
+    	<th  class="fix"><input type="checkbox" onclick="checkall('checkbox', this)" name="checkall"/></th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','work_id','<?php echo $url_order ?>')">STT <?php if ($order_by == 'work_id'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','work_name','<?php echo $url_order ?>')">Tên công việc <?php if ($order_by == 'work_name'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','time_work','<?php echo $url_order ?>')">Định mức thời gian <?php if ($order_by == 'time_work'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        <th  class="fix">
+            <a class="sort <?php echo $order ?>" onclick="sapxep('<?php echo $page ?>','frequency','<?php echo $url_order ?>')">Tần suất <?php if ($order_by == 'frequency'): ?><i class="icon-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?></a>
+        </th>
+        
+        
+        
+           
+        <th  class="fix">&nbsp;</th>
+    </tr>
+    
+   </thead>
+   <tbody>
+    <?php foreach ($works as $work) : ?>
+        <tr onClick="HighLightTR(this,'#4d90fe','cc3333');" id="<?php echo $work->work_id ?>" class="edit_tr">
+        	<td><input name="check[]" type="checkbox" class="checkbox" value="<?php echo $work->work_id ?>"></td>
+            <td class="fix"><?php echo $i++; ?></td>
+            
+            <td class="fix" id="work_name_<?php echo $work->work_id; ?>"><?php echo $work->work_name; ?></td>
+            <td class="fix" data="<?php echo $work->time_work ?>"  id="time_work_<?php echo $work->work_id; ?>"><?php echo date('H:i', mktime(0,$work->time_work)); ?></td>
+            <td class="fix"  id="frequency_<?php echo $work->work_id; ?>"><?php echo $work->frequency==1?'Hàng ngày':($work->frequency==2?'Hàng tuần':($work->frequency==3?'Hàng tháng':'Phát sinh')); ?></td>
+            
+            <td>
+                <a class="error" href="#">Sửa</a>
+                | 
+                <a class="error" onclick="del(<?php echo $work->work_id ?>)" >Xóa</a>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+   </tbody>
+</table>
+<?php
+$this->helper('slidePaginator');
+?>
+
+<div id="error" class="error"><?php echo isset($error) ? $error : null; ?></div>
+
+<div class="add-field">
+        <fieldset class="groupbox">
+            <legend>
+                <span><h3>Bảng định mức</h3></span>
+            </legend>
+            <div class="login_body">
+                  <form id="add_work" method="post" action="">
+                      <table style="margin-top:0px;width:100%">
+                        <tr>
+                            
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td></td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+
+                            <td><div class="add-box"><a class="add_button" onClick="add_click();">Thêm bảng định mức</a></div></td>
+                            
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>Tên công việc </td>
+                            <td>
+                                <textarea id="work_name" name="work_name" tabindex="1" required="required">
+                                    
+                                </textarea>
+                            </td>
+                            <td>Định mức thời gian</td>
+                            <td>
+                                <input style="width: 30px" type="text" id="time_work_hour" placeholder="Giờ" class="number" name="time_work_hour" tabindex="2" required="required">
+                                <input style="width: 30px" type="text" id="time_work_minute" placeholder="Phút" class="number" name="time_work_minute" tabindex="3" required="required">
+                            </td>
+                            <td>Tần suất </td>
+                            <td>
+                                <input type="checkbox"   value="1"  name="frequency" tabindex="4" > Hàng ngày <br>
+                                <input type="checkbox"   value="2"  name="frequency" tabindex="5" > Hàng tuần <br>
+                                <input type="checkbox"   value="3"  name="frequency" tabindex="6" > Hàng tháng
+                            </td>
+                            
+                            
+
+                        </tr>
+                        
+                        
+                        
+                        
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td><input type="hidden" readonly id="yes" name="yes" required="required" ></td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        
+                        
+                         <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><input type="submit" name="submit" value="Hoàn tất" tabindex="7"></td>
+                            <td ><input type="reset" name="reset" value="Nhập lại" tabindex="8"></td>
+                            <td></td>
+                            <td></td>
+                             
+                        </tr>
+                    </table> 
+                </form>
+            </div>
+        </fieldset>
+    </div>
+<script type="text/javascript">
+$('html').click(function(e) {
+    if(e.target == '[object HTMLDivElement]' || e.target == '[object HTMLBodyElement]') {
+        $('.add-field').slideUp(500);    
+    }
+   
+});
+    $('.edit_tr').click(function(){
+        if(!$('.checkbox').is(':checked')){
+            $("html, body").animate({ scrollTop: $('.add-field').offset().top }, 300);
+        }
+        
+        var work_name = $(this).find("#work_name_"+$(this).attr('id')).text();
+        var time_work = $(this).find("#time_work_"+$(this).attr('id')).attr('data');
+        var frequency = $(this).find("#frequency_"+$(this).attr('id')).text();
+        
+        //alert(work_from);
+        $('#yes').val($(this).attr('id'));
+        
+        
+        var hour = Math.floor(time_work / 60);
+        var minute = Math.round(((time_work / 60)-hour) * 60);
+        
+
+        $('#work_name').val(work_name);
+        $('#time_work_hour').val(hour);
+        $('#time_work_minute').val(minute);
+        
+        
+        $(':checkbox[name="frequency"][value="'+frequency+'"]').prop("checked", true);
+        
+    });
+
+
+</script>
+<script type="text/javascript">
+
+function add_click(){
+    $('#yes').val("");
+    $('.add-field').slideDown(500);
+    $("html, body").animate({ scrollTop: $('.add-field').offset().top }, 300);
+
+        $('#work_name').focus();
+        $('#work_name').val("");
+        $('#time_work').val(0);
+        $('#frequency').prop('checked',false);
+
+        
+        $('.number').focus(function(){
+            if ( $(this).val() == '0') {
+               $(this).val(""); 
+            };
+            
+        });
+        $('.number').blur(function(){
+            if ( $(this).val() == "") {
+                $(this).val(0);
+            };
+            
+        });
+
+
+}
+
+
+$(document).ready(function(){
+            // Validate form
+            $("#add_work").validate({
+                errorElement: "span", // Định dạng cho thẻ HTML hiện thông báo lỗi
+                rules: {
+                    
+                },
+                submitHandler: function(form) {
+                
+                    
+                
+                    var hour = $('#time_work_hour').attr('value');
+                    var minute = $('#time_work_minute').attr('value');
+                    var time_work = (parseInt(hour)*60)+parseInt(minute);
+
+                    var work_name = $('#work_name').attr('value');
+                    if ($(':checkbox[name="frequency"]').is(":checked"))
+                    {
+                      var frequency = $(':checkbox[name="frequency"]').val();
+                    }
+                    else{
+                        var frequency = 0;
+                    }
+                    
+                    var yes = $('#yes').attr('value');
+                    
+                    var action      = "them";
+                 
+                    $.ajax({
+                        type: "POST", // phương thức gởi đi
+                        url: "<?php echo BASE_URL ?>/work/add", // nơi mà dữ liệu sẽ chuyển đến khi submit
+                        data: {
+                            work_name: work_name,
+                            time_work: time_work,
+                            frequency: frequency,
+                            yes: yes,
+                            }, // giá trị post
+                        success: function(answer){ // if everything goes well
+                            $('#error').hide();
+                            $('#error').slideToggle(100); // hiển thị thẻ div success
+                            $('#error').html('<div class="successbox">'+answer+'</div>'); // đặt kết quả trả về từ test.php vào thẻ div success
+                            $('#error').fadeOut(10000);
+
+                            if (yes != "") {
+                                
+                                $('#frequency_'+yes).text(frequency==1?"Hàng ngày":(frequency==2?"Hàng tuần":(frequency==3?"Hàng tháng":"Phát sinh")));
+                                $('#time_work_'+yes).text(hour+":"+minute);
+                                $('#work_name_'+yes).text(work_name);
+                                
+                                
+                            }
+                            else{
+                                if (answer.trim() != "Thông tin này đã tồn tại") {
+                                    var lastID = parseInt($('#lasted').html());
+                                    var rowCount = parseInt($('.table_data > tbody > tr').length);
+                                    $('.table_data > tbody:last')
+                                    .append(
+                                        '<tr onclick="HighLightTR(this,"#4d90fe","cc3333");" id="'+parseInt(lastID+1)+'" class="edit_tr"><td><input name="check[]" type="checkbox" class="checkbox" value="'+parseInt(lastID+1)+'"></td><td class="fix">'+parseInt(rowCount+1)+'</td><td class="fix" id="work_name_'+parseInt(lastID+1)+'">'+work_name+'</td><td class="fix" id="time_work_'+parseInt(lastID+1)+'">'+(hour+":"+minute)+'</td><td class="fix" id="frequency_'+parseInt(lastID+1)+'">'+(frequency==1?"Hàng ngày":(frequency==2?"Hàng tuần":(frequency==3?"Hàng tháng":"Phát sinh")))+'</td><td><a class="error" href="#">Sửa</a> | <a class="error" onclick="del('+parseInt(lastID+1)+')">Xóa</a></td></tr>'
+                                    );
+
+                                    $('#lasted').html(parseInt(lastID+2));
+                                }
+                            }
+                        }
+                    });
+                    return false;
+                     
+                 }
+            });
+   
+   
+   
+
+   
+   $('.number').keyup(function(event) {
+
+          // skip for arrow keys
+      if(event.which >= 37 && event.which <= 40) return;
+
+      // format number
+      $(this).val(function(index, value) {
+        return value
+          .replace(/[^0-9-.]/g, "")
+          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        ;
+      });
+    });
+    
+
+    
+
+});
+function get_number(id){
+    return $(id).val().replace(/\,/g,'');
+}
+
+</script>
+<div style="display:none" id="lasted"></div>
+<script type="text/javascript">
+    var count = parseInt(<?php echo $lastID ?>);
+    $('#lasted').html(count);
+
+    $("#import_excel").click(function(){
+        $("#winpopup").dialog({
+            draggable:true,
+            modal: true,
+            autoOpen: false,
+            height:200,
+            width:500,
+            resizable: false,
+            title:'Import Excel',
+            
+        });
+        $("#winpopup").load($(this).attr('href'));
+        $("#winpopup").dialog("open");
+         
+        return false;
+    });
+
+    var ch = "<?php echo $limit ?>";
+$('#chonloc option[value='+ch+']').attr('selected','selected');
+</script>
+</div>

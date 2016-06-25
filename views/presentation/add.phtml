@@ -1,0 +1,59 @@
+<script type="text/javascript" src="<?php echo BASE_URL ?>/public/js/editor/ckeditor.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	
+			// Validate form
+			$("#add").validate({
+				errorElement: "span", // Định dạng cho thẻ HTML hiện thông báo lỗi
+				rules: {
+				}
+					 
+				 
+			});
+	
+});
+</script>
+<div class="login_form">
+
+  <div class="goback"><a href="<?php echo $this->url('presentation') ?>">&larr;</a></div> 
+  <div id="error" class="error"><?php echo isset($error) ? $error : null; ?></div>     
+        <div class="login_body">
+          <h1>THÊM PRESENTATION</h1>
+              <form id="add" method="post" action="" enctype="multipart/form-data">
+                  <table style="margin-top:20px;">
+                    <tr>
+                        <td>Tiêu đề presentation </td>
+                        <td><input type="text" id="presentation_title" name="presentation_title" tabindex="1" autofocus required="required"></td>
+                        
+                    </tr>
+                    <tr>
+                        <td>Mô tả </td>
+                        <td>
+                          <textarea name="presentation_description" id="presentation_description" tabindex="2"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Hình đại diện </td>
+                        <td><input type="file" id="presentation_image" name="presentation_image" tabindex="3" ></td>
+                        
+                    </tr>
+                    <tr>
+                        <td>Chọn presentation </td>
+                        <td><input type="file" id="presentation_link" name="presentation_link" tabindex="4"  required="required"></td>
+                        
+                    </tr>
+                    
+                     <tr>
+                        <td ><input type="reset" name="reset" value="Nhập lại" tabindex="6"></td>
+                         <td><input type="submit" name="submit" value="Hoàn tất" tabindex="5"></td>
+                         
+                    </tr>
+                </table> 
+            </form>
+        </div>
+        
+        </div>
+
+<script type="text/javascript">
+  CKEDITOR.replace('presentation_description');
+</script>
