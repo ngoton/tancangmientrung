@@ -24,21 +24,35 @@ function ChangeTextColor(a_obj,a_color){  ;
 
 /**/
 
-    function searchall(page,cot,sapxep){
+function printDiv(divName) {
+     var printContents = document.getElementById(divName).innerHTML;
+     var originalContents = document.body.innerHTML;
+
+     document.body.innerHTML = "<link rel=\"stylesheet\" type=\"text/css\"  href=\"<?php echo BASE_URL ?>/public/css/style.css\">\n</head><body><div style=\"testStyle\">"+printContents+ "\n</div>\n</body>\n</html>";
+
+     window.print();
+
+     document.body.innerHTML = originalContents;
+}
+
+
+function searchall(page,cot,sapxep){
   var page = 1;
   var cot = cot;
   var sapxep = sapxep;
   
   var faq_search_input = $('#search-input').val();  // Lấy giá trị search của người dùng
   var loc =    $('#chonloc').val();
-  
-  var batdau = "";
-  var ketthuc = "";
-  var sl_vehicle = "";
-  var sl_round = "";
-  var sl_trangthai = "";
-  var sl_staff = "";
+  var ngaytao = "";
 
+  if($('#chonngaytao') != null)
+  {
+    var ngaytao = $('#chonngaytao').val();
+  }
+  if($('#chonngaytaobatdau') != null)
+  {
+    var ngaytaobatdau = $('#chonngaytaobatdau').val();
+  }
   if($('#batdau') != null)
   {
     var batdau = $('#batdau').val();
@@ -47,25 +61,32 @@ function ChangeTextColor(a_obj,a_color){  ;
   {
     var ketthuc = $('#ketthuc').val();
   }
+  if($('#sl_status') != null)
+  {
+    var trangthai = $('#sl_status').val();
+  }
+  if($('#sl_nv') != null)
+  {
+    var nv = $('#sl_nv').val();
+  }
+  if($('#sl_tha') != null)
+  {
+    var tha = $('#sl_tha').val();
+  }
+  if($('#sl_na') != null)
+  {
+    var na = $('#sl_na').val();
+  }
+  if($('#tu') != null)
+  {
+    var tu = $('#tu').val();
+  }
+  if($('#den') != null)
+  {
+    var den = $('#den').val();
+  }
 
-  if($('#sl_vehicle') != null)
-  {
-    var sl_vehicle = $('#sl_vehicle').val();
-  }
-  if($('#sl_round') != null)
-  {
-    var sl_round = $('#sl_round').val();
-  }
-  if($('#sl_trangthai') != null)
-  {
-    var sl_trangthai = $('#sl_trangthai').val();
-  }
-  if($('#sl_staff') != null)
-  {
-    var sl_staff = $('#sl_staff').val();
-  }
-
-    var dataString = 'keyword='+ faq_search_input+"&limit="+loc+"&page="+ page +"&order_by="+ cot +"&order="+ sapxep+"&batdau="+ batdau+"&ketthuc="+ ketthuc +"&xe="+ sl_vehicle +"&vong="+ sl_round +"&trangthai="+sl_trangthai+"&staff="+sl_staff; 
+    var dataString = 'keyword='+ faq_search_input+"&limit="+loc+"&page="+ page +"&order_by="+ cot +"&order="+ sapxep+"&ngaytao="+ ngaytao+"&ngaytaobatdau="+ ngaytaobatdau+"&batdau="+ batdau+"&ketthuc="+ ketthuc+"&trangthai="+ trangthai+"&nv="+nv+"&tha="+tha+"&na="+na+"&tu="+tu+"&den="+den; 
     $('#loading').html("<img src='public/images/loading.gif'/>").fadeIn(500);
   $.ajax({
             type: "POST",                            // Phương thức gọi là GET
@@ -77,6 +98,28 @@ function ChangeTextColor(a_obj,a_color){  ;
             success: function(server_response)      // Khi xử lý thành công sẽ chạy hàm này
             {
                 $('body').html(server_response);    // Hiển thị dữ liệu vào thẻ div #searchresultdata
+                
+                //Enable sidebar toggle
+                $(document).on('click', "[data-toggle='offcanvas']", function (e) {
+                  e.preventDefault();
+
+                  //Enable sidebar push menu
+                  if ($(window).width() > (768 - 1)) {
+                    if ($("body").hasClass('sidebar-collapse')) {
+                      $("body").removeClass('sidebar-collapse').trigger('expanded.pushMenu');
+                    } else {
+                      $("body").addClass('sidebar-collapse').trigger('collapsed.pushMenu');
+                    }
+                  }
+                  //Handle sidebar push menu for small screens
+                  else {
+                    if ($("body").hasClass('sidebar-open')) {
+                      $("body").removeClass('sidebar-open').removeClass('sidebar-collapse').trigger('collapsed.pushMenu');
+                    } else {
+                      $("body").addClass('sidebar-open').trigger('expanded.pushMenu');
+                    }
+                  }
+                });
                 
                  
                 if ($('input#search-input').hasClass("loading")) {      // Kiểm tra class "loading"
@@ -109,16 +152,17 @@ function sapxep(page,cot,sapxep){
           $('#loading').html("<img src='public/images/loading.gif'/>").fadeIn(500);
           var cot        = cot;
           var keyword = $('#search-input').val();
-
+          var ngaytao = "";
           var loc =    $('#chonloc').val();
 
-          var batdau = "";
-          var ketthuc = "";
-          var sl_vehicle = "";
-          var sl_round = "";
-          var sl_trangthai = "";
-          var sl_staff = "";
-
+          if($('#chonngaytao') !== null)
+          {
+            var ngaytao = $('#chonngaytao').val();
+          }
+          if($('#chonngaytaobatdau') != null)
+          {
+            var ngaytaobatdau = $('#chonngaytaobatdau').val();
+          }
           if($('#batdau') != null)
           {
             var batdau = $('#batdau').val();
@@ -127,33 +171,43 @@ function sapxep(page,cot,sapxep){
           {
             var ketthuc = $('#ketthuc').val();
           }
-
-          if($('#sl_vehicle') != null)
+          if($('#sl_status') != null)
           {
-            var sl_vehicle = $('#sl_vehicle').val();
-          }
-          if($('#sl_round') != null)
-          {
-            var sl_round = $('#sl_round').val();
-          }
-          if($('#sl_trangthai') != null)
-          {
-            var sl_trangthai = $('#sl_trangthai').val();
-          }
-          if($('#sl_staff') != null)
-          {
-            var sl_staff = $('#sl_staff').val();
+            var trangthai = $('#sl_status').val();
           }
           
           
           $.ajax({
             type: "POST", // phương thức gởi đi
             url: "#", // nơi mà dữ liệu sẽ chuyển đến khi submit
-            data: "page="+ page +"&order_by="+ cot +"&order="+ sapxep+"&limit="+ loc+"&keyword="+ keyword+"&batdau="+ batdau+"&ketthuc="+ ketthuc +"&xe="+ sl_vehicle +"&vong="+ sl_round +"&trangthai="+sl_trangthai+"&staff="+sl_staff, // giá trị post
+            data: "page="+ page +"&order_by="+ cot +"&order="+ sapxep+"&limit="+ loc+"&keyword="+ keyword+"&ngaytao="+ ngaytao+"&ngaytaobatdau="+ ngaytaobatdau+"&batdau="+ batdau+"&ketthuc="+ ketthuc+"&trangthai="+ trangthai, // giá trị post
             success: function(answer){ // if everything goes well
               
               $('body').html(answer); // đặt kết quả trả về từ test.php vào thẻ div success
               $('#loading').fadeOut(500);
+
+              //Enable sidebar toggle
+                $(document).on('click', "[data-toggle='offcanvas']", function (e) {
+                  e.preventDefault();
+
+                  //Enable sidebar push menu
+                  if ($(window).width() > (768 - 1)) {
+                    if ($("body").hasClass('sidebar-collapse')) {
+                      $("body").removeClass('sidebar-collapse').trigger('expanded.pushMenu');
+                    } else {
+                      $("body").addClass('sidebar-collapse').trigger('collapsed.pushMenu');
+                    }
+                  }
+                  //Handle sidebar push menu for small screens
+                  else {
+                    if ($("body").hasClass('sidebar-open')) {
+                      $("body").removeClass('sidebar-open').removeClass('sidebar-collapse').trigger('collapsed.pushMenu');
+                    } else {
+                      $("body").addClass('sidebar-open').trigger('expanded.pushMenu');
+                    }
+                  }
+                });
+                
             }
           });
 }
@@ -175,29 +229,26 @@ function checkall(class_name, obj) {
 }
 function del(id)
 {
-  
+  if($('.add-field') != null)
+  {
+    $('.add-field').slideUp();
+  }
   var r = confirm("Bạn có chắc chắn muốn xóa không?");
   if (r == true){
     $('#loading').html("<img src='public/images/loading.gif'/>").fadeIn(500);
     $.post(window.location.href+"/delete", {data: id},
        function(data){
+        //alert(data);
         if (data.trim() != 'Bạn không có quyền thực hiện thao tác này') {
           $('tr#'+id).remove(); 
           $('#loading').fadeOut(500); 
-
-          if($('.add-field') != null)
-          {
-            $('.add-field').slideUp();
-          }
-
         };
         $('#loading').fadeOut(500);
-        
+        $("html, body").animate({ scrollTop: 0 }, 100);
        
        }); 
   }
 }
-
 function delPhoto(id)
 {
   var r = confirm("Bạn có chắc chắn muốn xóa không?");
@@ -216,7 +267,10 @@ function action(){
     var action       = $('#action').attr('value');
     if(action != -1)
     {
-      
+      if($('.add-field') !== null)
+        {
+          $('.add-field').fadeOut();
+        }
       var del = [];
       ids = $('input:checkbox.checkbox:checked').map(function() { return del.push(this.value); });
       
@@ -232,10 +286,7 @@ function action(){
               for(var i=0; i<del.length; i++)
                  $('tr#'+del[i]).remove();
               $('#loading').fadeOut(500); 
-              if($('.add-field') !== null)
-              {
-                $('.add-field').fadeOut();
-              }
+              $("html, body").animate({ scrollTop: 0 }, 100);
             }
           });
         }
@@ -291,7 +342,6 @@ function action(){
     }
   
 }
-
 
 function actionPhoto(){
   
