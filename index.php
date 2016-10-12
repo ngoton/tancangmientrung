@@ -14,7 +14,7 @@ session_start();
  /*** include the init.php file ***/
  include 'includes/init.php';
 
-if (isset($_COOKIE['remember']) && isset($_COOKIE['uu']) && $_COOKIE['remember'] == 1) {
+if (isset($_COOKIE['remember']) && isset($_COOKIE['uu']) && isset($_COOKIE['up']) && $_COOKIE['remember'] == 1) {
  	$model = baseModel::getInstance();
  	$user = $model->get('user2Model');
     $row = $user->getUser(base64_decode(substr($_COOKIE['ui'], 2)));
