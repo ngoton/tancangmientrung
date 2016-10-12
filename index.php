@@ -15,9 +15,16 @@ session_start();
  include 'includes/init.php';
 
 if (isset($_COOKIE['remember']) && isset($_COOKIE['uu']) && $_COOKIE['remember'] == 1) {
-	$_SESSION['user_logined'] = base64_decode(substr($_COOKIE['uu'], 2));
-    $_SESSION['userid_logined'] = base64_decode(substr($_COOKIE['ui'], 2));
-    $_SESSION['role_logined'] = base64_decode(substr($_COOKIE['ro'], 2));
+ 	$model = baseModel::getInstance();
+ 	$user = $model->get('user2Model');
+    $row = $user->getUser(base64_decode(substr($_COOKIE['ui'], 2)));
+    if($row->password == substr($_COOKIE['up'], 2)){
+    	$_SESSION['user_logined'] = base64_decode(substr($_COOKIE['uu'], 2));
+	    $_SESSION['userid_logined'] = base64_decode(substr($_COOKIE['ui'], 2));
+	    $_SESSION['role_logined'] = base64_decode(substr($_COOKIE['ro'], 2));
+    }
+    unset($user);
+    unset($row);
 }
 
 /*** load the router ***/
