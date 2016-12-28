@@ -14,9 +14,9 @@
             <li>
                 <a href="public/files/9db42754-fc4b-4790-a30c-5f944867657b_Cam%20nang%20CSKH%202014.pdf" target="_blank"><span style="color:#006699;">Cẩm nang dịch vụ</span></a></li>
             <li>
-                <a href="<?php echo $this->url('page/40') ?>" target="_self"><span style="color:#006699;">Presentation</span></a></li>
+                <a href="<?php echo $this->url('page/presentation') ?>" target="_self"><span style="color:#006699;">Presentation</span></a></li>
             <li>
-                <a href="<?php echo $this->url('page/40') ?>" target="_self"><span style="color:#006699;">Brochure</span></a></li>
+                <a href="<?php echo $this->url('page/brochure') ?>" target="_self"><span style="color:#006699;">Brochure</span></a></li>
         </ul>
     </div>
     <div class="box" >
@@ -33,15 +33,15 @@
             Tin tức</div>
         <ul class="noibat1">
             <li style="text-align: justify;">
-                <a href="<?php echo $this->url('page/22') ?>"><span style="color:#006699;">Thông cáo báo chí</span></a></li>
+                <a href="<?php echo $this->url('page/thong-cao-bao-chi') ?>"><span style="color:#006699;">Thông cáo báo chí</span></a></li>
             <li style="text-align: justify;">
-                <a href="<?php echo $this->url('page/3') ?>"><span style="color:#006699;">Thông báo</span></a></li>
+                <a href="<?php echo $this->url('page/thong-bao') ?>"><span style="color:#006699;">Thông báo</span></a></li>
             <li style="text-align: justify;">
-                <a href="<?php echo $this->url('page/20') ?>"><span style="color:#006699;">Tin hoạt động kinh doanh</span></a></li>
+                <a href="<?php echo $this->url('page/tin-hoat-dong-kinh-doanh') ?>"><span style="color:#006699;">Tin hoạt động kinh doanh</span></a></li>
             <li style="text-align: justify;">
-                <a href="<?php echo $this->url('page/24') ?>"><span style="color:#006699;">Tin vắn các C.ty Thành viên</span></a></li>
+                <a href="<?php echo $this->url('page/tin-van-tu-cac-cong-ty-thanh-vien') ?>"><span style="color:#006699;">Tin vắn các C.ty Thành viên</span></a></li>
             <li style="text-align: justify;">
-                <a href="<?php echo $this->url('page/21') ?>"><span style="color:#006699;">Các bài viết về TCMT</span></a></li>
+                <a href="<?php echo $this->url('page/cac-bai-viet-ve-tcmt') ?>"><span style="color:#006699;">Các bài viết về TCMT</span></a></li>
         </ul>
     </div>
     <div class="hotrokhachhang">
@@ -53,12 +53,12 @@
             <li style="text-align: justify;">
                 <a href="<?php echo $this->url('gps') ?>" target="_blank"><span style="color:#006699;">Tra cứu vị trí container </span></a></li>
             <li style="text-align: justify;">
-                <a href="<?php echo $this->url('page/30') ?>" target="_blank"><span style="color:#006699;">Thông tin chuyến tàu </span></a></li>
+                <a href="<?php echo $this->url('page/thong-tin-chuyen-tau') ?>" target="_blank"><span style="color:#006699;">Thông tin chuyến tàu </span></a></li>
             <li style="text-align: justify;">
-                <a href="<?php echo $this->url('page/34') ?>" target="_blank"><span style="color:#006699;">E - port </span></a></li>
+                <a href="<?php echo $this->url('page/e-port') ?>" target="_blank"><span style="color:#006699;">E - port </span></a></li>
             
             <li style="text-align: justify;">
-                <a href="<?php echo $this->url('page/37') ?>" target="_self"><span style="color:#006699;">Danh bạ điện thoại</span></a></li>
+                <a href="<?php echo $this->url('page/danh-ba-dien-thoai') ?>" target="_self"><span style="color:#006699;">Danh bạ điện thoại</span></a></li>
         </ul>
     </div>
     <div class="hotnew">
@@ -67,7 +67,7 @@
         <ul class="noibat2">
             <?php foreach($posts as $tinmoi){ ?>
             <li style="text-align: justify;">
-                <a href="<?php echo 'page/'.$tinmoi->menu.'/'.$tinmoi->link ?>"><span style="color:#336699;"><?php echo $tinmoi->post_title ?></span></a></li>
+                <a href="<?php echo 'page/'.$tinmoi->permalink.'/'.$tinmoi->link ?>"><span style="color:#336699;"><?php echo $tinmoi->post_title ?></span></a></li>
             <?php } ?>
             
         </ul>
@@ -87,7 +87,7 @@
           <div class="box hotline">
             <h3 id="flashingtext" style="color: red;">
               HỖ TRỢ 24/7 MIỄN PHÍ</h3>
-            <center style="padding:5px">083 5000 083</center>
+            <center style="padding:5px">056.65.56789</center>
             <center>
               <div>
                 <a onClick="support('#tel')"><img src="<?php echo BASE_URL ?>/public/images/hotline30.png" title="TCMT's Hotlines">
@@ -101,7 +101,7 @@
             </center>
           </div>
           <div id="i-support" class="box" style="display:none; border: 1px solid rgb(63, 165, 195); padding: 2px; min-height: 50px; color: red; font-weight:bold">
-              <div id="tel" style="display:none"> 083 5000 083 - 0902 085 911</div>
+              <div id="tel" style="display:none"> 056.65.56789</div>
               <div id="yh" style="display:none">&nbsp; </div>
               <div id="sk" style="display:none"> 
                 <a href="skype:tcmt.hotline?chat">
@@ -109,7 +109,7 @@
                   </a>
               </div>
               <div id="mail" style="display:none;font-weight:normal">
-                <a href="mailto:snp@tancangmientrung.com">snp@tancangmientrung.com</a>
+                <a href="mailto:biz@tancangmientrung.com">biz@tancangmientrung.com</a>
                </div>
           </div>
           

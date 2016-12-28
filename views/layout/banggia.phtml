@@ -112,12 +112,12 @@
                       </li>';
                       echo '<li><a href="'.$this->url('bang-gia').'">Bảng giá dịch vụ</a></li>';
                     }
-                    echo '<li><a href="'.$this->url('page/'.$menu->menu_id).'">'.$menu->menu_name.'</a>';
+                    echo '<li><a href="'.$this->url('page/'.$menu->permalink).'">'.$menu->menu_name.'</a>';
                     echo '<ul>';
                     if($menu->menu_id != 5 && $menu->menu_id != 6){
                       foreach ($menus as $menu_child) {
                           if($menu_child->menu_parent == $menu->menu_id){
-                              echo '<li><a href="'.$this->url('page/'.$menu_child->menu_id).'">'.$menu_child->menu_name.'</a></li>';
+                              echo '<li><a href="'.$this->url('page/'.$menu_child->permalink).'">'.$menu_child->menu_name.'</a></li>';
                           }
                       }
                     }
@@ -145,16 +145,18 @@
                &nbsp;
                 Địa chỉ: Phường Hải Cảng, TP. Qui Nhơn, tỉnh Bình Định
                 <br>
-                Điện thoại: 083 5000 083 - 0932 6789 89 
+                Điện thoại: 056.65.56789 - 0932 6789 89 
                 &nbsp;
                 Email :
-                <a href="mailto:cmthanh@saigonnewport.com.vn" tabindex="0">
-                    <span style="font-size: 11px; color:blue">cmthanh@saigonnewport.com.vn</span>
-                </a>
-                -
                 <a href="mailto:biz@tancangmientrung.com" tabindex="0">
                     <span style="font-size: 11px; color:blue">biz@tancangmientrung.com</span>
-                </a><br>
+                </a>
+                &nbsp;
+                - Skype :
+                <a href="mailto:biz@tancangmientrung.com" tabindex="0">
+                    <span style="font-size: 11px; color:blue">tcmt.hotline</span>
+                </a>
+                <br>
                 <span style="font-size:5px">Powered by <a target="_blank" style="color:#fff" href="http://www.tinhoctainha.com">Dịch vụ Tin Học Tại Nhà</a></span>
     </footer>
   </div>

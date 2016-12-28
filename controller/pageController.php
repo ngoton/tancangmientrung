@@ -10,7 +10,10 @@ Class pageController Extends baseController {
         if (isset($this->registry->router->action)) {
             $id = $this->registry->router->action;
             if (!is_numeric($id)) {
-                $this->view->redirect('');
+                $id = $menu->getMenuByWhere(array('permalink'=>$id))->menu_id;
+                if (!is_numeric($id) || $id<1) {
+                    $this->view->redirect('');
+                }
             }
             $menu_data = $menu->getMenu($id);
             if (!$menu_data) {

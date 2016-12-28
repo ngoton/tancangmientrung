@@ -18,7 +18,7 @@
                             <td style="width: auto">
                                 <div class="News_Link">
                                   <?php if($menu->menu_id != 5 && $menu->menu_id != 6){ ?>
-                                    <a href="<?php echo BASE_URL.'/page/'.$menu_left->menu_id ?>">
+                                    <a href="<?php echo BASE_URL.'/page/'.$menu_left->permalink ?>">
                                         <?php echo $menu_left->menu_name ?>
                                     </a>
                                     <?php }else{ ?>
@@ -34,7 +34,7 @@
                         
                           <?php foreach ($post_menu[$menu_left->menu_id] as $muc) {
                             echo '<tr><td style="width: 10px"></td>';
-                            echo '<td colspan="2" style=" padding: 5px 2px 5px 15px;"><li class="News_Link"><a  style="color: #676767;" href="'.BASE_URL.'/page/'.$menu_left->menu_id.'/'.$muc->link.'">'.$muc->post_title.'</a></li></td>';
+                            echo '<td colspan="2" style=" padding: 5px 2px 5px 15px;"><li class="News_Link"><a  style="color: #676767;" href="'.BASE_URL.'/page/'.$menu_left->permalink.'/'.$muc->link.'">'.$muc->post_title.'</a></li></td>';
                             echo '</tr>';
 
                           } ?>
@@ -94,7 +94,7 @@
               foreach ($menu_list as $show) {
                 echo '<div class="TopicHeader" style="border-bottom: solid 1px Gray;">'.$show->menu_name.'</div>';
                 foreach ($post_menu[$show->menu_id] as $tin) {
-                  echo '<div class="News_Link" ><img src="../public/images/LeftIcon.png" width="15px"> <a href="'.$show->menu_id.'/'.$tin->link.'">'.$tin->post_title.'</a></div>';
+                  echo '<div class="News_Link" ><img src="../public/images/LeftIcon.png" width="15px"> <a href="'.$show->permalink.'/'.$tin->link.'">'.$tin->post_title.'</a></div>';
                 }
               }
               
@@ -110,7 +110,7 @@
                             <tbody><tr>
                                 <td style="vertical-align:top;" width="200px">
                                     <div>
-                                        <a href="<?php echo $menu_info->menu_id.'/'.$posts->link ?>" title="Chi tiết tin">
+                                        <a href="<?php echo $menu_info->permalink.'/'.$posts->link ?>" title="Chi tiết tin">
                                             <img  src="<?php echo ($posts->post_image!=null)?BASE_URL.'/public/images/upload/'.$posts->post_image : BASE_URL.'/public/images/img-blank.png'; ?>" style="width:200px;border-width:0px;"></a>
                                     </div>
                                 </td>
@@ -118,7 +118,7 @@
                                     <table>
                                         <tbody><tr>
                                             <td style="text-align:justify;">
-                                                <a class="News_Title" href="<?php echo $menu_info->menu_id.'/'.$posts->link ?>" class="News_Title" title="Chi tiết tin">
+                                                <a class="News_Title" href="<?php echo $menu_info->permalink.'/'.$posts->link ?>" class="News_Title" title="Chi tiết tin">
                                                     <?php echo $posts->post_title ?>
                                                   </a>
                                             </td>
@@ -169,7 +169,7 @@
                 ?>
                 <tr class="RowStyle">
                   <td><?php echo $i++; ?></td>
-                  <td><a href="<?php echo $menu->menu_id.'/'.$post_tb->link; ?>"><?php echo $post_tb->post_title; ?></a></td>
+                  <td><a href="<?php echo $menu->permalink.'/'.$post_tb->link; ?>"><?php echo $post_tb->post_title; ?></a></td>
                   <td><?php echo $post_tb->post_create_time; ?></td>
                   <td></td>
                 </tr>
@@ -242,7 +242,7 @@
               if (isset($post) && $post != null) {
                 echo '<ul>';
                   foreach ($post as $post_dv) { 
-                    echo '<li><a href="'.$menu_info->menu_id.'/'.$post_dv->link.'">'.$post_dv->post_title.'</a></li>';
+                    echo '<li><a href="'.$menu_info->permalink.'/'.$post_dv->link.'">'.$post_dv->post_title.'</a></li>';
                   }
                   echo '</ul>';
                 }
@@ -365,7 +365,7 @@
                         <li>
                           <div class="details">
                             <h5><?php echo $al->album_name ?></h5><br>
-                            <a class="more" href="<?php echo $menu_info->menu_id.'/'.$al->album_id ?>">Xem chi tiết</a> 
+                            <a class="more" href="<?php echo $menu_info->permalink.'/'.$al->album_id ?>">Xem chi tiết</a> 
                           </div>
                           <a class="more" href="#"><img class="myclass" src="<?php echo BASE_URL ?>/public/images/upload/<?php echo $image[$al->album_id] ?>"></a>
                         </li>
@@ -416,7 +416,7 @@
                 <p>
                   &nbsp;&nbsp;&nbsp;&nbsp; Trụ sở chính: Phường Hải Cảng, TP. Qui Nhơn, tỉnh Bình Định .</p>
                 <p>
-                  &nbsp;&nbsp;&nbsp;&nbsp; Tel:&nbsp; <span style="color:#ff0000;">0932 6789 89</span> - Hotline: <span style="color:#ff0000;">0902 085 911</span> - Tổng đài hỗ trợ miễn phí: <span style="color:#ff0000;">083 5000 083</span></p>
+                  &nbsp;&nbsp;&nbsp;&nbsp; Tel:&nbsp; <span style="color:#ff0000;">0932 6789 89</span> - Tổng đài hỗ trợ miễn phí: <span style="color:#ff0000;">056.65.56789</span></p>
                 
                 <p>
                   &nbsp;&nbsp;&nbsp;&nbsp; Mail:&nbsp;<a href="mailto:cmthanh@saigonnewport.com.vn"> cmthanh@saigonnewport.com.vn</a> - <a href="mailto:biz@tancangmientrung.com"> biz@tancangmientrung.com</a></p>
@@ -437,7 +437,7 @@
           <div class="box hotline">
             <h3 id="flashingtext" style="color: red;">
               HỖ TRỢ 24/7 MIỄN PHÍ</h3>
-            <center style="padding:5px">083 5000 083</center>
+            <center style="padding:5px">056.65.56789</center>
             <center>
               <div>
                 <a onClick="support('#tel')"><img src="<?php echo BASE_URL ?>/public/images/hotline30.png" title="TCMT's Hotlines">
@@ -462,7 +462,7 @@
                   </script>
           </div>
           <div id="i-support" class="box" style="display:none; border: 1px solid rgb(63, 165, 195); padding: 2px; min-height: 50px; color: red; font-weight:bold">
-              <div id="tel" style="display:none"> 083 5000 083 - 0902 085 911</div>
+              <div id="tel" style="display:none"> 056.65.56789 - 0932.6789.89</div>
               <div id="yh" style="display:none">&nbsp; </div>
               <div id="sk" style="display:none"> 
                 <a href="skype:tcmt.hotline?chat">
@@ -470,7 +470,7 @@
                   </a>
               </div>
               <div id="mail" style="display:none;font-weight:normal">
-                <a href="mailto:snp@tancangmientrung.com">snp@tancangmientrung.com</a>
+                <a href="mailto:biz@tancangmientrung.com">biz@tancangmientrung.com</a>
                </div>
           </div>
         </div>

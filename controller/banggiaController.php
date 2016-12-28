@@ -10,19 +10,19 @@ Class banggiaController Extends baseController {
             $this->view->data['menus'] = $menus;
             $this->view->data['title'] = 'Bảng giá dịch vụ vận tải, xuất nhập khẩu, thủ tục hải quan, chỉnh sửa manifest';
 
-            $json_district = file_get_contents('http://cmglogistics.com.vn/quotation/listdistrict');
+            $json_district = file_get_contents('http://caimeptrading.com/quotation/listdistrict');
             $obj_district = json_decode($json_district);
 
-            $json_district_ship = file_get_contents('http://cmglogistics.com.vn/quotation/listshipping');
+            $json_district_ship = file_get_contents('http://caimeptrading.com/quotation/listshipping');
             $obj_district_ship = json_decode($json_district_ship);
 
-            $json_location = file_get_contents('http://cmglogistics.com.vn/quotation/listlocation');
+            $json_location = file_get_contents('http://caimeptrading.com/quotation/listlocation');
             $obj_location = json_decode($json_location);
 
-            $json_manifest = file_get_contents('http://cmglogistics.com.vn/quotation/listmanifest');
+            $json_manifest = file_get_contents('http://caimeptrading.com/quotation/listmanifest');
             $obj_manifest = json_decode($json_manifest);
 
-            $json_port = file_get_contents('http://cmglogistics.com.vn/quotation/listport');
+            $json_port = file_get_contents('http://caimeptrading.com/quotation/listport');
             $obj_port = json_decode($json_port);
             
             $this->view->data['districts'] = $obj_district_ship;
