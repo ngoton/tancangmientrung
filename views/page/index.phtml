@@ -1,487 +1,738 @@
-<?php if ($menu->menu_id != 3 && $menu->menu_id != 10 && $menu_info->menu_id != 29 && $menu_info->menu_id != 30 && $menu_info->menu_id != 34 && ($menu_info->menu_id != 31 && isset($post))) { ?>
-        <div id="left-content" class="box">
-          <h3>
-            <?php echo $menu->menu_name ?>
-          </h3>
-          <table id="ctl00_ctl28_g_4c357e22_f858_420e_b6e8_2d0ace08fe41_ctl01_dtlTopics" cellspacing="0" cellpadding="0" align="Left" border="0" style="border-collapse:collapse;">
-            <tbody>
-            <?php foreach($menu_list as $menu_left){ ?>
+<div class="content-M">
+  <div id="s4-bodyContainer">
+    <div id="contentRow">
+      <div id="contentBox" aria-live="polite" aria-relevant="all">
+        <div id="DeltaPlaceHolderMain">
+          <div class="news-detail">
+            <table cellpadding="0" cellspacing="0" width="100%" class="artile-tt">
+              <tbody>
                 <tr>
-                  <td>
-                    <table cellpadding="0" cellspacing="0" style="margin-top: 5px">
-                        <tbody><tr>
-                            <td style="width: 10px">
-                            </td>
-                            <td style="width: 35px">
-                                <img src="<?php echo BASE_URL ?>/public/images/star.png" style="width:20px;border-width:0px;">
-                            </td>
-                            <td style="width: auto">
-                                <div class="News_Link">
-                                  <?php if($menu->menu_id != 5 && $menu->menu_id != 6){ ?>
-                                    <a href="<?php echo BASE_URL.'/page/'.$menu_left->permalink ?>">
-                                        <?php echo $menu_left->menu_name ?>
-                                    </a>
-                                    <?php }else{ ?>
-                                    <a href="#">
-                                        <?php echo $menu_left->menu_name ?>
-                                    </a>
-                                    <?php } ?>
-                                </div>
-                                
-                            </td>
-                        </tr>
-                        <?php if($menu->menu_id == 4 || $menu->menu_id == 5 || $menu->menu_id == 6){ ?>
-                        
-                          <?php foreach ($post_menu[$menu_left->menu_id] as $muc) {
-                            echo '<tr><td style="width: 10px"></td>';
-                            echo '<td colspan="2" style=" padding: 5px 2px 5px 15px;"><li class="News_Link"><a  style="color: #676767;" href="'.BASE_URL.'/page/'.$menu_left->permalink.'/'.$muc->link.'">'.$muc->post_title.'</a></li></td>';
-                            echo '</tr>';
+                <td class="ContentM" valign="top">
+                  
+                  <div class="article article-news">
+                    <?php if (isset($post_data) && $post_data != null) { ?>
+                    <div class="categories" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                      <a style="color:white" href="<?php echo 'page/'.$menu_info->permalink ?>" itemprop="url">
+                      <span title="<?php echo $menu_info->menu_name ?>" itemprop="title"><?php echo $menu_info->menu_name ?></span>
+                      </a>
+                    </div>
+                    <div class="details" itemscope itemtype="http://schema.org/Article">
+                      <div id="print-news">
+                        <div class="article-header">
+                          <h1 itemprop="name">
+                            <?php echo $post_data->post_title ?>
+                          </h1>
+                          <span class="day" itemprop="datePublished"> 
+                            <?php echo $post_data->post_create_time ?>
+                          </span>
+                        </div>
+                        <div class="article-content">
+                          <?php if($menu_info->menu_id > 20 && $menu_info->menu_id < 25){ ?>
+                          <div class="article-des" itemprop="description">
+                            <?php echo $post_data->post_description ?>
+                          </div>
+                          <?php } ?>
+                          <div class="article-ds">
+                            <?php echo $post_data->post_content ?>
+                          </div>
+                        </div>
+                        <div class="tacgia">
+                          <div class="like-btn">
 
-                          } ?>
-                        
-                        <?php } ?>
-                    </tbody></table>
-                    </td>
-                </tr>
-            <?php } ?>
-            
-          </tbody></table>
-        </div>
+                              <div class="fb-like" data-href="" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div>
+                              <!-- Đặt thẻ này vào phần đầu hoặc ngay trước thẻ đóng phần nội dung của bạn. -->
+                              <script src="https://apis.google.com/js/platform.js" async defer>
+                                {lang: "vi"}
+                              </script>
 
-      <?php } ?>
+                              <!-- Đặt thẻ này vào nơi bạn muốn Nút +1 kết xuất. -->
+                              <div class="g-plusone" data-annotation="inline" data-width="300"></div>
 
-        <div id="content" style="<?php if($menu->menu_id==3 || $menu->menu_id == 10 || $menu_info->menu_id == 29 || $menu_info->menu_id == 30 || $menu_info->menu_id == 34 || ($menu_info->menu_id == 31 && isset($post))) echo 'width:975px'; ?>">
-          
-          <?php  
-          
-            if (isset($post_data) && $post_data != null) {
-              echo '<div class="TopicHeader" style="border-bottom: solid 1px Gray;">'.$menu_info->menu_name.'</div>';
-              echo '<h2 class="SubHead">'.$post_data->post_title.'</h2>';
-              echo '<h3 class="News_DateNote" style="text-align:right">'.$post_data->post_create_time.'</h3>';
-              echo $post_data->post_content;
-              echo '<div class="post_relative">';
-              echo '<span class="SubHead">Các tin đã đăng</span> <hr style="margin-top:0px; margin-bottom: 5px">';
-              echo '<table><tbody>';
-              foreach ($post_relative as $post_relative) {
-                echo '<tr><td>';
-                echo '<img src="../../public/images/LeftIcon.png" width="15px"> <a style="font-size: 9pt;" href="'.$post_relative->link.'">'.$post_relative->post_title.'</a>';
-                echo '</td></tr>';
-              }
-              echo '</tbody></table></div>';
-              
-            }
-            else if ($menu->menu_id == 1 && $menu_info->menu_parent == 0) {
-              if (isset($post_menu[11]) && $post_menu[11] != null) {
-                foreach ($post_menu[11] as $posts) {
-                  echo '<div class="TopicHeader" style="border-bottom: solid 1px Gray;">'.$menu_info->menu_name.'</div>';
-                  echo '<h2 class="SubHead">'.$posts->post_title.'</h2>';
-                  echo '<h3 class="News_DateNote" style="text-align:right">'.$posts->post_create_time.'</h3>';
-                  echo '<div class="news-content">'.$posts->post_content.'</div>';
-                  break;
-                }
-              }
-            }
-            else if ($menu->menu_id == 1) {
-              if (isset($post) && $post != null) {
-                foreach ($post as $posts) {
-                  echo '<div class="TopicHeader" style="border-bottom: solid 1px Gray;">'.$menu_info->menu_name.'</div>';
-                  echo '<div class="news-content">'.$posts->post_content.'</div>';
-                  break;
-                }
-              }
-            }
-            elseif ($menu->menu_id == 2 && $menu_info->menu_parent == 0) {
-              foreach ($menu_list as $show) {
-                echo '<div class="TopicHeader" style="border-bottom: solid 1px Gray;">'.$show->menu_name.'</div>';
-                foreach ($post_menu[$show->menu_id] as $tin) {
-                  echo '<div class="News_Link" ><img src="../public/images/LeftIcon.png" width="15px"> <a href="'.$show->permalink.'/'.$tin->link.'">'.$tin->post_title.'</a></div>';
-                }
-              }
-              
-            }
-            elseif ($menu->menu_id == 2 && $menu_info->menu_parent == $menu->menu_id) {
-              echo '<div class="TopicHeader" style="border-bottom: solid 1px Gray;">'.$menu_info->menu_name.'</div>';
-                if (isset($post) && $post != null) {
-                  foreach ($post as $posts) {
+                          </div>
+                        </div>
+                      </div>
+                      <div class="other-news">
                     
-                    ?>
-                    <div class="news-content">
-                    <table width="100%">
-                            <tbody><tr>
-                                <td style="vertical-align:top;" width="200px">
-                                    <div>
-                                        <a href="<?php echo $menu_info->permalink.'/'.$posts->link ?>" title="Chi tiết tin">
-                                            <img  src="<?php echo ($posts->post_image!=null)?BASE_URL.'/public/images/upload/'.$posts->post_image : BASE_URL.'/public/images/img-blank.png'; ?>" style="width:200px;border-width:0px;"></a>
+                        <div id="ctl00_PlaceHolderMain_g_e8b7414f_b611_4206_8358_728b9529994d" __markuptype="vsattributemarkup" __webpartid="{e8b7414f-b611-4206-8358-728b9529994d}" webpart="true">
+              
+                            <div class="noindex div-tinkhac">
+                                <div class="noindex tinkhac-titform">Các tin đã đăng</div>
+                                <div class="tinkhac-allitems" itemscope itemtype="http://schema.org/WebPage">
+                                  <?php foreach ($post_relative as $post_relative) { ?>
+                                    <div class="noindex tinkhac-item">
+                                        <div class="noindex title">
+                                            <a title="<?php echo $post_relative->post_title ?>" href="<?php echo 'page/'.$menu_info->permalink.'/'.$post_relative->link ?>" itemprop="relatedLink"><span class="icon icon-tinkhac"></span><?php echo $post_relative->post_title ?></a>
+                                        </div>
                                     </div>
-                                </td>
-                                <td valign="top">
-                                    <table>
-                                        <tbody><tr>
-                                            <td style="text-align:justify;">
-                                                <a class="News_Title" href="<?php echo $menu_info->permalink.'/'.$posts->link ?>" class="News_Title" title="Chi tiết tin">
-                                                    <?php echo $posts->post_title ?>
-                                                  </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td style="font-size: 9pt">
-                                                <i><?php echo $posts->post_create_time ?></i>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="News_Summary" style="text-align:justify;">
-                                                <?php echo $posts->post_description ?>
-                                            </td>
-                                        </tr>
-                                    </tbody></table>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2">
-                                    <hr style="color: #dadde2; height: 1px">
-                                </td>
-                            </tr>
+                                  <?php } ?>
+                                </div>
+                            </div>
+                          </div>
+                    
+                        </div>
+                      </div>
+                      <div class="bt-fullbox"></div>
+                      <?php } 
+                      else if ($menu->menu_id == 1 && $menu_info->menu_parent == 0) {
+                        if (isset($post_menu[11]) && $post_menu[11] != null) {
+                          foreach ($post_menu[11] as $posts) {
+                      ?>
+                          <div class="categories" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                            <a style="color:white" href="<?php echo 'page/'.$menu_info->permalink ?>" itemprop="url">
+                            <span title="<?php echo $menu_info->menu_name ?>" itemprop="title"><?php echo $menu_info->menu_name ?></span>
+                            </a>
+                          </div>
+                          <div class="details">
+                            <div id="print-news">
+                              <div class="article-header">
+                                <h1>
+                                  <?php echo $posts->post_title ?>
+                                </h1>
+                                <span class="day"> 
+                                  <?php echo $posts->post_create_time ?>
+                                </span>
+                              </div>
+                              <div class="article-content">
+                                <div class="article-ds">
+                                  <?php echo $posts->post_content ?>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                      <?php
+                            break;
+                          }
+                        }
+                      }
+                      else if ($menu->menu_id == 1) {
+                        if (isset($post) && $post != null) {
+                          foreach ($post as $posts) {
+                            ?>
+                            <div class="categories" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                              <a style="color:white" href="<?php echo 'page/'.$menu_info->permalink ?>" itemprop="url">
+                              <span title="<?php echo $menu_info->menu_name ?>" itemprop="title"><?php echo $menu_info->menu_name ?></span>
+                              </a>
+                            </div>
+                            <div class="details">
+                              <div id="print-news">
+                                <div class="article-content">
+                                  <div class="article-ds">
+                                    <?php echo $posts->post_content ?>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <?php
+                            break;
+                          }
+                        }
+                      }
+                      elseif ($menu->menu_id == 2 && $menu_info->menu_parent == 0) {
+                        foreach ($menu_list as $show) {
+                      ?>
+                        <div class="div-tinchuyenmucchinh">
+                          <div class="tinchuyenmucchinh-chuyenmuc"><?php echo $show->menu_name ?></div>
+                          <div class="tinchuyenmucchinh-tinthuong">
+                            <?php foreach ($post_menu[$show->menu_id] as $tin) { ?>
+                            <div class="tinthuong-item">            
+                              <div class="title">
+                                  <a title="<?php echo $tin->post_title ?>" href="<?php echo 'page/'.$show->permalink.'/'.$tin->link ?>"><span class="icon icon-tinthuong"></span><?php echo $tin->post_title ?></a>
+                              </div>            
+                            </div>
+                            <?php } ?>
+                          </div>
+                        </div>
+                      <?php
+                          }
+                        
+                      }
+                      elseif ($menu->menu_id == 2 && $menu_info->menu_parent == $menu->menu_id) {
+                        ?>
+                        <div class="Page-CM">
+                          <div class="Title-CM" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                            <a style="color:white" href="<?php echo 'page/'.$menu_info->permalink ?>" itemprop="url">
+                            <span title="<?php echo $menu_info->menu_name ?>" itemprop="title"><?php echo $menu_info->menu_name ?></span>
+                            </a>
+                          </div>
+                          <div class="Content-CM">
+                            <div id="divTinTrangChuyenMuc" class="div-tintrangchuyenmuc">
+                              
+                        <?php if (isset($post) && $post != null) { ?>
+                            <div class="div-allitems">
+                            <?php
+                            foreach ($post as $posts) {
+                              
+                              ?>
+                              <div class="div-item">
+                                <div class="div-image">
+                                  <a href="<?php echo 'page/'.$menu_info->permalink.'/'.$posts->link ?>" title="Chi tiết tin">
+                                    <img  src="<?php echo ($posts->post_image!=null)?BASE_URL.'/public/images/upload/'.$posts->post_image : BASE_URL.'/public/images/img-blank.png'; ?>" style="width:200px;border-width:0px;"></a>
+                                </div>
+                                <div class="div-content">
+                                    <div class="div-title"><a title="<?php echo $posts->post_title ?>" href="<?php echo 'page/'.$menu_info->permalink.'/'.$posts->link ?>"><?php echo $posts->post_title ?></a></div>
+                                    <div class="div-date"><?php echo $posts->post_create_time ?></div>
+                                    <div class="div-description">
+                                      <?php echo $posts->post_description ?>
+                                    </div>
+                                </div>
+                              </div>
+                              
+                              <?php
+                              }
+                              ?>
+                            </div>
+                            <div class="PagingDiv">
+                              <?php
+                                $this->helper('slidePaginator');
+                              ?>
+                            </div>
+
+                            <?php }  ?>
+                          </div>
+                        </div>
+                      </div>
+                      <?php
+                      }
+                      elseif ($menu->menu_id == 3) {
+                      ?>
+
+                      <table class="GridViewStyle">
+                        <tbody>
+                          <tr class="HeaderStyle">
+                            <th>STT</th>
+                            <th>Tiêu đề</th>
+                            <th width="120px">Ngày hiệu lực</th>
+                            <th width="90px">Ngày hết hạn</th>
+                          </tr>
+                          <?php 
+                          $i = 1;
+                          if (isset($post) && $post != null) {
+                            foreach ($post as $post_tb) { 
+                          ?>
+                          <tr class="RowStyle">
+                            <td><?php echo $i++; ?></td>
+                            <td><a href="<?php echo $menu->permalink.'/'.$post_tb->link; ?>"><?php echo $post_tb->post_title; ?></a></td>
+                            <td><?php echo $post_tb->post_create_time; ?></td>
+                            <td></td>
+                          </tr>
+                          <tr>
+                            <td colspan="4">
+                          <?php }
+                          $this->helper('slidePaginator');
+                           } ?>
+                           </td>
+                         </tr>
                         </tbody>
                       </table>
+
+                      <?php
+                      }
+                      else if ($menu->menu_id == 4 && $menu_info->menu_parent == 0) {
+                        if (isset($post_menu[28]) && $post_menu[28] != null) {
+                          foreach ($post_menu[28] as $posts) {
+                            ?>
+                            <div class="categories" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                              <a style="color:white" href="<?php echo 'page/'.$menu_info->permalink ?>" itemprop="url">
+                              <span title="<?php echo $menu_info->menu_name ?>" itemprop="title"><?php echo $menu_info->menu_name ?></span>
+                              </a>
+                            </div>
+                            <div class="details">
+                              <div id="print-news">
+                                <div class="article-header">
+                                  <h1>
+                                    <?php echo $posts->post_title ?>
+                                  </h1>
+                                  <span class="day"> 
+                                    <?php echo $posts->post_create_time ?>
+                                  </span>
+                                </div>
+                                <div class="article-content">
+                                  <div class="article-ds">
+                                    <?php echo $posts->post_content ?>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          <?php
+                            break;
+                          }
+                        }
+                      }
+                      elseif ($menu->menu_id == 4 && $menu_info->menu_parent == $menu->menu_id && !isset($post_data)) {
+                        if (isset($post) && $post != null) {
+                          foreach ($post as $posts) {
+                          ?>
+                          <div class="categories" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                            <a style="color:white" href="<?php echo 'page/'.$menu_info->permalink ?>" itemprop="url">
+                            <span title="<?php echo $menu_info->menu_name ?>" itemprop="title"><?php echo $menu_info->menu_name ?></span>
+                            </a>
+                          </div>
+                          <div class="details">
+                            <div id="print-news">
+                              <div class="article-header">
+                                <h1>
+                                  <?php echo $posts->post_title ?>
+                                </h1>
+                                <span class="day"> 
+                                  <?php echo $posts->post_create_time ?>
+                                </span>
+                              </div>
+                              <div class="article-content">
+                                <div class="article-ds">
+                                  <?php echo $posts->post_content ?>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                            <?php
+                              break;
+                            }
+                        }
+                    }
+                    else if ($menu->menu_id == 5 && $menu_info->menu_parent == 0) {
+                        if (isset($post_menu[43]) && $post_menu[43] != null) {
+                          foreach ($post_menu[43] as $posts) {
+                          ?>
+                          <div class="categories" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                            <a style="color:white" href="<?php echo 'page/'.$menu_info->permalink ?>" itemprop="url">
+                            <span title="<?php echo $menu_info->menu_name ?>" itemprop="title"><?php echo $menu_info->menu_name ?></span>
+                            </a>
+                          </div>
+                          <div class="details">
+                            <div id="print-news">
+                              <div class="article-header">
+                                <h1>
+                                  <?php echo $posts->post_title ?>
+                                </h1>
+                                <span class="day"> 
+                                  <?php echo $posts->post_create_time ?>
+                                </span>
+                              </div>
+                              <div class="article-content">
+                                <div class="article-ds">
+                                  <?php echo $posts->post_content ?>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <?php
+                            break;
+                          }
+                        }
+                      }
+                      else if ($menu->menu_id == 6 && $menu_info->menu_parent == 0) {
+                        if (isset($post_menu[44]) && $post_menu[44] != null) {
+                          foreach ($post_menu[44] as $posts) {
+                          ?>
+                            <div class="categories" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                              <a style="color:white" href="<?php echo 'page/'.$menu_info->permalink ?>" itemprop="url">
+                              <span title="<?php echo $menu_info->menu_name ?>" itemprop="title"><?php echo $menu_info->menu_name ?></span>
+                              </a>
+                            </div>
+                            <div class="details">
+                              <div id="print-news">
+                                <div class="article-header">
+                                  <h1>
+                                    <?php echo $posts->post_title ?>
+                                  </h1>
+                                  <span class="day"> 
+                                    <?php echo $posts->post_create_time ?>
+                                  </span>
+                                </div>
+                                <div class="article-content">
+                                  <div class="article-ds">
+                                    <?php echo $posts->post_content ?>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          <?php
+                            break;
+                          }
+                        }
+                      }
+                      elseif ($menu->menu_id == 7 && $menu_info->menu_id == 29) {
+                        echo '<iframe id="ifr" src="http://eport.saigonnewport.com.vn/Containers.aspx" width="100%" height="550px" style="overflow-y: hidden; "></iframe>';
+                        
+                      }
+                      elseif ($menu->menu_id == 7 && ($menu_info->menu_id == 30 || $menu_info->menu_id == 34)) {
+                        echo '<iframe id="ifr" src="http://eport.saigonnewport.com.vn/Ships.aspx" width="100%" height="550px" style="overflow-y: hidden; "></iframe>';
+                        
+                      }
+                      elseif ($menu_info->menu_id == 31 || $menu_info->menu_id == 37) {
+                        if (isset($post) && $post != null) {
+                          echo '<ul>';
+                            foreach ($post as $post_dv) { 
+                              echo '<li><a href="'.$menu_info->permalink.'/'.$post_dv->link.'" title="'.$post_dv->post_title.'">'.$post_dv->post_title.'</a></li>';
+                            }
+                            echo '</ul>';
+                          }
+                      
+                      }
+                      elseif ($menu->menu_id == 7 && $menu_info->menu_parent == 0) {
+                        if (isset($post_menu[36]) && $post_menu[36] != null) {
+                          foreach ($post_menu[36] as $posts) {
+                            ?>
+                            <div class="categories" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                              <a style="color:white" href="<?php echo 'page/'.$menu_info->permalink ?>" itemprop="url">
+                              <span title="<?php echo $menu_info->menu_name ?>" itemprop="title"><?php echo $menu_info->menu_name ?></span>
+                              </a>
+                            </div>
+                            <div class="details">
+                              <div id="print-news">
+                                <div class="article-header">
+                                  <h1>
+                                    <?php echo $posts->post_title ?>
+                                  </h1>
+                                  <span class="day"> 
+                                    <?php echo $posts->post_create_time ?>
+                                  </span>
+                                </div>
+                                <div class="article-content">
+                                  <div class="article-ds">
+                                    <?php echo $posts->post_content ?>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <?php
+                          }
+                        }
+                      }
+                      elseif ($menu->menu_id == 8 && $menu_info->menu_parent == 0) {
+                        if (isset($post) && $post != null) {
+                          foreach ($post as $posts) {
+                            ?>
+                            <div class="categories" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                              <a style="color:white" href="<?php echo 'page/'.$menu_info->permalink ?>" itemprop="url">
+                              <span title="<?php echo $menu_info->menu_name ?>" itemprop="title"><?php echo $menu_info->menu_name ?></span>
+                              </a>
+                            </div>
+                            <div class="details">
+                              <div id="print-news">
+                                <div class="article-content">
+                                  <div class="article-ds">
+                                    <?php echo $posts->post_content ?>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                           <?php 
+                          }
+                        }
+                      }
+                      
+                      elseif ($menu_info->menu_id == 32) {
+                        echo '<a href="../public/files/ce0aba4b-f1b1-435d-b7e1-b83bb3bf059b_Quy trinh khai thac 2014.pdf">Quy trình khai thác</a>';
+                      }
+                      elseif ($menu_info->menu_id == 33) {
+                        echo '<a href="../public/files/9db42754-fc4b-4790-a30c-5f944867657b_Cam nang CSKH 2014.pdf">Cẩm nang</a>';
+                      }
+                      elseif ($menu_info->menu_id == 35) {
+                        echo '<a href="../public/files/4a53cc1d-49f8-424e-8180-0f94e8aaac59_huong dan khai dien tu.doc">E-customs</a>';
+                      }
+                      else if ($menu_info->menu_id == 36) {
+                        if (isset($post_menu[36]) && $post_menu[36] != null) {
+                          foreach ($post_menu[36] as $posts) {
+                            ?>
+                            <div class="categories" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                              <a style="color:white" href="<?php echo 'page/'.$menu_info->permalink ?>" itemprop="url">
+                              <span title="<?php echo $menu_info->menu_name ?>" itemprop="title"><?php echo $menu_info->menu_name ?></span>
+                              </a>
+                            </div>
+                            <div class="details">
+                              <div id="print-news">
+                                <div class="article-header">
+                                  <h1>
+                                    <?php echo $posts->post_title ?>
+                                  </h1>
+                                  <span class="day"> 
+                                    <?php echo $posts->post_create_time ?>
+                                  </span>
+                                </div>
+                                <div class="article-content">
+                                  <div class="article-ds">
+                                    <?php echo $posts->post_content ?>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <?php
+                            break;
+                          }
+                        }
+                      }
+                      elseif ($menu->menu_id == 9) {
+                        if (isset($video) && $video != null) {
+                          ?>
+                          <div class="categories" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                            <a style="color:white" href="<?php echo 'page/'.$menu_info->permalink ?>" itemprop="url">
+                            <span title="<?php echo $menu_info->menu_name ?>" itemprop="title"><?php echo $menu_info->menu_name ?></span>
+                            </a>
+                          </div>
+                          <?php
+                          foreach ($video as $vi) {
+                            echo '<div style="margin-top:5px; border-bottom: solid 1px #BCE4F3">';
+                            echo '<div id="spanVideoName" class="ImageGallery_textBold">'.$vi->video_title.'</div>';
+                            echo '<div id="spanVideoDes" class="ImageGallery_text">'.$vi->video_description.'</div>';
+                            echo '<div id="mediaspace" style="text-align: center;background-color:Transparent;"><embed allowfullscreen="true" allowscriptaccess="always" flashvars="duration=509&amp;file='.BASE_URL.'/public/files/'.$vi->video_link.'&amp;title=dasdasda&amp;autostart=false&amp;repeat=always&amp;image='.BASE_URL.'/public/images/startImg.jpg" height="175" id="mymovie" name="mymovie" quality="high" src="'.BASE_URL.'/public/files/player.swf" type="application/x-shockwave-flash" width="175" wmode="transparent"></div>';
+                            echo '</div>';
+                          }
+                        }
+                        elseif (isset($present) && $present != null) {
+                          ?>
+                          <div class="categories" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                            <a style="color:white" href="<?php echo 'page/'.$menu_info->permalink ?>" itemprop="url">
+                            <span title="<?php echo $menu_info->menu_name ?>" itemprop="title"><?php echo $menu_info->menu_name ?></span>
+                            </a>
+                          </div>
+                          <?php
+                          foreach ($present as $pre) {
+                            echo '<div style="margin-top:5px; border-bottom: solid 1px #BCE4F3"><table>';
+                            echo '<tr>';
+                              echo '<td rowspan="3">';
+                                echo '<img width="100px" height="100px" src="'.BASE_URL.'/public/images/upload/'.$pre->presentation_image.'">';
+                              echo '</td>';
+                              echo '<td>';
+                                echo '<span class="ImageGallery_textBold">'.$pre->presentation_title.'</span>';
+                              echo '</td>';
+                            echo '</tr>';
+                            echo '<tr>';
+                              echo '<td>';
+                                echo $pre->presentation_description;
+                              echo '</td>';
+                            echo '</tr>';
+                            echo '<tr>';
+                              echo '<td>';
+                                echo '<a href="'.BASE_URL.'/public/files/'.$pre->presentation_link.'">
+                                <img src="'.BASE_URL.'/public/images/btnView_onmousedown.jpg" ></a>
+                                <a href="'.BASE_URL.'/public/files/'.$pre->presentation_link.'">
+                                <img src="'.BASE_URL.'/public/images/btnDownload_onmousedown.jpg" ></a>';
+                              echo '</td>';
+                            echo '</tr>';
+                          echo '</table></div>';
+                          }
+                        }
+                        elseif (isset($brochure) && $brochure != null) {
+                          ?>
+                          <div class="categories" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                            <a style="color:white" href="<?php echo 'page/'.$menu_info->permalink ?>" itemprop="url">
+                            <span title="<?php echo $menu_info->menu_name ?>" itemprop="title"><?php echo $menu_info->menu_name ?></span>
+                            </a>
+                          </div>
+                          <?php
+                          foreach ($brochure as $bro) {
+                            echo '<div style="margin-top:5px; border-bottom: solid 1px #BCE4F3"><table>';
+                            echo '<tr>';
+                              echo '<td rowspan="3">';
+                                echo '<img width="100px" height="100px" src="'.BASE_URL.'/public/images/upload/'.$bro->brochure_image.'">';
+                              echo '</td>';
+                              echo '<td>';
+                                echo '<span class="ImageGallery_textBold">'.$bro->brochure_title.'</span>';
+                              echo '</td>';
+                            echo '</tr>';
+                            echo '<tr>';
+                              echo '<td>';
+                                echo $bro->brochure_description;
+                              echo '</td>';
+                            echo '</tr>';
+                            echo '<tr>';
+                              echo '<td>';
+                                echo '<a href="'.BASE_URL.'/public/files/'.$bro->brochure_link.'">
+                                <img src="'.BASE_URL.'/public/images/btnView_onmousedown.jpg" ></a>
+                                <a href="'.BASE_URL.'/public/files/'.$bro->brochure_link.'">
+                                <img src="'.BASE_URL.'/public/images/btnDownload_onmousedown.jpg" ></a>';
+                              echo '</td>';
+                            echo '</tr>';
+                          echo '</table></div>';
+                          }
+                        }
+                        elseif (isset($album) && $album != null) {
+                          ?>
+                          <div class="categories" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                            <a style="color:white" href="<?php echo 'page/'.$menu_info->permalink ?>" itemprop="url">
+                            <span title="<?php echo $menu_info->menu_name ?>" itemprop="title"><?php echo $menu_info->menu_name ?></span>
+                            </a>
+                          </div>
+                          <div class="album" style="margin-top:5px">
+                            <ul id="grid" class="group">
+                                <?php foreach($album as $al): ?>
+                                  <li>
+                                    <div class="details">
+                                      <h5><?php echo $al->album_name ?></h5><br>
+                                      <a class="more" href="<?php echo $menu_info->permalink.'/'.$al->album_id ?>">Xem chi tiết</a> 
+                                    </div>
+                                    <a class="more" href="#"><img class="myclass" src="<?php echo BASE_URL ?>/public/images/upload/<?php echo $image[$al->album_id] ?>"></a>
+                                  </li>
+                                <?php endforeach; ?>  
+                                      
+                                  </ul>
+                          </div>
+                        <?php
+                        }
+                        elseif (isset($image_data) && $image_data != null) {
+                          foreach($image_data as $pt):
+                            ?>
+                            <div class="categories">
+                              <span title="<?php echo $pt->album_name ?>"><?php echo $pt->album_name ?></span>
+                            </div>
+                            <?php
+                            break;
+                          endforeach;
+                          ?>
+                          <div class="album">
+                            <ul id="grid" class="group">
+                                <?php foreach($image_data as $photo): ?>
+                                  <li>
+                                    
+                                    <a rel="shadowbox[photo]" title="<?php echo $photo->album_name ?>"  class="more" href="<?php echo BASE_URL ?>/public/images/upload/<?php echo $photo->image_link ?>"><img  src="<?php echo BASE_URL ?>/public/images/upload/<?php echo $photo->image_link ?>"></a>
+                                  </li>
+                                <?php endforeach; ?>  
+                                      
+                                  </ul>
+                          </div> 
+                          <link rel="stylesheet" type="text/css" href="<?php echo BASE_URL ?>/public/js/shadowbox/shadowbox.css">
+                          <script type="text/javascript" src="<?php echo BASE_URL ?>/public/js/shadowbox/shadowbox.js"></script>
+                          <script type="text/javascript">
+                          Shadowbox.init({
+                              handleOversize:     "drag",
+                              displayNav:         true,
+                              players: ['img', 'html', 'iframe', 'qt', 'wmp', 'swf', 'flv'],
+                            counterType: "skip",
+                            slideshowDelay: 5,
+                            continuous: true
+                            
+                          });
+                          </script> 
+                          <?php
+                        }
+                      }
+                      elseif ($menu->menu_id == 10) {
+                        ?>
+                        <center>
+                          <p>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #3366cc"><strong>CÔNG TY CỔ PHẦN TÂN CẢNG MIỀN TRUNG</strong></span></p>
+                          <p>
+                            &nbsp;&nbsp;&nbsp;&nbsp; Trụ sở chính: Phường Hải Cảng, TP. Quy Nhơn, tỉnh Bình Định, Việt Nam .</p>
+                          <p>
+                            &nbsp;&nbsp;&nbsp;&nbsp; Tel:&nbsp; <span style="color:#ff0000;">0932 6789 89</span> - Tổng đài hỗ trợ miễn phí: <span style="color:#ff0000;">056.65.56789</span></p>
+                          
+                          <p>
+                            &nbsp;&nbsp;&nbsp;&nbsp; Mail:&nbsp;<a href="mailto:cmthanh@saigonnewport.com.vn"> cmthanh@saigonnewport.com.vn</a> - <a href="mailto:biz@tancangmientrung.com"> biz@tancangmientrung.com</a></p>
+                        </center>
+                        <?php
+                      }
+                    ?>
                     </div>
-                  <?php
-                  }
-                  
-                    $this->helper('slidePaginator');
-
-                }  
-            }
-            elseif ($menu->menu_id == 3) {
-            ?>
-
-            <table class="GridViewStyle">
-              <tbody>
-                <tr class="HeaderStyle">
-                  <th>STT</th>
-                  <th>Tiêu đề</th>
-                  <th width="120px">Ngày hiệu lực</th>
-                  <th width="90px">Ngày hết hạn</th>
+                  </td>
                 </tr>
-                <?php 
-                $i = 1;
-                if (isset($post) && $post != null) {
-                  foreach ($post as $post_tb) { 
-                ?>
-                <tr class="RowStyle">
-                  <td><?php echo $i++; ?></td>
-                  <td><a href="<?php echo $menu->permalink.'/'.$post_tb->link; ?>"><?php echo $post_tb->post_title; ?></a></td>
-                  <td><?php echo $post_tb->post_create_time; ?></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td colspan="4">
-                <?php }
-                $this->helper('slidePaginator');
-                 } ?>
-                 </td>
-               </tr>
               </tbody>
             </table>
-
-            <?php
-            }
-            else if ($menu->menu_id == 4 && $menu_info->menu_parent == 0) {
-              if (isset($post_menu[28]) && $post_menu[28] != null) {
-                foreach ($post_menu[28] as $posts) {
-                  echo '<div class="TopicHeader" style="border-bottom: solid 1px Gray;">'.$menu_info->menu_name.'</div>';
-                  echo '<h2 class="SubHead">'.$posts->post_title.'</h2>';
-                  echo '<h3 class="News_DateNote" style="text-align:right">'.$posts->post_create_time.'</h3>';
-                  echo '<div class="news-content">'.$posts->post_content.'</div>';
-                  break;
-                }
-              }
-            }
-            elseif ($menu->menu_id == 4 && $menu_info->menu_parent == $menu->menu_id && !isset($post_data)) {
-              if (isset($post) && $post != null) {
-                  foreach ($post as $posts) {
-                    echo '<div class="TopicHeader" style="border-bottom: solid 1px Gray;">'.$menu_info->menu_name.'</div>';
-                    echo '<h2 class="SubHead">'.$posts->post_title.'</h2>';
-                    echo '<h3 class="News_DateNote" style="text-align:right">'.$posts->post_create_time.'</h3>';
-                    echo $posts->post_content;
-
-                    break;
-                  }
-                }
-          }
-          else if ($menu->menu_id == 5 && $menu_info->menu_parent == 0) {
-              if (isset($post_menu[43]) && $post_menu[43] != null) {
-                foreach ($post_menu[43] as $posts) {
-                  echo '<div class="TopicHeader" style="border-bottom: solid 1px Gray;">'.$menu_info->menu_name.'</div>';
-                  echo '<h2 class="SubHead">'.$posts->post_title.'</h2>';
-                  echo '<h3 class="News_DateNote" style="text-align:right">'.$posts->post_create_time.'</h3>';
-                  echo '<div class="news-content">'.$posts->post_content.'</div>';
-                  break;
-                }
-              }
-            }
-            else if ($menu->menu_id == 6 && $menu_info->menu_parent == 0) {
-              if (isset($post_menu[44]) && $post_menu[44] != null) {
-                foreach ($post_menu[44] as $posts) {
-                  echo '<div class="TopicHeader" style="border-bottom: solid 1px Gray;">'.$menu_info->menu_name.'</div>';
-                  echo '<h2 class="SubHead">'.$posts->post_title.'</h2>';
-                  echo '<h3 class="News_DateNote" style="text-align:right">'.$posts->post_create_time.'</h3>';
-                  echo '<div class="news-content">'.$posts->post_content.'</div>';
-                  break;
-                }
-              }
-            }
-            elseif ($menu->menu_id == 7 && $menu_info->menu_id == 29) {
-              echo '<iframe id="ifr" src="http://eport.saigonnewport.com.vn/Containers.aspx" width="100%" height="550px" style="overflow-y: hidden; "></iframe>';
-              
-            }
-            elseif ($menu->menu_id == 7 && ($menu_info->menu_id == 30 || $menu_info->menu_id == 34)) {
-              echo '<iframe id="ifr" src="http://eport.saigonnewport.com.vn/Ships.aspx" width="100%" height="550px" style="overflow-y: hidden; "></iframe>';
-              
-            }
-            elseif ($menu_info->menu_id == 31 || $menu_info->menu_id == 37) {
-              if (isset($post) && $post != null) {
-                echo '<ul>';
-                  foreach ($post as $post_dv) { 
-                    echo '<li><a href="'.$menu_info->permalink.'/'.$post_dv->link.'">'.$post_dv->post_title.'</a></li>';
-                  }
-                  echo '</ul>';
-                }
-            
-            }
-            elseif ($menu->menu_id == 7 && $menu_info->menu_parent == 0) {
-              if (isset($post_menu[36]) && $post_menu[36] != null) {
-                foreach ($post_menu[36] as $posts) {
-                  echo '<div class="TopicHeader" style="border-bottom: solid 1px Gray;">'.$menu_info->menu_name.'</div>';
-                  echo '<h2 class="SubHead">'.$posts->post_title.'</h2>';
-                  echo '<h3 class="News_DateNote" style="text-align:right">'.$posts->post_create_time.'</h3>';
-                  echo '<div class="news-content">'.$posts->post_content.'</div>';
-                  
-                }
-              }
-            }
-            elseif ($menu->menu_id == 8 && $menu_info->menu_parent == 0) {
-              if (isset($post) && $post != null) {
-                foreach ($post as $posts) {
-                  echo '<div class="TopicHeader" style="border-bottom: solid 1px Gray;">'.$menu_info->menu_name.'</div>';
-                  echo '<div class="news-content">'.$posts->post_content.'</div>';
-                  
-                }
-              }
-            }
-            
-            elseif ($menu_info->menu_id == 32) {
-              echo '<a href="../public/files/ce0aba4b-f1b1-435d-b7e1-b83bb3bf059b_Quy trinh khai thac 2014.pdf">Quy trình khai thác</a>';
-            }
-            elseif ($menu_info->menu_id == 33) {
-              echo '<a href="../public/files/9db42754-fc4b-4790-a30c-5f944867657b_Cam nang CSKH 2014.pdf">Cẩm nang</a>';
-            }
-            elseif ($menu_info->menu_id == 35) {
-              echo '<a href="../public/files/4a53cc1d-49f8-424e-8180-0f94e8aaac59_huong dan khai dien tu.doc">E-customs</a>';
-            }
-            else if ($menu_info->menu_id == 36) {
-              if (isset($post_menu[36]) && $post_menu[36] != null) {
-                foreach ($post_menu[36] as $posts) {
-                  echo '<div class="TopicHeader" style="border-bottom: solid 1px Gray;">'.$menu_info->menu_name.'</div>';
-                  echo '<h2 class="SubHead">'.$posts->post_title.'</h2>';
-                  echo '<h3 class="News_DateNote" style="text-align:right">'.$posts->post_create_time.'</h3>';
-                  echo '<div class="news-content">'.$posts->post_content.'</div>';
-                  break;
-                }
-              }
-            }
-            elseif ($menu->menu_id == 9) {
-              if (isset($video) && $video != null) {
-                echo '<div class="TopicHeader" style="border-bottom: solid 1px Gray;">'.$menu_info->menu_name.'</div>';
-                foreach ($video as $vi) {
-                  echo '<div style="margin-top:5px; border-bottom: solid 1px #BCE4F3">';
-                  echo '<div id="spanVideoName" class="ImageGallery_textBold">'.$vi->video_title.'</div>';
-                  echo '<div id="spanVideoDes" class="ImageGallery_text">'.$vi->video_description.'</div>';
-                  echo '<div id="mediaspace" style="text-align: center;background-color:Transparent;"><embed allowfullscreen="true" allowscriptaccess="always" flashvars="duration=509&amp;file='.BASE_URL.'/public/files/'.$vi->video_link.'&amp;title=dasdasda&amp;autostart=false&amp;repeat=always&amp;image='.BASE_URL.'/public/images/startImg.jpg" height="175" id="mymovie" name="mymovie" quality="high" src="'.BASE_URL.'/public/files/player.swf" type="application/x-shockwave-flash" width="175" wmode="transparent"></div>';
-                  echo '</div>';
-                }
-              }
-              elseif (isset($present) && $present != null) {
-                echo '<div class="TopicHeader" style="border-bottom: solid 1px Gray;">'.$menu_info->menu_name.'</div>';
-                foreach ($present as $pre) {
-                  echo '<div style="margin-top:5px; border-bottom: solid 1px #BCE4F3"><table>';
-                  echo '<tr>';
-                    echo '<td rowspan="3">';
-                      echo '<img width="100px" height="100px" src="'.BASE_URL.'/public/images/upload/'.$pre->presentation_image.'">';
-                    echo '</td>';
-                    echo '<td>';
-                      echo '<span class="ImageGallery_textBold">'.$pre->presentation_title.'</span>';
-                    echo '</td>';
-                  echo '</tr>';
-                  echo '<tr>';
-                    echo '<td>';
-                      echo $pre->presentation_description;
-                    echo '</td>';
-                  echo '</tr>';
-                  echo '<tr>';
-                    echo '<td>';
-                      echo '<a href="'.BASE_URL.'/public/files/'.$pre->presentation_link.'">
-                      <img src="'.BASE_URL.'/public/images/btnView_onmousedown.jpg" ></a>
-                      <a href="'.BASE_URL.'/public/files/'.$pre->presentation_link.'">
-                      <img src="'.BASE_URL.'/public/images/btnDownload_onmousedown.jpg" ></a>';
-                    echo '</td>';
-                  echo '</tr>';
-                echo '</table></div>';
-                }
-              }
-              elseif (isset($brochure) && $brochure != null) {
-                echo '<div class="TopicHeader" style="border-bottom: solid 1px Gray;">'.$menu_info->menu_name.'</div>';
-                foreach ($brochure as $bro) {
-                  echo '<div style="margin-top:5px; border-bottom: solid 1px #BCE4F3"><table>';
-                  echo '<tr>';
-                    echo '<td rowspan="3">';
-                      echo '<img width="100px" height="100px" src="'.BASE_URL.'/public/images/upload/'.$bro->brochure_image.'">';
-                    echo '</td>';
-                    echo '<td>';
-                      echo '<span class="ImageGallery_textBold">'.$bro->brochure_title.'</span>';
-                    echo '</td>';
-                  echo '</tr>';
-                  echo '<tr>';
-                    echo '<td>';
-                      echo $bro->brochure_description;
-                    echo '</td>';
-                  echo '</tr>';
-                  echo '<tr>';
-                    echo '<td>';
-                      echo '<a href="'.BASE_URL.'/public/files/'.$bro->brochure_link.'">
-                      <img src="'.BASE_URL.'/public/images/btnView_onmousedown.jpg" ></a>
-                      <a href="'.BASE_URL.'/public/files/'.$bro->brochure_link.'">
-                      <img src="'.BASE_URL.'/public/images/btnDownload_onmousedown.jpg" ></a>';
-                    echo '</td>';
-                  echo '</tr>';
-                echo '</table></div>';
-                }
-              }
-              elseif (isset($album) && $album != null) {
-                echo '<div class="TopicHeader" style="border-bottom: solid 1px Gray;">'.$menu_info->menu_name.'</div>';
-                ?>
-                <div class="album" style="margin-top:5px">
-                  <ul id="grid" class="group">
-                      <?php foreach($album as $al): ?>
-                        <li>
-                          <div class="details">
-                            <h5><?php echo $al->album_name ?></h5><br>
-                            <a class="more" href="<?php echo $menu_info->permalink.'/'.$al->album_id ?>">Xem chi tiết</a> 
-                          </div>
-                          <a class="more" href="#"><img class="myclass" src="<?php echo BASE_URL ?>/public/images/upload/<?php echo $image[$al->album_id] ?>"></a>
-                        </li>
-                      <?php endforeach; ?>  
-                            
-                        </ul>
-                </div>
-              <?php
-              }
-              elseif (isset($image_data) && $image_data != null) {
-                foreach($image_data as $pt):
-                  echo '<div class="TopicHeader" style="border-bottom: solid 1px Gray;">'.$pt->album_name.'</div>';
-                  break;
-                endforeach;
-                ?>
-                <div class="album">
-                  <ul id="grid" class="group">
-                      <?php foreach($image_data as $photo): ?>
-                        <li>
-                          
-                          <a rel="shadowbox[photo]" title="<?php echo $photo->album_name ?>"  class="more" href="<?php echo BASE_URL ?>/public/images/upload/<?php echo $photo->image_link ?>"><img  src="<?php echo BASE_URL ?>/public/images/upload/<?php echo $photo->image_link ?>"></a>
-                        </li>
-                      <?php endforeach; ?>  
-                            
-                        </ul>
-                </div> 
-                <link rel="stylesheet" type="text/css" href="<?php echo BASE_URL ?>/public/js/shadowbox/shadowbox.css">
-                <script type="text/javascript" src="<?php echo BASE_URL ?>/public/js/shadowbox/shadowbox.js"></script>
-                <script type="text/javascript">
-                Shadowbox.init({
-                    handleOversize:     "drag",
-                    displayNav:         true,
-                    players: ['img', 'html', 'iframe', 'qt', 'wmp', 'swf', 'flv'],
-                  counterType: "skip",
-                  slideshowDelay: 5,
-                  continuous: true
-                  
-                });
-                </script> 
-                <?php
-              }
-            }
-            elseif ($menu->menu_id == 10) {
-              ?>
-              <center>
-                <p>
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #3366cc"><strong>CÔNG TY CỔ PHẦN TÂN CẢNG MIỀN TRUNG</strong></span></p>
-                <p>
-                  &nbsp;&nbsp;&nbsp;&nbsp; Trụ sở chính: Phường Hải Cảng, TP. Qui Nhơn, tỉnh Bình Định .</p>
-                <p>
-                  &nbsp;&nbsp;&nbsp;&nbsp; Tel:&nbsp; <span style="color:#ff0000;">0932 6789 89</span> - Tổng đài hỗ trợ miễn phí: <span style="color:#ff0000;">056.65.56789</span></p>
-                
-                <p>
-                  &nbsp;&nbsp;&nbsp;&nbsp; Mail:&nbsp;<a href="mailto:cmthanh@saigonnewport.com.vn"> cmthanh@saigonnewport.com.vn</a> - <a href="mailto:biz@tancangmientrung.com"> biz@tancangmientrung.com</a></p>
-              </center>
-              <?php
-            }
-          ?>
-        </div>
-
-        <?php if ($menu->menu_id != 3 && $menu->menu_id != 10 && $menu_info->menu_id != 29 && $menu_info->menu_id != 30 && $menu_info->menu_id != 34 && ($menu_info->menu_id != 31 && isset($post))) { ?>
-        <div id="right-content">
-          <div class="box hotline">
-            <h3 id="h1">
-              HỖ TRỢ 24/7</h3>
-            <center style="padding:5px">
-              <font color="blue">0932.6789.89</font></center>
-          </div>
-          <div class="box hotline">
-            <h3 id="flashingtext" style="color: red;">
-              HỖ TRỢ 24/7 MIỄN PHÍ</h3>
-            <center style="padding:5px">056.65.56789</center>
-            <center>
-              <div>
-                <a onClick="support('#tel')"><img src="<?php echo BASE_URL ?>/public/images/hotline30.png" title="TCMT's Hotlines">
-
-                </a><a onClick="support('#yh')" target="_blank"><img src="<?php echo BASE_URL ?>/public/images/ym30.png" title="Yahoo">
-
-                </a> <a onClick="support('#sk')"><img src="<?php echo BASE_URL ?>/public/images/skype30.png" title="Skype"></a> 
-                <a onClick="support('#mail')"><img alt="Thư điện tử" src="<?php echo BASE_URL ?>/public/images/email30.png" title="E-Newsletter"></a>
-
-              </div>
-            </center>
-          </div>
-          <div style="height: 200px; margin: 0 0 5px 0; float: left; width: 182px;">
-                <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-                  <!-- Tân Cảng Miền Trung -->
-                  <ins class="adsbygoogle"
-                       style="display:inline-block;width:182px;height:200px"
-                       data-ad-client="ca-pub-8303573181078043"
-                       data-ad-slot="6244728211"></ins>
-                  <script>
-                  (adsbygoogle = window.adsbygoogle || []).push({});
-                  </script>
-          </div>
-          <div id="i-support" class="box" style="display:none; border: 1px solid rgb(63, 165, 195); padding: 2px; min-height: 50px; color: red; font-weight:bold">
-              <div id="tel" style="display:none"> 056.65.56789 - 0932.6789.89</div>
-              <div id="yh" style="display:none">&nbsp; </div>
-              <div id="sk" style="display:none"> 
-                <a href="skype:tcmt.hotline?chat">
-                    <img alt='Skype' title="Hotline - Skype" src='http://mystatus.skype.com/smallclassic/tcmt.hotline' border='0' >
-                  </a>
-              </div>
-              <div id="mail" style="display:none;font-weight:normal">
-                <a href="mailto:biz@tancangmientrung.com">biz@tancangmientrung.com</a>
-               </div>
           </div>
         </div>
-        <script language="javascript" type="text/javascript">
+      </div>
+    </div>
+  </div>                
+</div>
+<?php if ($menu->menu_id != 3 && $menu->menu_id != 10 && $menu_info->menu_id != 29 && $menu_info->menu_id != 30 && $menu_info->menu_id != 34 && ($menu_info->menu_id != 31 && isset($post))) { ?>
+<div class="content-R">
+        
+  <div class="ms-webpart-chrome ms-webpart-chrome-fullWidth ">
+    <div webpartid="00000000-0000-0000-0000-000000000000" haspers="true" id="WebPartWPQ2" width="100%" class="ms-WPBody " onlyformepart="true" allowdelete="false" style="">
+      <div class="ms-rtestate-field">
+        <div class="box">
+          <div class="title-box"><h4>Hỗ trợ 24/7</h4></div>
+          <div class="ct-box">
+              <div class="group-help">
+                <ul>
+                      <li><span class="sms">0932 6789 89</span></li>
+
+                  </ul>
+              </div>
+          </div>
+          <div class="bt-box"></div>
+          <div class="clear"></div>
+        </div>
+      </div>
+      <div class="ms-clear"></div>
+    </div>
+  </div>
+        
+  <div class="ms-webpart-chrome ms-webpart-chrome-fullWidth ">
+    <div webpartid="00000000-0000-0000-0000-000000000000" haspers="true" id="WebPartWPQ3" width="100%" class="ms-WPBody " onlyformepart="true" allowdelete="false" style="">
+      <div class="ms-rtestate-field">
+        <div class="box-help">
+          <div class="title-help"><h4>Hỗ trợ 24/7 miễn phí</h4></div>
+            <div class="ct-help">
+              <h2 id="flashingtext">056 655 6789</h2>
+            </div>
+            <div class="clear"></div>
+          </div>
+        </div>
+        <div class="ms-clear"></div>
+      </div>
+    </div>
+
+    <div class="ms-webpart-chrome ms-webpart-chrome-fullWidth ">
+    <div webpartid="00000000-0000-0000-0000-000000000000" haspers="true" id="WebPartWPQ3" width="100%" class="ms-WPBody " onlyformepart="true" allowdelete="false" style="">
+      <div class="ms-rtestate-field">
+        <div class="box">
+          <div class="title-box"><h4>SNP Logistics Quy Nhơn</h4></div>
+            <div class="div-ulbox">
+              <ul>
+                <li>
+                    <a href="<?php echo BASE_URL ?>/page/logistics" title="Giao nhận vận tải đường bộ"><span style="color:#006699;">Giao nhận vận tải đường bộ</span></a></li>
+                <li>
+                    <a href="<?php echo BASE_URL ?>/page/logistics" title="Vận tải đường biển"><span style="color:#006699;">Vận tải đường biển</span></a></li>
+                <li>
+                    <a href="<?php echo BASE_URL ?>/page/logistics" title="Vận tải đường sắt"><span style="color:#006699;">Vận tải đường sắt</span></a></li>
+                <li>
+                    <a href="<?php echo BASE_URL ?>/page/logistics" title="Khai thuê hải quan"><span style="color:#006699;">Khai thuê hải quan</span></a></li>
+                <li>
+                    <a href="<?php echo BASE_URL ?>/page/logistics" title="Dịch vụ kho bãi"><span style="color:#006699;">Dịch vụ kho bãi</span></a></li>
+                <li>
+                    <a href="<?php echo BASE_URL ?>/page/khu-vuc-mien-trung/cang-tan-cang-mien-trung" title="Dịch vụ logistics tại Bình Định"><span style="color:#006699;">Dịch vụ logistics tại Bình Định</span></a></li>
+                <li>
+                    <a href="<?php echo BASE_URL ?>/page/khu-vuc-mien-trung/cang-tan-cang-mien-trung" title="Dịch vụ logistics tại Miền Trung"><span style="color:#006699;">Dịch vụ logistics tại Miền Trung</span></a></li>
+                <li>
+                  <a href="<?php echo BASE_URL ?>/page/cac-cong-ty-xi-nghiep-thanh-vien/cong-ty-cp-tan-cang-mien-trung" title="Xuất nhập khẩu"><span style="color:#006699;">Xuất nhập khẩu</span></a></li>
+              </ul>
+            </div>
+            <div class="clear"></div>
+          </div>
+        </div>
+        <div class="ms-clear"></div>
+      </div>
+    </div>
+    <div class="ms-webpart-chrome ms-webpart-chrome-fullWidth ">
+    <div webpartid="00000000-0000-0000-0000-000000000000" haspers="true" id="WebPartWPQ3" width="100%" class="ms-WPBody " onlyformepart="true" allowdelete="false" style="">
+      <div class="ms-rtestate-field">
+        <div class="box">
+          <div class="title-box"><h4>Bài viết</h4></div>
+            <div class="div-ulbox">
+              <ul>
+                <?php foreach($post_features as $tinmoi){ ?>
+                <li>
+                    <a href="<?php echo BASE_URL.'/page/'.$tinmoi->permalink.'/'.$tinmoi->link ?>" title="<?php echo $tinmoi->post_title ?>"><?php echo $tinmoi->post_title ?></a></li>
+                <?php } ?>
+              </ul>
+            </div>
+            <div class="clear"></div>
+          </div>
+        </div>
+        <div class="ms-clear"></div>
+      </div>
+    </div>
+
+</div>
+<script language="javascript" type="text/javascript">
     function flashtext(ele, col) {
         var tmpColCheck = document.getElementById(ele).style.color;
 
-        if (tmpColCheck === 'white') {
+        if (tmpColCheck === 'blue') {
             document.getElementById(ele).style.color = col;
         } else {
-            document.getElementById(ele).style.color = 'white';
+            document.getElementById(ele).style.color = 'blue';
         }
     }
 
@@ -504,4 +755,62 @@ function support(id){
         });
     });
 </script>
-        <?php } ?>
+<?php } ?>
+<?php if ($menu->menu_id != 3 && $menu->menu_id != 10 && $menu_info->menu_id != 29 && $menu_info->menu_id != 30 && $menu_info->menu_id != 34 && ($menu_info->menu_id != 31 && isset($post))) { ?>
+<div class="content-L">
+        
+  <div>
+    
+    <div class="box box-danhmuctin">
+        <div class="title-box"><h4><?php echo $menu->menu_name ?></h4>
+        </div>
+        <div class="ct-box">
+            <div class="div-ulbox">
+                <ul>
+                  <?php foreach($menu_list as $menu_left){ ?>
+                  
+                    <?php if($menu->menu_id != 5 && $menu->menu_id != 6){ ?>
+                    <li>
+                      <a href="<?php echo BASE_URL.'/page/'.$menu_left->permalink ?>" title="<?php echo $menu_left->menu_name ?>">
+                          <strong><?php echo $menu_left->menu_name ?></strong>
+                      </a>
+                      <?php if($menu->menu_id == 4 || $menu->menu_id == 5 || $menu->menu_id == 6){ ?>
+                        <ul>
+                        <?php foreach ($post_menu[$menu_left->menu_id] as $muc) { ?>
+                          <li>
+                            <a href="<?php echo BASE_URL.'/page/'.$menu_left->permalink.'/'.$muc->link ?>"><?php echo $muc->post_title ?></a>
+                          </li>
+                        <?php } ?>
+                        </ul>
+                      <?php } ?>
+                    </li>
+                    <?php }else{ ?>
+                    <li>
+                      <a href="#">
+                          <strong><?php echo $menu_left->menu_name ?></strong>
+                      </a>
+                      <?php if($menu->menu_id == 4 || $menu->menu_id == 5 || $menu->menu_id == 6){ ?>
+                        <ul>
+                        <?php foreach ($post_menu[$menu_left->menu_id] as $muc) { ?>
+                          <li>
+                            <a href="<?php echo BASE_URL.'/page/'.$menu_left->permalink.'/'.$muc->link ?>"><?php echo $muc->post_title ?></a>
+                          </li>
+                        <?php } ?>
+                        </ul>
+                      <?php } ?>
+                    </li>
+                    <?php } ?>
+                    
+                  <?php } ?>
+                  
+                </ul>
+            </div>
+        </div>
+        <div class="bt-box"></div>
+        <div class="clear"></div>
+    </div>
+  </div>     
+        
+</div><!--End content-L-->
+<?php } ?>
+  

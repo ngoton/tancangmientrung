@@ -228,9 +228,37 @@ Class postController Extends baseController {
 
                     $post->createPost($data);
 
+                    $link_menu = $menu->getMenu($data['menu']);
 
+                    $doc = new DOMDocument();
+                    $doc->load( 'sitemap.xml' );
 
-                    
+                    $doc->formatOutput = true;
+                    $r = $doc->getElementsByTagName("urlset")->item(0);
+
+                    $b = $doc->createElement("url");
+
+                    $loc = $doc->createElement("loc");
+                    $loc->appendChild(
+                        $doc->createTextNode(BASE_URL."/page/".$link_menu->permalink."/".$data['link'])
+                    );
+                    $b->appendChild( $loc );
+
+                    $changefreq = $doc->createElement("changefreq");
+                    $changefreq->appendChild(
+                        $doc->createTextNode("weekly")
+                    );
+                    $b->appendChild( $changefreq );
+
+                    $priority = $doc->createElement("priority");
+                    $priority->appendChild(
+                        $doc->createTextNode("0.80")
+                    );
+                    $b->appendChild( $priority );
+
+                    $r->appendChild( $b );
+                        
+                    $doc->save("sitemap.xml");  
 
 
 

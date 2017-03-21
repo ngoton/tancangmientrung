@@ -152,6 +152,7 @@ Class pageController Extends baseController {
                     $this->view->redirect('page/'.$id);
                 }
                 $this->view->data['title'] = $post_data->post_title;
+                $this->view->data['description'] = $post_data->post_description;
                 $this->view->data['post_data'] = $post_data;
                 
                 $data =array(
@@ -167,6 +168,14 @@ Class pageController Extends baseController {
             }
         }
         
+        $data = array(
+            'where' => '( menu_parent = 2 OR menu = 3 )',
+            'order_by' => 'RAND()',
+            'limit' => 5,
+            );
+        $join = array('table'=>'menu','where'=>'post.menu = menu.menu_id');
+        $post_features = $post->getAllPost($data,$join);
+        $this->view->data['post_features'] = $post_features;
 
 
         $this->view->show('page/index');
