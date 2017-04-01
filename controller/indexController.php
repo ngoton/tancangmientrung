@@ -4,7 +4,7 @@ Class indexController Extends baseController {
             $menu_model = $this->model->get('menuModel');
             $menus = $menu_model->getAllMenu();
             $this->view->data['menus'] = $menus;
-            $this->view->data['title'] = 'Dịch vụ vận tải, xuất nhập khẩu, thủ tục hải quan, chỉnh sửa manifest';
+            $this->view->data['title'] = 'Logistics, Vận tải đường bộ, đường biển, Thủ tục hải quan, Container, Xuất nhập khẩu tại Quy Nhơn, Bình Định';
 
             $post_model = $this->model->get('postModel');
             $data = array(
